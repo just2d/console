@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.admin.auditHistory.AuditHistoryReadMapper">
+	<resultMap id="BaseResultMap" type="com.nuoshi.console.domain.auditHistory.AuditHistory">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="house_id" property="houseId" jdbcType="INTEGER" />
+		<result column="house_type" property="houseType" jdbcType="INTEGER" />
+		<result column="author_id" property="authorId" jdbcType="INTEGER" />
+		<result column="author_name" property="authorName" jdbcType="VARCHAR" />
+		<result column="effect_time" property="effectTime" jdbcType="TIMESTAMP" />
+		<result column="audit_result" property="auditResult" jdbcType="TINYINT" />
+	</resultMap>
+	<resultMap id="SubResultMap" type="com.nuoshi.console.domain.auditHistory.SubAuditHistory">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="photo_id" property="photoId" jdbcType="INTEGER" />
+		<result column="house_id" property="houseId" jdbcType="INTEGER" />
+		<result column="audit_step" property="auditStep" jdbcType="TINYINT" />
+		<result column="dealer_id" property="dealerId" jdbcType="INTEGER" />
+		<result column="audit_id" property="auditId" jdbcType="INTEGER" />
+		<result column="dealer_name" property="dealerName" jdbcType="VARCHAR" />
+		<result column="author_id" property="authorId" jdbcType="INTEGER" />
+		<result column="author_name" property="authorName" jdbcType="VARCHAR" />
+		<result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+		<result column="audit_result" property="auditResult" jdbcType="TINYINT" />
+		<result column="inalbum" property="inalbum" jdbcType="TINYINT" />
+		<result column="extra" property="extra" jdbcType="VARCHAR" />
+		<result column="reject_reason" property="rejectReason" jdbcType="VARCHAR" />
+		<result column="house_describe" property="houseDescribe" jdbcType="VARCHAR" />
+		<result column="re_result" property="reResult" jdbcType="INTEGER" />
+		<result column="photo_url" property="photoUrl" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="ReResultMap" type="com.nuoshi.console.domain.auditHistory.ReauditHistory">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="history_id" jdbcType="INTEGER" property="historyId" />
+		<result column="sub_history_id" jdbcType="INTEGER" property="subHistoryId" />
+		<result column="audit_id" jdbcType="INTEGER" property="auditId" />
+		<result column="reaudit_id" jdbcType="INTEGER" property="reauditId" />
+		<result column="reaudit_time" jdbcType="TIMESTAMP" property="reauditTime" />
+		<result column="result" jdbcType="TINYINT" property="result" />
+	</resultMap>
+	<resultMap id="HistoryInfoMap" type="com.nuoshi.console.domain.auditHistory.HistoryInfo">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="photo_id" property="photoId" jdbcType="INTEGER" />
+		<result column="house_id" property="houseId" jdbcType="INTEGER" />
+		<result column="audit_step" property="auditStep" jdbcType="TINYINT" />
+		<result column="dealer_id" property="dealerId" jdbcType="INTEGER" />
+		<result column="dealer_name" property="dealerName" jdbcType="VARCHAR" />
+		<result column="author_id" property="authorId" jdbcType="INTEGER" />
+		<result column="author_name" property="authorName" jdbcType="VARCHAR" />
+		<result column="audit_id" property="auditId" jdbcType="INTEGER" />
+		<result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+		<result column="audit_result" property="auditResult" jdbcType="TINYINT" />
+		<result column="inalbum" property="inalbum" jdbcType="TINYINT" />
+		<result column="extra" property="extra" jdbcType="VARCHAR" />
+		<result column="reject_reason" property="rejectReason" jdbcType="VARCHAR" />
+		<result column="house_type" property="houseType" jdbcType="INTEGER" />
+		<result column="house_describe" property="houseDescribe" jdbcType="VARCHAR" />
+		<result column="photo_url" property="photoUrl" jdbcType="VARCHAR" />
+		<result column="re_result" property="reResult" jdbcType="VARCHAR" />
+		<result column="photo_count" property="photoCount" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, house_id, house_type, author_id, author_name, effect_time,
+		audit_result
+	</sql>
+
+	<sql id="Sub_Column_List">
+		id, photo_id,house_id,audit_step,dealer_id,
+		audit_id,dealer_name,author_id,author_name,audit_time,
+		audit_result,inalbum,extra,audit_result,reject_reason
+	</sql>
+
+	<select id="selectHistoryInfoById" resultMap="HistoryInfoMap" parameterType="java.lang.Integer">
+		SELECT
+		sub_audit_history.*,audit_history.house_id,audit_history.house_type
+		FROM sub_audit_history
+		LEFT JOIN audit_history ON sub_audit_history.audit_id = audit_history.id
+		where sub_audit_history.id = #{id}
+	</select>
+
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from audit_history
+		where id = #{id}
+	</select>
+
+	<select id="getLastRecordByHouseIds" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from audit_history
+		where house_id in
+		<foreach item="item" collection="houseIdList" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		and house_type=#{houseType}
+		and id IN (
+		SELECT
+		max(id)
+		FROM
+		audit_history
+		WHERE
+		house_id IN
+		<foreach item="item" collection="houseIdList" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		and house_type=#{houseType}
+		GROUP BY house_id
+		)
+	</select>
+
+
+	<select id="getHasRecordIds" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select house_id
+		from audit_history
+		where house_id in
+		<foreach item="item" collection="houseIdList" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		and house_type=#{houseType}
+	</select>
+
+	<select id="getSubListByPage" resultMap="SubResultMap">
+		SELECT
+		sub_audit_history.*,audit_history.author_id,audit_history.author_name,audit_history.house_id,reaudit_history.result re_result
+		FROM sub_audit_history
+		LEFT JOIN audit_history ON sub_audit_history.audit_id = audit_history.id
+		LEFT JOIN reaudit_history ON sub_audit_history.id = reaudit_history.sub_history_id
+		WHERE 1=1 ${conditions}
+	</select>
+	
+	<select id="getHistoryInfoListByPage" resultMap="HistoryInfoMap">
+		SELECT
+		sub_audit_history.*,audit_history.author_id,audit_history.author_name,audit_history.house_id,reaudit_history.result re_result,audit_history.house_type
+		FROM sub_audit_history
+		LEFT JOIN audit_history ON sub_audit_history.audit_id = audit_history.id
+		LEFT JOIN reaudit_history ON sub_audit_history.id = reaudit_history.sub_history_id
+		WHERE 1=1 ${conditions}
+	</select>
+	
+	<select id="getAuditHouseQualityList" resultType="com.nuoshi.console.domain.stat.HouseQuality">
+		SELECT distinct
+			sub_audit_history.audit_time auditDate,			
+			sub_audit_history.dealer_name auditUserName,
+			sub_audit_history.dealer_id auditUserId,
+			sub_audit_history.extra houseTitle,
+			sub_audit_history.audit_result auditStatus,
+			audit_history.author_id agentId,
+			audit_history.city_id cityId,
+			audit_history.author_name agentName,
+			audit_history.house_id houseId,
+			reaudit_history.result reAuditStatus,
+			audit_history.house_type houseType
+			
+		FROM sub_audit_history
+		LEFT JOIN audit_history ON sub_audit_history.audit_id = audit_history.id
+		LEFT JOIN reaudit_history ON sub_audit_history.id = reaudit_history.sub_history_id
+		WHERE sub_audit_history.audit_step = 4 
+			AND audit_history.using_flag is null 
+			AND sub_audit_history.audit_time  <![CDATA[ >= ]]> #{sqlDateStart} 
+ 			AND sub_audit_history.audit_time  <![CDATA[ <= ]]> #{sqlDateEnd} 
+		<if test="auditUserId != null and auditUserId !=''">
+			AND sub_audit_history.dealer_id = #{auditUserId} 
+		</if>
+		<if test="cityId != null">
+			AND audit_history.city_id = #{cityId} 
+		</if>
+		 ORDER BY rand() 
+		 LIMIT ${limitNum}
+	</select>
+	
+	<select id="getAuditHouseQualityOtherList" resultType="com.nuoshi.console.domain.stat.HouseQuality">
+		SELECT distinct
+			sub_audit_history.audit_time auditDate,			
+			sub_audit_history.dealer_name auditUserName,
+			sub_audit_history.dealer_id auditUserId,
+			sub_audit_history.extra houseTitle,
+			sub_audit_history.audit_result auditStatus,
+			audit_history.author_id agentId,
+			audit_history.city_id cityId,
+			audit_history.author_name agentName,
+			audit_history.house_id houseId,
+			reaudit_history.result reAuditStatus,
+			audit_history.house_type houseType
+			
+		FROM sub_audit_history
+		LEFT JOIN audit_history ON sub_audit_history.audit_id = audit_history.id
+		LEFT JOIN reaudit_history ON sub_audit_history.id = reaudit_history.sub_history_id
+		WHERE sub_audit_history.audit_step = 4 
+			AND audit_history.using_flag is null 
+			AND sub_audit_history.audit_time  <![CDATA[ >= ]]> #{sqlDateStart} 
+ 			AND sub_audit_history.audit_time  <![CDATA[ <= ]]> #{sqlDateEnd} 
+ 			AND audit_history.city_id not in (1,2,3,4,102)  
+		<if test="auditUserId != null and auditUserId !=''">
+			AND sub_audit_history.dealer_id = #{auditUserId} 
+		</if>
+		 ORDER BY rand() 
+		 LIMIT ${limitNum}
+	</select>
+	
+	
+	
+	<select id="getSubListCount">
+		SELECT COUNT(0)
+		FROM sub_audit_history
+		LEFT JOIN audit_history ON sub_audit_history.audit_id = audit_history.id
+		LEFT JOIN reaudit_history ON sub_audit_history.id = reaudit_history.sub_history_id
+		WHERE 1=1 ${conditions}
+	</select>
+	<select id="getHistoryInfoListCount">
+		SELECT COUNT(0)
+		FROM sub_audit_history
+		LEFT JOIN audit_history ON sub_audit_history.audit_id = audit_history.id
+		LEFT JOIN reaudit_history ON sub_audit_history.id = reaudit_history.sub_history_id
+		WHERE 1=1 ${conditions}
+	</select>
+	
+	<select id="getReauditHistoryCount" resultType="java.lang.Integer">
+		SELECT COUNT(id) FROM reaudit_history WHERE sub_history_id = #{subHistoryId}
+	</select>
+	
+	
+	<select id="processedAuditCount" resultType="java.lang.Integer">
+		SELECT COUNT(0) 
+		FROM sub_audit_history 
+		<if test="houseType != null ">
+		left join audit_history on audit_history.id=sub_audit_history.audit_id
+		WHERE house_type = #{houseType}
+		</if>
+		<if test="houseType == null ">
+		WHERE 1=1 
+		</if>
+		<if test="auditStep != null ">
+		and audit_step = #{auditStep}
+		</if>
+		<if test="auditUserId != null ">
+		and dealer_id = #{auditUserId}
+		</if>
+		<if test="beginTime != null ">
+		and audit_time <![CDATA[>=]]> #{beginTime}
+		</if>
+		<if test="endTime != null ">
+		and audit_time <![CDATA[<=]]> #{endTime}
+		</if>
+	</select>
+	<select id="badHouseAuditNumber" resultType="java.lang.Integer">
+		SELECT COUNT(0) 
+		FROM reaudit_history 
+		<if test="houseType != null ">
+			left join audit_history on audit_history.id=reaudit_history.history_id
+			<if test="auditStep != null">
+				left join sub_audit_history on sub_audit_history.id=reaudit_history.sub_history_id
+			</if>
+			WHERE house_type = #{houseType}
+			<if test="auditStep != null">
+			and audit_step=#{auditStep}
+			</if>
+		</if>
+		
+		<if test="houseType == null ">
+			<if test="auditStep!=null">
+				left join sub_audit_history on sub_audit_history.id=reaudit_history.sub_history_id
+				WHERE audit_step=#{auditStep} 
+			</if>
+			<if test="auditStep == null">
+				where 1=1
+			</if>
+		</if>
+		
+		<if test="requesterId != null ">
+			and audit_id = #{requesterId}
+		</if>
+		
+	</select>
+	<select id="getTotalBadRateByUsers" parameterType="java.util.List" resultType="com.nuoshi.console.domain.auditHistory.AuditorInfo">
+		SELECT
+			r.audit_id as userId,
+			COUNT(0) as totalBadCount
+		FROM
+			reaudit_history r
+		LEFT JOIN 
+			sub_audit_history s
+		ON s.id = r.sub_history_id
+		WHERE 
+		r.photo_id <![CDATA[<=]]> 0
+		and r.audit_id in 
+		<foreach item="item" collection="userList" open="(" separator="," close=")">
+			#{item.id}
+		</foreach>
+		<if test="beginTime != null ">
+		and s.audit_time <![CDATA[>=]]> #{beginTime}
+		</if>
+		<if test="endTime != null ">
+		and s.audit_time <![CDATA[<=]]> #{endTime}
+		</if>
+		GROUP BY
+			r.audit_id
+	</select>
+	
+	<select id="getNewBadRateByUsers" parameterType="java.util.List" resultType="com.nuoshi.console.domain.auditHistory.AuditorInfo">
+		SELECT
+			r.audit_id as userId,
+			COUNT(DISTINCT r.id) as totalBadCount
+		FROM
+			reaudit_history r,
+			audit_log s
+		WHERE r.house_id=s.house_id AND r.house_type=s.house_type
+		and r.audit_id in 
+		<foreach item="item" collection="userList" open="(" separator="," close=")">
+			#{item.id}
+		</foreach>
+		<if test="beginTime != null ">
+		and s.entry_time <![CDATA[>=]]> #{beginTime}
+		</if>
+		<if test="endTime != null ">
+		and s.entry_time <![CDATA[<=]]> #{endTime}
+		</if>
+		GROUP BY
+			r.audit_id
+	</select>
+	<select id="getPhotoBadRateByUsers" parameterType="java.util.List" resultType="com.nuoshi.console.domain.auditHistory.AuditorInfo">
+		SELECT
+			r.audit_id as userId,
+			COUNT(0) as totalBadCount
+		FROM
+			reaudit_history r
+		WHERE 
+		r.photo_id <![CDATA[>]]>0
+		and r.audit_id in 
+		<foreach item="item" collection="userList" open="(" separator="," close=")">
+			#{item.id}
+		</foreach>
+		<if test="beginTime != null ">
+		and r.reaudit_time <![CDATA[>=]]> #{beginTime}
+		</if>
+		<if test="endTime != null ">
+		and r.reaudit_time <![CDATA[<=]]> #{endTime}
+		</if>
+		GROUP BY
+			r.audit_id
+	</select>
+	
+	<select id="getErrorAuditByUser" resultMap="HistoryInfoMap">
+		SELECT rh.id,ah.house_id,ah.house_type,rh.result re_result,sah.audit_result ,sah.reject_reason,sah.audit_time 
+		FROM reaudit_history rh 
+		LEFT JOIN sub_audit_history sah ON rh.sub_history_id = sah.id 
+		LEFT JOIN audit_history ah ON rh.history_id = ah.id
+		WHERE rh.photo_id <![CDATA[<=]]> 0 AND rh.audit_id = #{id} 
+		<if test="beginTime != null and beginTime != '' ">
+			AND sah.audit_time <![CDATA[>=]]> #{beginTime}
+		</if>
+		<if test="endTime != null and endTime != '' ">
+			AND sah.audit_time <![CDATA[<=]]> #{endTime}
+		</if>
+	</select>
+	
+	<select id="getErrorAuditPhotoByUser" resultMap="HistoryInfoMap">
+		SELECT
+		  rh.id,
+		  ah.house_id,
+		  ah.house_type,
+		  rh.result            re_result,
+		  sah.audit_result,
+		  sah.reject_reason,
+		  sah.audit_time
+		FROM reaudit_history rh
+		  LEFT JOIN sub_audit_history sah
+		    ON sah.id = rh.sub_history_id
+		  LEFT JOIN audit_history ah
+		    ON ah.id = rh.history_id
+		WHERE rh.photo_id > 0
+		    AND rh.audit_id = #{id} 
+		<if test="beginTime != null and beginTime != '' ">
+			AND sah.audit_time <![CDATA[>=]]> #{beginTime}
+		</if>
+		<if test="endTime != null and endTime != '' ">
+			AND sah.audit_time <![CDATA[<=]]> #{endTime}
+		</if>
+				
+	</select>
+	
+	<select id="getEveryCountByUsers" parameterType="java.util.List" resultType="com.nuoshi.console.domain.auditHistory.AuditorInfo">
+		SELECT
+			max(s.dealer_id) as userId,
+			<if test="auditStep!=null">
+				<if test="auditStep==4">
+					count(s.dealer_id)	as auditBaseInfoCount
+				</if>
+				<if test="auditStep==3">
+					count(s.dealer_id)	as auditEstatePhotoCount
+				</if>
+				<if test="auditStep==1">
+					count(s.dealer_id)	as auditHouseholdPhotoCount
+				</if>
+				<if test="auditStep==2">
+					count(s.dealer_id)	as auditIndoorPhotoCount
+				</if>
+				<if test="auditStep==5">
+					count(s.dealer_id)	as auditAgentCount
+				</if>
+				<if test="auditStep==6">
+					count(s.dealer_id)	as auditAgentCount
+				</if>
+			</if>
+			<if test="auditStep==null">
+				count(s.dealer_id)	as totalCount
+			</if>
+		FROM
+			sub_audit_history s
+		WHERE s.dealer_id in 
+		<foreach item="item" collection="userList" open="(" separator="," close=")">
+			#{item.id}
+		</foreach>
+		<if test="auditStep!=null">
+		and s.audit_step=#{auditStep}
+		</if>
+		<if test="beginTime != null ">
+		and s.audit_time <![CDATA[>=]]> #{beginTime}
+		</if>
+		<if test="endTime != null ">
+		and s.audit_time <![CDATA[<=]]> #{endTime}
+		</if>
+		GROUP BY
+			s.dealer_id
+	</select>
+	<select id="getEachForHousePhotoNew" parameterType="java.util.List" resultType="com.nuoshi.console.domain.auditHistory.AuditorInfo">
+		SELECT
+			t.auditor as userId
+			<if test="auditStep!=null">
+				<if test="auditStep==4">
+					,sum(t.total_count)	as auditEstatePhotoCount
+				</if>
+				<if test="auditStep==2">
+					,sum(t.total_count)	as auditHouseholdPhotoCount
+				</if>
+				<if test="auditStep==3">
+					,sum(t.total_count) as auditIndoorPhotoCount
+				</if>
+				<if test="auditStep==1">
+					,sum(t.total_count) as auditBaseInfoCount
+				</if>
+			</if>
+		FROM
+			audit_log  t
+		WHERE t.auditor  in 
+		<foreach item="item" collection="userList" open="(" separator="," close=")">
+			#{item.id}
+		</foreach>
+		<if test="beginTime != null ">
+		and t.entry_time <![CDATA[>=]]> #{beginTime}
+		</if>
+		<if test="endTime != null ">
+		and t.entry_time <![CDATA[<=]]> #{endTime}
+		</if>
+		and t.task_type = #{auditStep}
+		GROUP BY
+			t.auditor
+	</select>
+	
+<select id="getEachForHousePhoto" parameterType="java.util.List" resultType="com.nuoshi.console.domain.auditHistory.AuditorInfo">
+		SELECT
+			t.auditor as userId
+			<if test="auditStep!=null">
+				<if test="auditStep==4">
+					,sum(t.total_count)	as auditEstatePhotoCount
+				</if>
+				<if test="auditStep==2">
+					,sum(t.total_count)	as auditHouseholdPhotoCount
+				</if>
+				<if test="auditStep==3">
+					,sum(t.total_count) as auditIndoorPhotoCount
+				</if>
+				<if test="auditStep==1">
+					,sum(t.total_count) as auditBaseInfoCount
+				</if>
+			</if>
+		FROM
+			audit_log  t
+		WHERE t.auditor  in 
+		<foreach item="item" collection="userList" open="(" separator="," close=")">
+			#{item.id}
+		</foreach>
+		<if test="beginTime != null ">
+		and t.entry_time <![CDATA[>=]]> #{beginTime}
+		</if>
+		<if test="endTime != null ">
+		and t.entry_time <![CDATA[<=]]> #{endTime}
+		</if>
+		and t.task_type = #{auditStep}
+		GROUP BY
+			t.auditor
+	</select>
+		
+	<select id="getPhotoInfoHistoryForAgent" parameterType="com.nuoshi.console.domain.auditHistory.HistoryInfo" resultType="com.nuoshi.console.domain.auditHistory.HistoryInfo">
+		SELECT
+			house_describe photoDescribe,reject_reason rejectReason
+		FROM sub_audit_history WHERE id = #{id}
+	</select>
+	
+	<select id="getHistoryInfoBySubId" resultType="com.nuoshi.console.domain.auditHistory.HistoryInfo">
+		SELECT audit_history.house_id houseId,audit_step auditStep 
+		FROM sub_audit_history
+		LEFT JOIN audit_history ON sub_audit_history.audit_id = audit_history.id
+		WHERE sub_audit_history.id = #{parseInt}
+	</select>
+	
+	
+	<select id="getNewPhotoHstryListByPage" resultMap="HistoryInfoMap">
+		SELECT audit_log.id id,task_type auditStep,entry_time auditTime,auditor dealerId,u.user_name dealerName,audit_status auditResult,total_count photoCount,house_type houseType,house_id houseId,agent_id authorId
+		FROM audit_log ,user u where audit_log.auditor = u.id and task_type != 1
+	    ${conditions}
+	    ORDER BY audit_log.id DESC
+	</select>
+	
+	
+	<select id="getSubIdsFromAuditHstryByHouseIdOrAuthor" resultType="java.lang.String">
+		SELECT sub_ids FROM audit_history WHERE ${conditions}
+	</select>
+	
+	<select id="getNewPassedPhotoCount" resultType="java.lang.Integer">
+		SELECT total_count FROM audit_log WHERE 1=1 
+		<if test="auditUserId != null ">
+		and auditor = #{auditUserId}
+		</if>
+		<if test="auditStep != null ">
+		and task_type = #{auditStep}
+		</if>
+		<if test="beginTime != null ">
+		and entry_time <![CDATA[>=]]> #{beginTime}
+		</if>
+		<if test="endTime != null ">
+		and entry_time <![CDATA[<=]]> #{endTime}
+		</if>
+		<if test="houseType != null ">
+		and house_type = #{houseType}
+		</if>
+	</select>
+	
+
+	
+	<select id="getHouseIdsByAuditIds" resultType="com.nuoshi.console.domain.auditHistory.SubAuditHistory">
+		SELECT id, house_id houseId FROM audit_history WHERE id IN
+		<foreach collection="auditIdList" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</select>
+	
+	<select id="getReauditHistoryCountNew" resultType="java.lang.Integer">
+		SELECT COUNT(id) FROM reaudit_history WHERE sub_history_id = #{id} AND photo_id = #{photoId}
+	</select>
+	
+	<select id="getBaseinfoLastAuditLogByHouse" resultType="com.nuoshi.console.domain.auditHistory.HistoryInfo">
+		select house_id houseId,house_type houseType,auditor dealerId from audit_log where house_id=#{houseId} and house_type=#{houseType} and task_type=1 ORDER BY entry_time DESC
+	</select>
+	
+	<select id="getReaudithistoryCount" resultType="int">
+		select count(0) from reaudit_history where house_id=#{sah.houseId} and house_type=#{sah.houseType} and audit_id = #{sah.dealerId} and result=#{auditresult}
+	</select>
+	
+	<select id="getReAuditHistory" resultType="com.nuoshi.console.domain.auditHistory.HistoryInfo">
+		select photo_id photoId,house_id houseId,house_type houseType from reaudit_history where house_id=#{houseId} and house_type=#{houseType} and photo_id !=0
+	</select>
+</mapper>

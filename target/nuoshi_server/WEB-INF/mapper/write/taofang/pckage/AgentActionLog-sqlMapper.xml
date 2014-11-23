@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuoshi.console.persistence.write.taofang.pckage.AgentActionLogWriteMapper">
+    
+   <insert id="addAgentActionLog" useGeneratedKeys="true" keyProperty="id" parameterType="com.nuoshi.console.domain.pckage.AgentActionLog">
+        INSERT INTO agent_action_log (
+            agent_id,
+           	action_type,
+            package_id,
+            house_id,
+            house_category,
+            old_value,
+            new_value,
+            entry_datetime)
+        VALUES (
+            #{agentId},
+            #{actionType},
+            #{packageId},
+            #{houseId},
+            #{houseCategory},
+            #{oldValue},
+            #{newValue},
+            now())
+    </insert>
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.write.wenda.CategoryManageWriteMapper">
+	<insert id="saveCategory" parameterType="com.nuoshi.console.domain.wenda.Category"
+		keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO
+		tf_qa_category(name, pinyin, pid, layer, display_order, questions,
+		keyword, status, close_time, title, describle, pageword)
+		VALUES(#{name},
+		#{pinyin}, #{pid}, #{layer}, #{displayOrder},
+		#{questions},
+		#{keyword}, #{status}, #{closeTime}, #{title},
+		#{describle}, #{pageword})
+	</insert>
+	<update id="updateCateogry" parameterType="com.nuoshi.console.domain.wenda.Category">
+		UPDATE tf_qa_category
+		<set>
+			<if test="name != null">
+				name = #{name},
+      </if>
+			<if test="pinyin != null">
+				pinyin = #{pinyin},
+      </if>
+			<if test="pid != null">
+				pid = #{pid},
+      </if>
+			<if test="layer != null">
+				layer = #{layer},
+      </if>
+			<if test="displayOrder != null">
+				display_order = #{displayOrder},
+      </if>
+			<if test="questions != null">
+				questions = #{questions},
+      </if>
+			<if test="keyword != null">
+				keyword = #{keyword},
+      </if>
+			<if test="status != null">
+				status = #{status},
+      </if>
+			<if test="title != null">
+				title = #{title},
+      </if>
+      	<if test="describle != null">
+				describle = #{describle},
+      </if>
+      	<if test="pageword != null">
+				pageword = #{pageword},
+      </if>
+      			close_time = #{closeTime},
+		</set>
+		WHERE  id = #{id}
+	</update>
+	<update id="updateLocationById" parameterType="String">
+			UPDATE tf_qa_category
+			set location = #{location}
+			where id = #{id}
+	</update>
+	<update id="updateStatusByPid">
+			UPDATE tf_qa_category
+			set status = #{status}
+			where pid = #{pId}
+	</update>
+</mapper>

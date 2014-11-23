@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+	<definition name="statis.wholesite" extends="base.definition">
+		<put-attribute name="title" value="网站数据统计" />
+		<put-attribute name="body" value="/WEB-INF/jsp/statis/wholesite.jsp" />
+	</definition>
+	
+	<definition name="statis.estateHouseCount" extends="base.definition">
+		<put-attribute name="title" value="小区房源数量" />
+		<put-attribute name="body" value="/WEB-INF/jsp/statis/estateStatis.jsp" />
+	</definition>
+
+	<definition name="statis.houseLabelCount" extends="base.definition">
+		<put-attribute name="title" value="标签统计" />
+		<put-attribute name="body" value="/WEB-INF/jsp/statis/houselabelStatis.jsp" />
+	</definition>
+	<definition name="statis.houseQuality" extends="base.definition">
+		<put-attribute name="title" value="房源质量统计" />
+		<put-attribute name="body" value="/WEB-INF/jsp/statis/houseQuality.jsp" />
+	</definition>
+	<definition name="statis.dayWebStatis" extends="base.definition">
+		<put-attribute name="title" value="房源质量统计" />
+		<put-attribute name="body" value="/WEB-INF/jsp/statis/dayWebStatis.jsp" />
+	</definition>
+	<definition name="statis.monthWebStatis" extends="base.definition">
+		<put-attribute name="title" value="房源质量统计" />
+		<put-attribute name="body" value="/WEB-INF/jsp/statis/monthWebStatis.jsp" />
+	</definition>
+</tiles-definitions> 

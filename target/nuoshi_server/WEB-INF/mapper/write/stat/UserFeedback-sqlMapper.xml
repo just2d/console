@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.stat.StatWriteMapper">
+
+	<insert id="addUserFeedback" parameterType="com.nuoshi.console.domain.stat.Feedback" keyProperty="id" useGeneratedKeys="true" >
+		<![CDATA[
+		INSERT INTO user_feedback(city_id,city_name,page_url,answer,feedback,entry_time ) VALUES(#{cityId} ,#{cityName},#{pageUrl},#{answer},#{feedback},now())
+		]]>
+		<selectKey resultType="int" keyProperty="id">
+			select last_insert_id() as id from user_feedback limit 1
+		</selectKey>
+	
+	</insert>
+	
+</mapper>

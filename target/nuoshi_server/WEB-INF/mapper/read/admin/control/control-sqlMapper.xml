@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.read.admin.control.ControlReadMapper">
+	
+	<resultMap id="BlackList" type="com.nuoshi.console.domain.control.BlackList">
+		<result column="id" property="id"/>
+		<result column="login_name" property="loginName"/>
+		<result column="user_type" property="userType"/>
+		<result column="list_type" property="listType"/>
+		<result column="reason" property="reason"/>
+		<result column="comments" property="comments"/>
+		<result column="last_entry_id" property="lastEntryId"/>
+		<result column="last_entry_name" property="lastEntryName"/>
+		<result column="entry_date" property="entryDate"/>
+		<result column="status" property="status"/>
+		<result column="black_user_id" property="blackUserId"/>
+		<result column="black_user_name" property="blackUserName"/>
+		<result column="update_date" property="updateDate"/>
+	</resultMap>
+	
+	<resultMap id="SensitiveWord" type="com.nuoshi.console.domain.control.SensitiveWord">
+		<result column="id" property="id"/>
+		<result column="word_type" property="type"/>
+		<result column="sensitive_word_type" property="sensitiveWordType"/>
+		<result column="illegal_type" property="illegalType"/>
+		<result column="content" property="content"/>
+		<result column="entry_id" property="entryId"/>
+		<result column="madeby" property="madeby"/>
+		<result column="entry_date" property="entryDate"/>
+		<result column="user_type" property="userType"/>
+	</resultMap>
+
+	<select id="getAllBlackListByPage" resultMap="BlackList">
+		SELECT *
+		FROM black_list b 
+		<if test="conditionList != null">
+		WHERE
+			<foreach item="condition" collection="conditionList" separator="AND">
+           		${condition}
+       		</foreach>
+	    </if>
+		ORDER BY entry_date DESC
+	</select>
+	
+	<select id="getBlackCountByLoginName" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM black_list WHERE login_name = #{loginName} and list_type=#{listType} and status=1
+	</select>
+	<select id="getBlackCountByUserId" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM black_list WHERE black_user_id = #{userId} and list_type=#{listType}  and status=1
+	</select>
+	
+	<select id="getAllSensitiveWordByPage" resultMap="SensitiveWord">
+		SELECT *
+		FROM sensitive_word s 
+		<if test="conditionList != null">
+		WHERE
+			<foreach item="condition" collection="conditionList" separator="AND">
+           		${condition}
+       		</foreach>
+	    </if>
+		ORDER BY entry_date DESC
+	</select>
+</mapper>

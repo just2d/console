@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.read.taofang.agent.AgentStoreReadMapper">
+	
+	<cache eviction="LRU" flushInterval="86400000" readOnly="true"/>
+
+	<select id="searchAgentStoreById" parameterType="java.lang.String" resultType="com.nuoshi.console.domain.agent.AgentStore" useCache="false">
+		<![CDATA[
+		SELECT 
+		id,
+		city_id as cityId,
+		dist_id as distId,
+		block_id as blockId,
+		company_id as companyId,
+		name,
+		address,
+		name_pinyin as namePinyin,
+		address_pinyin as addressPinyin,
+		store_type as storeType,
+		source_id as sourceId
+		FROM `agent_store`  where id=#{id} 
+		
+		]]>
+		
+	</select>
+
+	<select id="getStoreAccountNum"  resultType="int" useCache="false" parameterType="com.nuoshi.console.domain.agent.AgentStore">
+		<![CDATA[
+		SELECT count(0) FROM tf_as_account WHERE store_id = #{id} and role=1;
+		]]>
+		
+	</select>
+	
+	<select id="getStoreAccountByName"  resultType="com.nuoshi.console.domain.agent.TfAsAccount">
+		<![CDATA[
+		SELECT * FROM tf_as_account WHERE user_name = #{storeName} ;
+		]]>
+	</select>
+	
+	<select id="getCompanyByStoreId"  resultType="com.nuoshi.console.domain.agent.AgentCompany">
+		<![CDATA[
+		SELECT c.id ,c.NAME FROM agent_company c, agent_store s WHERE c.id = s.company_id AND s.id = #{storeId}
+		]]>
+		
+	</select>
+	
+</mapper>

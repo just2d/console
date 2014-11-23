@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.admin.audit.AuditRejectWriteMapper">
+    <insert id="insertAuditReject">
+    INSERT INTO audit_reject ( log_id, house_id, house_type, agent_id, reject_reason, entry_time ) VALUES ( #{logId}, #{houseId},#{houseType},#{agentId},#{rejectReason},#{entryTime});
+    </insert>
+    
+</mapper>

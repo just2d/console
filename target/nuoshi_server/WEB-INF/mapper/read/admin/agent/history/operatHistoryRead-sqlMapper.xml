@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.read.admin.agent.history.OperatHistoryReadMapper">
+    <resultMap id="OperatResultMap" type="com.nuoshi.console.domain.agent.history.OperatHistory">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="operands_id" property="operandsId" jdbcType="INTEGER"/>
+        <result column="operator_id" property="operatorId" jdbcType="INTEGER"/>
+        <result column="operator_name" property="operatorName" jdbcType="VARCHAR"/>
+        <result column="operational_context" property="operationalContext" jdbcType="VARCHAR"/>
+        <result column="dates" property="dates" jdbcType="TIMESTAMP"/>
+        <result column="operator_type" property="operatorType" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="operat_Column_List">
+		id,operands_id,operator_id,operator_name,operational_context,dates,operator_type 
+	</sql>
+    <select id="selectHistoryByOperandsId" resultMap="OperatResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="operat_Column_List"/>
+        from operat_history
+        where operands_id = #{operandsId}
+        and operator_type=#{type}
+    </select>
+
+</mapper>

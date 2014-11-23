@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuoshi.console.persistence.write.taofang.pckage.AgentPackageWriteMapper">
+    
+   <insert id="addAgentPackage" useGeneratedKeys="true" keyProperty="id" parameterType="com.nuoshi.console.domain.pckage.AgentPackage">
+        INSERT INTO agent_package (
+            package_name,
+            city_id,
+            description,
+            effective_days,
+            house_amount,
+            label_amount,
+            refresh_house_times,
+            entry_id,
+            entry_datetime,
+            price,
+            effective_month,
+            default_value,
+            default_free,
+            order_index,
+            vip_pic_num,
+            status)
+        VALUES (
+            #{packageName},
+            #{cityId},
+            #{description},
+            #{effectiveDays},
+            #{houseAmount},
+            #{labelAmount},
+            #{refreshHouseTimes},
+            #{entryId},
+            now(),
+            #{price},
+            #{effectiveMonth},
+            #{defaultValue},
+            #{defaultFree},
+            #{orderIndex},
+            #{vipPicNum},
+            #{status})
+    </insert>
+    
+    <update id="delPackage">
+    	UPDATE agent_package SET status = 1 WHERE id = #{id}
+    </update>
+    
+    <update id="updateAgentPackage" parameterType="com.nuoshi.console.domain.pckage.AgentPackage">
+    	UPDATE agent_package 
+    	SET 
+    	package_name = #{packageName},
+    	house_amount = #{houseAmount},
+    	refresh_house_times = #{refreshHouseTimes},
+    	label_amount = #{labelAmount},
+    	price = #{price},
+    	default_value = #{defaultValue},
+    	default_free = #{defaultFree},
+    	effective_month = #{effectiveMonth},
+    	effective_days = #{effectiveDays},
+    	order_index = #{orderIndex} ,
+    	vip_pic_num = #{vipPicNum}  
+    	WHERE id = #{id}
+    </update>
+    
+    <update id="changeDefaultPackageDays">
+    	<![CDATA[
+    	UPDATE agent_package SET effective_month = #{month}, effective_days = #{day} WHERE price < 1
+    	]]>
+    </update>
+    
+    <update id="exeDefault">
+    	<![CDATA[
+    	UPDATE agent_purchase ap,t_user tu SET ap.purchase_date = NOW(), ap.active_date = NOW(),
+    	ap.expired_date = DATE_ADD(NOW(), INTERVAL #{month} MONTH) WHERE ap.active_status = 1 AND 
+    	ap.purchase_price < 1 AND ap.expired_date IS NULL AND ap.agent_id = tu.id AND tu.cityid = #{cityId}
+    	]]>
+    </update>
+    
+    <update id="exeDefaultWhole">
+    	<![CDATA[
+    	UPDATE agent_purchase SET purchase_date = NOW(), active_date = NOW(),
+    	expired_date = DATE_ADD(NOW(), INTERVAL #{month} MONTH) WHERE active_status = 1 AND 
+    	purchase_price < 1 AND expired_date IS NULL 
+    	]]>
+    </update>
+    
+    <update id="exeDefaultDelay">
+    	<![CDATA[
+    	UPDATE agent_purchase ap, t_user tu SET ap.expired_date = DATE_ADD(ap.expired_date, INTERVAL #{day} DAY) WHERE ap.active_status = 1 AND 
+        ap.purchase_price < 1 AND ap.expired_date IS NOT NULL AND ap.agent_id = tu.id AND tu.cityid = #{cityId}
+    	]]>
+    </update>
+    
+    <update id="exeDefaultDelayWhole">
+    	<![CDATA[
+    	UPDATE agent_purchase SET expired_date = DATE_ADD(expired_date, INTERVAL #{day} DAY) WHERE active_status = 1 AND 
+        purchase_price < 1 AND expired_date IS NOT NULL 
+    	]]>
+    </update>
+</mapper>

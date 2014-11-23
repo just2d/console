@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.read.stat.HouseQualityReadMapper">
+	<resultMap id="DayHouseQualityResultMap" type="com.nuoshi.console.domain.house.DayHouseQuality">
+		<result column="type" property="type" />
+		<result column="all_option_num" property="allOptionNum" />
+		<result column="four_option_num" property="fourOptionNum" />
+		<result column="has_layout_num" property="hasLayoutNum" />
+		<result column="has_four_inner_num" property="hasFourInnerNum" />
+		<result column="has_two_community" property="hasTwoCommunity" />
+		<result column="has_all_photo" property="hasAllPhoto" />
+		<result column="has_innertype_photo_num" property="hasInnertypePhotoNum" />
+		<result column="has_hd_photo_num" property="hasHdPhotoNum" />
+		<result column="photo_num" property="photoNum" />
+		<result column="house_num" property="houseNum" />
+		<result column="score0_house_num" property="score0HouseNum" />
+		<result column="score1_house_num" property="score1HouseNum" />
+		<result column="score2_house_num" property="score2HouseNum" />
+		<result column="score3_house_num" property="score3HouseNum" />
+		<result column="score4_house_num" property="score4HouseNum" />
+		<result column="entry_date" property="entryDate" />
+	</resultMap>
+
+	<sql id="DayHouseQuality_Column_List">
+		type,
+		all_option_num,
+		four_option_num,
+		has_layout_num,
+		has_four_inner_num,
+		has_two_community,
+		has_all_photo,
+		has_innertype_photo_num,
+		has_hd_photo_num,
+		photo_num,
+		house_num,
+		score0_house_num,
+		score1_house_num,
+		score2_house_num,
+		score3_house_num,
+		score4_house_num,
+		entry_date
+	</sql>
+
+	
+
+	<select id="getByDate" resultMap="DayHouseQualityResultMap" parameterType="java.lang.Long">
+		select
+			<include refid="DayHouseQuality_Column_List" />
+			from day_house_quality
+		where entry_date = #{date}
+	</select>
+
+	
+</mapper>

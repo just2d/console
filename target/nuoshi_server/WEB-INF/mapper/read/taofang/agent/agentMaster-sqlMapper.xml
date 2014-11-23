@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.agent.AgentMasterReadMapper">
+	 <sql id="select_agent_master">
+        SELECT 
+        am.agent_id,
+        am.idcard_num,
+        am.status,
+        am.company,
+        am.company_id,
+        am.store,
+        am.store_id,
+        am.msg_idcard,
+        am.msg_head,
+        am.msg_namecard,
+        am.admin_id,
+        am.400_number,
+        am.400_userid,
+        am.reg_step,
+        am.credit,
+        am.last_update_date,
+        am.verify_status,
+        city_id,
+        dist_id,
+        block_id,
+        u.name,
+        u.user_name userName,
+        u.mobile    
+        FROM agent_master am LEFT JOIN t_user u ON am.agent_id = u.id  
+    </sql>
+    
+    <resultMap id="agentMasterMap" type="com.nuoshi.console.domain.agent.AgentMaster">
+        <id property="agentId" column="agent_id"/>
+        <result property="idcardNumber" column="idcard_num"/>
+        <result property="status" column="status"/>
+        <result property="company" column="company"/>
+        <result property="companyId" column="company_id"/>
+        <result property="store" column="store"/>
+        <result property="storeId" column="store_id"/>
+        <result property="msgIdcard" column="msg_idcard"/>
+        <result property="msgHead" column="msg_head"/>
+        <result property="msgNamecard" column="msg_namecard"/>
+        <result property="adminId" column="admin_id"/>
+        <result property="v400Number" column="400_number"/>
+        <result property="v400UserId" column="400_userid"/>
+        <result property="regStep" column="reg_step"/>
+        <result property="credit" column="credit"/>
+        
+        <result property="cityId" column="city_id"/>
+        <result property="distId" column="dist_id"/>
+        <result property="blockId" column="block_id"/>
+        <result property="lastUpdateDate" column="last_update_date"/>
+        <result property="name" column="name"/>
+        <result property="mobile" column="mobile"/>
+        <result property="verifyStatus" column="verify_status"/>
+    </resultMap>
+    
+    <select id="selectAgentMasterById" parameterType="int" resultType="com.nuoshi.console.domain.agent.AgentMaster">
+		SELECT
+			am.agent_id agentId,
+			am.idcard_num idcardNumber,
+			am.status status,
+			am.company company,
+			am.company_id companyId,
+			am.store store,
+			am.store_id storeId,
+			am.credit credit,
+			am.400_number v400Number,
+			am.400_userid v400UserId,
+			am.dist_id distId,
+			am.block_id blockId,
+			am.msg_idcard  msgIdcard,
+			am.msg_namecard msgNamecard,
+			am.msg_head  msgHead,
+			am.package_id packageId,
+			am.mobile_check_status mobileCheckStatus,
+			am.ban_flag banFlag,
+			am.house_num houseNum,
+			am.label_num labelNum,
+			am.available_house_num availableHouseNum,
+			am.available_label_num availableLabelNum, 
+			am.pay_status payStatus,
+			am.tip_type tipType,
+			am.verify_status verifyStatus,
+			u.id id,
+			u.user_name userName,
+			u.nick_name nickName,
+			u.name name,
+			u.role role,
+			u.NAME NAME,
+			u.sex sex,
+			u.email email,
+			u.mobile mobile,
+			u.cityid cityId,
+			u.ONLINE ONLINE,
+			u.reg_ip regIp,
+			u.open_id openId,
+			u.reg_source regSource,
+			u.headtiny headtiny,
+			u.headbrowse headbrowse,
+			u.create_time createTime,
+			u.update_time updateTime,
+			u.login_count loginCount,
+			u.password password,
+			us.msginnew msgInCount 
+		FROM
+			agent_master am
+		LEFT JOIN t_user u ON u.id = am.agent_id LEFT JOIN user_stats us ON am.agent_id = us.id 
+		WHERE
+			am.agent_id = #{agentId}
+	
+    </select>
+    <select id="selectAgentMasterForAudit" parameterType="int" resultType="com.nuoshi.console.domain.agent.AgentMaster">
+		SELECT
+			am.agent_id agentId,
+			am.idcard_num idcardNumber,
+			am.status status,
+			am.company company,
+			am.company_id companyId,
+			am.store store,
+			am.store_id storeId,
+			am.credit credit,
+			am.400_number v400Number,
+			am.400_userid v400UserId,
+			am.dist_id distId,
+			am.block_id blockId,
+			am.msg_idcard  msgIdcard,
+			am.msg_namecard msgNamecard,
+			am.msg_head  msgHead,
+			am.package_id packageId,
+			am.house_num houseNum,
+			am.label_num labelNum,
+			am.available_house_num availableHouseNum,
+			am.available_label_num availableLabelNum,
+			am.verify_status verifyStatus,
+			u.id id,
+			u.user_name userName,
+			u.nick_name nickName,
+			u.name name,
+			u.role role,
+			u.NAME NAME,
+			u.sex sex,
+			u.email email,
+			u.mobile mobile,
+			u.cityid cityId,
+			u.ONLINE ONLINE,
+			u.reg_ip regIp,
+			u.open_id openId,
+			u.reg_source regSource,
+			u.headtiny headtiny,
+			u.headbrowse headbrowse,
+			u.create_time createTime,
+			u.update_time updateTime,
+			u.login_count loginCount,
+			u.password password
+		FROM
+			agent_master am 
+		LEFT JOIN t_user u ON u.id = am.agent_id
+		WHERE
+			am.agent_id in  
+		<foreach item="item" collection="idList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+	
+    </select>
+    
+    <select id="getAllAgentMasterByPage" resultMap="agentMasterMap">
+    	<include refid="select_agent_master"/>
+    	WHERE am.status in('221','231','321','331','121','131','211','311') and mobile_check_status = 2 ORDER BY am.last_update_date DESC
+    </select>
+    
+    <select id="getAllAgentMaster2ByPage" resultMap="agentMasterMap">
+    	<include refid="select_agent_master"/>
+    	WHERE 
+    	<if test="conditions != null">
+			<foreach item="condition" collection="conditions" separator="AND">
+           		${condition}
+       		</foreach>
+	    </if>
+    	ORDER BY am.last_update_date DESC
+    </select>
+    
+    <select id="getAgentMasterByConditions" resultMap="agentMasterMap">
+    	SELECT
+		u.id agentId ,
+        am.idcard_num,
+        am.status,
+        am.company,
+        am.company_id,
+        am.store,
+        am.store_id,
+        am.msg_idcard,
+        am.msg_head,
+        am.msg_namecard,
+        am.admin_id,
+        am.400_number,
+        am.400_userid,
+        am.reg_step,
+        am.credit,
+        am.last_update_date,
+        am.verify_status,
+        city_id,
+        dist_id,
+        block_id,
+        u.name,
+        u.user_name userName,
+        u.mobile,
+        u.role
+		FROM t_user u LEFT JOIN
+			agent_master am
+		on u.id = am.agent_id
+		WHERE
+    	<if test="conditions != null">
+			<foreach item="condition" collection="conditions" separator="AND">
+           		${condition}
+       		</foreach>
+	    </if>
+    </select>
+    
+    <select id="selectBrokerById" resultType="com.nuoshi.console.domain.agent.Broker" parameterType="int">
+    	SELECT id,province,city,brand,address,team,block,district,areaid,brandid,flags FROM broker WHERE id = #{id}
+    </select>
+    
+    <select id="selectUsedHouseNum" resultType="int">
+    	SELECT house_num - available_house_num FROM agent_master WHERE agent_id = #{agentId}
+    </select>
+    
+    <select id="selectUsedLabelNum" resultType="int">
+    	SELECT label_num - available_label_num FROM agent_master WHERE agent_id = #{agentId}
+    </select>
+    
+    <select id="getAgentByIds" resultType="com.nuoshi.console.domain.agent.AgentMaster">
+    	SELECT agent_id agentId, idcard_num idcardNumber,company,store,msg_idcard msgIdcard,msg_head msgHead,msg_namecard msgNamecard,img_head_id imgHeadId,
+    		t_user.name name,t_user.mobile mobile,t_user.cityid cityId
+    	FROM agent_master 
+    	LEFT JOIN t_user ON agent_master.agent_id = t_user.id
+    	WHERE agent_id IN
+    	<foreach collection="integers" item="item" open="(" separator="," close=")">
+    		#{item}
+    	</foreach>
+    </select>
+    
+    <select id="getPhotoCountForHeadImg" resultType="java.lang.Integer">
+    	SELECT COUNT(*) FROM identity_photo WHERE id = #{imgHeadId} AND owner = #{agentId}
+    </select>
+    
+    <select id="getAgentHeadFromPhoto" resultType="java.lang.String">
+    	SELECT l FROM photo WHERE id = #{imgHeadId}
+    </select>
+
+<select id="getVerifyMobileAgentByPage" resultType="com.nuoshi.console.domain.agent.AgentMaster">
+		SELECT agent_master.agent_id agentId,city_id cityId,submit_mobile_date submitMobileDate,t_user.name,t_user.mobile,agent_master.status 
+		FROM agent_master 
+		LEFT JOIN t_user ON agent_master.agent_id = t_user.id
+		WHERE mobile_check_status = 1
+			${conditions}
+		ORDER BY t_user.create_time
+	</select>
+
+	<select id="selAgentPackageById" parameterType="int" resultType="com.nuoshi.console.domain.pckage.AgentPackage">
+		SELECT
+		id id,
+		package_name packageName,
+		description description,
+		effective_days effectiveDays,
+		house_amount houseAmount,
+		label_amount labelAmount,
+		refresh_house_times refreshHouseTimes,
+		entry_id entryId,
+		entry_datetime entryDateTime,
+		price price,
+		effective_month effectiveMonth,
+		default_value defaultValue,
+		city_id cityId,
+		status status
+		FROM agent_package WHERE id = #{id}
+	</select>
+	
+	<select id="ifVerifiedPhone" resultType="java.lang.Integer">
+		SELECT COUNT(agent_id) FROM agent_master WHERE mobile_check_status = 1 AND agent_id = #{agentId}
+	</select>
+	
+	<select id="getAgentIdForAudit" resultType="java.lang.Integer">
+		select t.agent_id from agent_master t
+    	WHERE t.status in
+    	<foreach item="item" collection="auditStatus" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    	and t.mobile_check_status = 2
+		and  t.audit_sign is null 
+		<if test="cityId!=-1">
+			<if test="cityId!=null">
+				and t.city_id=#{cityId}
+			</if>
+		</if>
+		ORDER BY t.last_update_date DESC
+		LIMIT #{num}
+	</select>
+	
+	<select id="getAgentInfoCity" resultType="com.nuoshi.console.domain.agent.AgentMaster">
+		select t.agent_id as agentId,t.city_id as cityId from agent_master t 
+		where t.agent_id in
+		<foreach item="item" collection="idList" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	
+	<select id="getInconformityAgentIds" resultType="java.lang.Integer">
+		select t.agent_id from agent_master t  
+		WHERE t.agent_id in
+		<foreach item="item1" collection="agentIdList" open="(" separator="," close=")" >
+            #{item1}
+        </foreach>
+		and (t.status not in
+    	<foreach item="item" collection="auditStatus" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+        <![CDATA[
+    	or t.mobile_check_status != 2)
+         ]]>
+	</select>
+	
+	<select id="getMobileById" resultType="java.lang.String">
+		SELECT mobile FROM t_user WHERE id=#{agentId}
+	</select>
+	<select id="getHistoryInfo" resultType="com.nuoshi.console.domain.auditHistory.AuditHistory">
+		SELECT id as houseId, #{auditType} as houseType, id as authorId, name as authorName
+		FROM t_user
+		WHERE id IN
+		<foreach item="item" collection="idList" open="(" separator="," close=")" >
+            #{item}
+        </foreach> 
+	</select>
+	
+	
+	<select id="getUnclaimedAwaitAuditCount" resultType="java.lang.Integer">
+		select count(0) from agent_master t 
+		WHERE t.status in
+    	<foreach item="item" collection="auditStatus" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    	and t.mobile_check_status = 2
+		and  t.audit_sign is null  
+	</select>
+
+	<select id="selectAgentMasterByMobile" resultType="com.nuoshi.console.domain.agent.AgentMaster">
+		select id,name,mobile from t_user where mobile=#{mobile}
+	</select>
+	
+	<select id="selectAgentsByCompanyId" resultType="java.lang.Integer">
+		select agent_id from agent_master where company_id=#{companyId}
+	</select>
+</mapper>

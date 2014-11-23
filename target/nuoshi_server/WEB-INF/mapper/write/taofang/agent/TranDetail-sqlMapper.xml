@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.taofang.agent.TranDetailWriteMapper">
+	<insert id="addTranDetail" parameterType="com.nuoshi.console.domain.agent.TranDetail">
+		
+	INSERT INTO tran_detail 
+		(agent_id, 
+		agent_username, 
+		city_id, 
+		order_no, 
+		order_type, 
+		consume_type, 
+		amount, 
+		balance, 
+		insert_time,
+		saler_id
+		)
+	VALUES
+		(#{agentId}, 
+		#{agentUserName}, 
+		#{cityId}, 
+		#{orderNo}, 
+		#{orderType}, 
+		#{consumeType}, 
+		#{amount}, 
+		#{balance}, 
+		now(),
+		#{salerId}
+		);
+	</insert>
+</mapper>

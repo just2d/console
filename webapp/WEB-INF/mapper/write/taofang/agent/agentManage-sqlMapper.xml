@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.write.taofang.agent.AgentManageWriteMapper">
+
+	<delete id="deleteAgentRent">
+		<![CDATA[
+		DELETE FROM rent WHERE authorid = #{id}
+		]]>
+	</delete>
+
+	<delete id="deleteAgentResale">
+		<![CDATA[
+		DELETE FROM resale WHERE authorid = #{id}
+		]]>
+	</delete>
+
+	<delete id="deleteUserStatus">
+		<![CDATA[
+		DELETE FROM user_stats WHERE id = #{id}
+		]]>
+	</delete>
+
+	<delete id="deleteUser">
+		<![CDATA[
+		DELETE FROM t_user WHERE id = #{id}
+		]]>
+	</delete>
+
+
+	
+	<delete id="deleteAgentMaster">
+		<![CDATA[
+		DELETE FROM agent_master WHERE agent_id = #{id}
+		]]>
+	</delete>
+	
+	<update id="resetAgentMaster">
+		<![CDATA[
+		UPDATE agent_master SET status = '221' WHERE agent_id = #{id}
+		]]>
+	</update>
+
+	<update id="updateAgent">
+		<![CDATA[
+		UPDATE t_user SET cityid = #{cityid} WHERE id = #{id}
+		]]>
+	</update>
+	<update id="updateAgentMaster">
+		<![CDATA[
+		UPDATE agent_master SET city_id = #{cityid},dist_id = #{distid},block_id = #{blockid} 
+		WHERE agent_id = #{id}
+		]]>
+	</update>
+	
+	<update id="disbound400Phone">
+    	UPDATE agent_master SET 400_number = null, 400_userid = 0 WHERE agent_id = #{agentId}
+    </update>
+</mapper>

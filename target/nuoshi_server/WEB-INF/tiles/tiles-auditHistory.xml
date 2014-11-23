@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+	<!-- 所有人审核记录 -->
+	<definition name="ah.list" extends="base.definition">
+		<put-attribute name="title" value="审核记录列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/auditHistory/ah_list.jsp" />
+	</definition>
+
+	<!-- 个人审核记录 -->
+	<definition name="ah.list.per" extends="base.definition">
+		<put-attribute name="title" value="个人审核记录列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/auditHistory/ah_list_per.jsp" />
+	</definition>
+
+	<!-- 个人审核记录 -->
+	<definition name="ah.photos.popup" extends="base.definition">
+		<put-attribute name="title" value="个人审核记录列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/auditHistory/ah_photos_popup.jsp" />
+	</definition>
+
+	<!-- 图片审核记录 -->
+	<definition name="ah.list.photos" extends="base.definition">
+		<put-attribute name="title" value="图片审核记录列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/auditHistory/ah_list_photos.jsp" />
+	</definition>
+
+	<!-- 个人审核记录(别人视角) -->
+	<definition name="ah.list.per.other.view" extends="base.definition">
+		<put-attribute name="title" value="个人审核记录列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/auditHistory/ah_list_per_other_view.jsp" />
+	</definition>
+	
+	<!-- 统计信息 -->
+	<definition name="ah.statist" extends="base.definition">
+		<put-attribute name="title" value="审核统计信息" />
+		<put-attribute name="body" value="/WEB-INF/jsp/auditHistory/ah_statist.jsp" />
+	</definition>
+	
+	<!-- 错误审核人员 -->
+	<definition name="ah.error.statist" extends="base.definition">
+		<put-attribute name="title" value="审核人错误统计信息" />
+		<put-attribute name="body" value="/WEB-INF/jsp/auditHistory/ah_error_statist.jsp" />
+	</definition>
+	
+</tiles-definitions> 

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.nuoshi.console.persistence.write.taofang.estate.EstateWriteMapper">
+	<delete id="deleteById" parameterType="int">
+		delete from estate where
+		id = #{estateId}
+	</delete>
+
+	<sql id="updateInfo">
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="address != null">addr = #{address},</if>
+			<if test="estateName != null">name = #{estateName},</if>
+			<if test="blockId != 0">blockid = #{blockId},</if>
+			<if test="cityId !=0">cityid = #{cityId},</if>
+			<if test="distId != 0">distid = #{distId},</if>
+			<if test="lon != null">baidu_lon = #{lon},</if>
+			<if test="lat !=null">baidu_lat = #{lat},</if>
+			<if test="wyType != null">wyType = #{wyType},</if>
+			<if test="authStatus != null">auth_Status = #{authStatus},</if>
+			<!-- <if test="basicInfo != null">basic_info = #{basicInfo},</if> -->
+			
+			<if test="wyCompany != null">wy_com = #{wyCompany},</if>
+			<if test="wyFee != null">wy_fee = #{wyFee},</if>
+			<if test="devCompany != null">dev_com = #{devCompany},</if>
+			<if test="buildYear != null">build_year = #{buildYear},</if>
+			<if test="buildArea != null">build_area = #{buildArea},</if>
+			<if test="area != null">area = #{area},</if>
+			<if test="carInfo != null">carinfo = #{carInfo},</if>
+			<if test="university != null">university = #{university},</if>
+			<if test="school != null">school = #{school},</if>
+			<if test="market != null">market = #{market},</if>
+			<if test="nursery != null">nursery = #{nursery},</if>
+			<if test="hospital != null">hospital = #{hospital},</if>
+			<if test="postOffice != null">post_office = #{postOffice},</if>
+			<if test="bank != null">bank = #{bank},</if>
+			<if test="floor != null">floor = #{floor},</if>
+			<if test="bus != null">bus = #{bus},</if>
+			<if test="subWay != null">subway = #{subWay},</if>
+			<if test="otherInfo != null">other_info = #{otherInfo},</if>
+			<if test="alias != null">alias=#{alias},</if>
+			<if test ="namepy != null">namepy=#{namepy},</if>
+			<if test ="pinYin != null">pinyin=#{pinYin},</if>
+			<if test="desc != null">remark=#{desc},</if>
+			greenRate = #{greenRate},
+			areaRate = #{areaRate}
+		</trim>
+	</sql>
+	<update id="updateById" parameterType="com.nuoshi.console.domain.topic.Estate">
+		update estate 
+		<include refid="updateInfo" />
+		where 1= 1 and id = #{estateId}
+	</update>
+	
+	<update id="updateAuthStatus">
+		update estate
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="origStatus !=null">orig_status = #{origStatus},</if>
+			auth_Status = #{authStatus},rt_url=""
+		</trim> 
+		where id = #{estateId}
+	</update>
+	
+	<update id="updateAuthWStatus">
+		update estate
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="origStatus !=null">orig_status = #{origStatus},</if>
+			auth_Status = #{authStatus}
+		</trim> 
+		where id = #{estateId}
+	</update>
+	
+	<update id="updateAuthStatusAndNum" parameterType="map">
+		update estate
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="rentNum !=null">rent_num = #{rentNum},</if>
+			<if test="resaleNum !=null">resale_num = #{resaleNum},</if>
+			auth_Status = #{authStatus},orig_status = #{origStatus},rt_url=#{rt_url}
+		</trim> 
+		where id = #{estateId}
+	</update>
+	<insert id="insertEstate" useGeneratedKeys="true" keyProperty="id" >
+	insert into estate (addr,name,cityid,distid,blockid,namepy,alias,fromhouse,baidu_lon,baidu_lat,
+	wy_com,wy_fee,dev_com,build_year,build_area,area,carinfo,university,school,market,nursery,hospital,
+	post_office,bank,floor,bus,subway,other_info,
+	
+	wyType,greenRate,areaRate,auth_Status,remark,rent_num,resale_num,pinyin) 
+		values
+	(#{address},#{estateName},#{cityId},#{distId},#{blockId},#{namepy},#{alias},#{fromHouse},#{lon},#{lat},
+	#{wyCompany},#{wyFee},#{devCompany},#{buildYear},#{buildArea},#{area},#{carInfo},#{university},#{school},
+	#{market},#{nursery},#{hospital},#{postOffice},#{bank},#{floor},#{bus},#{subWay},#{otherInfo},
+	#{wyType},#{greenRate},#{areaRate},#{authStatus},#{desc},#{rentNum},#{resaleNum},#{pinYin})
+	</insert>
+	
+	<update id="updateBacupAndLayoutNum">
+		<![CDATA[
+		UPDATE estate e, ( SELECT count(0) AS total FROM photo_resale WHERE category >= 1 AND category <= 99 AND reserve_flag = 'Y' AND estate_id = #{estateId}  ) l1, ( SELECT count(0) AS total FROM photo_resale WHERE category >= 200 AND reserve_flag = 'Y' AND estate_id = #{estateId} ) l2, ( SELECT count(0) AS total FROM photo_estate WHERE category < 200 AND estate_id =#{estateId}  ) l3, ( SELECT count(0) AS total FROM photo_estate WHERE category = 200 AND estate_id = #{estateId}  ) l4 SET e.layout_photo_cnt = l1.total, e.comm_photo_cnt = l2.total, e.layoutcnt = l3.total, e.photocnt = l4.total WHERE e.id = #{estateId}
+		]]>	
+	</update>
+	<update id="updateResaleAndRentCount" >
+		update estate set resale_num =resale_num+ #{resale_num},rent_num = #{rent_num} where id = #{estateId}
+	</update>
+	<update id="setDefaultPhoto">
+		update estate set photo_estate_id = #{photoId} where id = #{estateId}
+	</update>
+</mapper> 

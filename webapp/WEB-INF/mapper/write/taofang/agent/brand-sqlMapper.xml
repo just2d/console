@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.write.taofang.agent.BrandWriteMapper">
+	
+	<cache eviction="LRU" flushInterval="86400000" readOnly="true"/>
+
+	<delete id="deleteBrand" parameterType="java.lang.String">
+		<![CDATA[
+		DELETE FROM brand WHERE id = #{id}
+		]]>
+	</delete>
+
+	<update id="updateBrand" parameterType="com.nuoshi.console.domain.agent.Brand">
+		UPDATE brand t 
+		<set>
+			<if test="name !=null">
+			t.`name`=#{name} ,
+			</if>
+			<if test="logo !=null">
+			t.logo=#{logo},
+			</if>
+			<if test="brokercnt !=null">
+			t.brokercnt=#{brokercnt},
+			</if>
+			<if test="cts !=null">
+			t.cts=#{cts} ,
+			</if>
+			<if test="type !=null">
+			t.type=#{type}, 
+			</if>
+			<if test="city !=0">
+			t.city=#{city}, 
+			</if>
+			<if test="flag !=null">
+			t.flag=#{flag} 
+			</if>
+		</set>
+		
+		WHERE t.id = #{id}
+	</update>
+	
+	<insert id="addBrand" parameterType="com.nuoshi.console.domain.agent.Brand" keyProperty="id" useGeneratedKeys="true" >
+		<![CDATA[
+		INSERT INTO brand(name,logo,brokercnt,cts,type,city,flag ) VALUES(#{name} ,#{logo},#{brokercnt},#{cts},#{type},#{city},#{flag})
+		]]>
+		<selectKey resultType="int" keyProperty="id">
+			select last_insert_id() as id from brand limit 1
+		</selectKey>
+	
+	</insert>
+	
+	
+</mapper>

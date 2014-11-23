@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.audit.AuditAgentListReadMapper">
+	<resultMap id="AuditAgentListMap"
+		type="com.nuoshi.console.domain.audit.AuditAgentList">
+		<id column="agent_id" property="agentId"   />
+		<result column="name" property="name"   />
+		<result column="city_id" property="cityId"   />
+		<result column="mobile" property="mobile"   />
+		<result column="audit_rule" property="auditRule"   />
+	</resultMap>	
+	<select id="getPhotoNameListByPage"  resultMap="AuditAgentListMap">
+		select am.agent_id,t.name,am.city_id,t.mobile,am.audit_rule  from agent_master am left join t_user t on t.id = am.agent_id where am.audit_rule= #{type}
+		<if test="agentId!=0">
+		AND am.agent_id=#{agentId}
+		</if>
+		<if test="cityId!=0">
+		AND am.city_id=#{cityId}
+		</if>
+	</select>
+</mapper>

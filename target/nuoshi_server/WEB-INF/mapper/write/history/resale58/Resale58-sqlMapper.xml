@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.history.resale58.HistoryResale58WriteMapper">
+
+
+   <insert id="intoHistory">
+   INSERT INTO `u_resale`(`id`, `estateid`, `price`, `area`, `decoration`, `faceto`, `floor`, `completion`, `rented`, `pubdate`, `authorname`, `authorphone`, 
+                                      `title`, `flattype`, `beds`, `baths`, `livings`, `totalfloor`, `pright`, `appointment`, `style`, `type`, `sourceid`, `cityid`, `distid`, `blockid`, `estatename`,`partnerid`)
+                   values( #{id}, #{estateid}, #{price}, #{area}, #{decoration}, #{faceto}, #{floor}, #{completion}, #{rented}, #{pubdate}, #{authorname}, #{authorphone}, #{title}, #{flattype}, #{beds}, #{baths}, #{livings}, #{totalfloor}, #{pright},
+                              #{appointment}, #{style}, #{type}, #{sourceid}, #{cityid}, #{distid}, #{blockid}, #{estatename}, #{partnerid})
+   
+     </insert>
+</mapper>

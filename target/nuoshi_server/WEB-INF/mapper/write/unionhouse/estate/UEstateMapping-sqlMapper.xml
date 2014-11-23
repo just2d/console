@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.write.unionhouse.estate.UEstateMappingWriteMapper">
+	
+	<insert id="add" parameterType="com.nuoshi.console.domain.estate.UEstateMapping" useGeneratedKeys="true" keyProperty="id">
+		insert into u_estate_mapping (
+			estate_id,
+			estate_dist_id,
+			estate_block_id,
+			u_estate_id,
+			source_id,
+			create_time,
+			last_update_time,
+			last_update_user_id,
+			estate_name
+		)
+		values (
+			#{estateId},
+			#{estateDistId},
+			#{estateBlockId},
+			#{uEstateId},
+			#{sourceId},
+			now(),
+			now(),
+			#{lastUpdateUserId},
+			#{estateName}
+		)
+	</insert>
+
+	<delete id="deleteById" parameterType="int">
+		delete from u_estate_mapping where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="com.nuoshi.console.domain.estate.UEstateMapping">
+		update u_estate_mapping
+			<set>
+				<if test="estateId != null">
+					estate_id = #{estateId},
+				</if>
+				<if test="estateDistId != null">
+					estate_dist_id = #{estateDistId},
+				</if>
+				<if test="estateBlockId != null">
+					estate_block_id = #{estateBlockId},
+				</if>
+				<if test="uEstateId != null">
+					u_estate_id = #{uEstateId},
+				</if>
+				<if test="sourceId != null">
+					source_id = #{sourceId},
+				</if>
+				<if test="createTime != null">
+					create_time = #{createTime},
+				</if>
+				<if test="lastUpdateUserId != null">
+					last_update_user_id = #{lastUpdateUserId},
+				</if>
+				<if test="estateName != null ">
+					estate_name = #{estateName }
+				</if>
+			</set>
+		where id = #{id}
+	</update>
+</mapper>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuoshi.console.persistence.read.crm.SalerReadMapper">
+
+	
+	<select id="getSalersCache" useCache="false" resultType="com.nuoshi.console.domain.crm.Saler">
+		select u.id id ,u.chn_name chnName from user u
+	</select>
+
+</mapper>

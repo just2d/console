@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+    <definition name="agentVerify.list" extends="base.definition">
+        <put-attribute name="title" value="待审核经纪人列表"/>
+        <put-attribute name="body" value="/WEB-INF/jsp/agent/list.jsp"/>
+    </definition>
+
+    <definition name="agentVerify.rejectReason" extends="base.definition">
+        <put-attribute name="title" value="拒绝理由列表"/>
+        <put-attribute name="body" value="/WEB-INF/jsp/agent/rejectReasonList.jsp"/>
+    </definition>
+
+    <definition name="agentVerify.photoList" extends="base.definition">
+        <put-attribute name="title" value="经纪人图片审核"/>
+        <put-attribute name="body" value="/WEB-INF/jsp/agent/photo_list.jsp"/>
+    </definition>
+
+    <definition name="agentVerify.verifyMobile" extends="base.definition">
+        <put-attribute name="title" value="后台手机号码审核"/>
+        <put-attribute name="body" value="/WEB-INF/jsp/agent/mobile_verify.jsp"/>
+    </definition>
+
+    <definition name="agentVerify.verifyMobileHistoryList" extends="base.definition">
+        <put-attribute name="title" value="后台手机号码审核记录"/>
+        <put-attribute name="body" value="/WEB-INF/jsp/agent/mobile_verify_history.jsp"/>
+    </definition>
+
+</tiles-definitions> 

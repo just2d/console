@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.nuoshi.console.persistence.read.taofang.estate.EstateReadMapper">
+	<resultMap type="com.nuoshi.console.domain.topic.Estate" id="estateMap">
+		<result column="id" property="estateId" javaType="int" />
+		<result column="addr" property="address" javaType="String" />
+		<!-- <result column="basic_info" property="basicInfo" javaType="String" /> -->
+		<result column="wy_com" property="wyCompany" javaType="String" />
+		<result column="wy_fee" property="wyFee" javaType="String" />
+		<result column="dev_com" property="devCompany" javaType="String" />
+		<result column="build_year" property="buildYear" javaType="String" />
+		<result column="build_area" property="buildArea" javaType="String" />
+		<result column="area" property="area" javaType="String" />
+		<result column="carinfo" property="carInfo" javaType="String" />
+		<result column="university" property="university" javaType="String" />
+		<result column="school" property="school" javaType="String" />
+		<result column="market" property="market" javaType="String" />
+		<result column="nursery" property="nursery" javaType="String" />
+		<result column="hospital" property="hospital" javaType="String" />
+		<result column="post_office" property="postOffice" javaType="String" />
+		<result column="bank" property="bank" javaType="String" />
+		<result column="floor" property="floor" javaType="String" />
+		<result column="bus" property="bus" javaType="String" />
+		<result column="subway" property="subWay" javaType="String" />
+		<result column="other_info" property="otherInfo" javaType="String" />
+		
+		<result column="rt_url" property="rtUrl" javaType="String" />
+		
+		
+		<result column="name" property="estateName" javaType="String" />
+		<result column="cityid" property="cityId" javaType="int" />
+		<result column="distid" property="distId" javaType="int" />
+		<result column="blockid" property="blockId" javaType="int" />
+		<result column="photoid" property="photoId" javaType="int"/>
+	</resultMap>
+	<resultMap type="com.nuoshi.console.view.EstatePhotoCondition" id="condition">
+		<result column="id" property="estateId" javaType="int" />
+		<result column="name" property="estateName" javaType="String"/>
+		<result column="cityid" property="cityId" javaType="int" />
+		<result column="distid" property="distId" javaType="int" />
+		<result column="blockid" property="blockId" javaType="int" />
+	</resultMap>
+	<resultMap type="com.nuoshi.console.domain.estate.EstateData"
+		id="estateDataMap" extends="condition">
+		<result column="addr" property="address" javaType="String" />
+		<!-- <result column="basic_info" property="basicInfo" javaType="String" /> -->
+		
+		
+		<result column="wy_com" property="wyCompany" javaType="String" />
+		<result column="wy_fee" property="wyFee" javaType="String" />
+		<result column="dev_com" property="devCompany" javaType="String" />
+		<result column="build_year" property="buildYear" javaType="String" />
+		<result column="build_area" property="buildArea" javaType="String" />
+		<result column="area" property="area" javaType="String" />
+		<result column="carinfo" property="carInfo" javaType="String" />
+		<result column="university" property="university" javaType="String" />
+		<result column="school" property="school" javaType="String" />
+		<result column="market" property="market" javaType="String" />
+		<result column="nursery" property="nursery" javaType="String" />
+		<result column="hospital" property="hospital" javaType="String" />
+		<result column="post_office" property="postOffice" javaType="String" />
+		<result column="bank" property="bank" javaType="String" />
+		<result column="floor" property="floor" javaType="String" />
+		<result column="bus" property="bus" javaType="String" />
+		<result column="subway" property="subWay" javaType="String" />
+		<result column="other_info" property="otherInfo" javaType="String" />
+		
+		
+		<result column="name" property="estateName" javaType="String" />
+		<result column="baidu_lon" property="lon" javaType="float" />
+		<result column="baidu_lat" property="lat" javaType="float" />
+		<result column="photocnt" property="photocnt" javaType="int" />
+		<result column="layoutcnt" property="layoutcnt" javaType="int" />
+		<result column="namepy" property="namepy" javaType="String" />
+		<result column="alias" property="alias" javaType="String" />
+		<result column="auth_Status" property="authStatus" javaType="String" />
+		<result column="DEL_STATUS" property="delStatus" javaType="String" />
+		<result column="greenRate" property="greenRate" javaType="String" />
+		<result column="areaRate" property="areaRate" javaType="String" />
+		<result column="wyType" property="wyType" javaType="String" />
+		<result column="alias" property="alias" javaType="String" />
+		<result column="namepy" property="namepy" javaType="String" />
+		<result column="remark" property="desc" javaType="String" />
+		<result column="resale_num" property="resaleCount" javaType="int" />
+		<result column="rent_num" property="rentCount" javaType="int" />
+		<result column="orig_status" property="origStatus" javaType="String" />
+		<result column="layout_photo_cnt" property="backupLayoutCount" javaType="int" />
+		<result column="comm_photo_cnt" property="backupCommCount" javaType="int"/>
+		<result column="layoutcnt" property="layoutCount" javaType="int"/>
+		<result column="photocnt" property="commCount" javaType="int"/>
+		<result column="pinyin" property="pinYin" javaType="String"/>
+		<result column="create_user_id" property="createUserId" javaType="int"/>
+		<result column="create_user_name" property="createUserName" javaType="String"/>
+		<result column="create_time" property="createTime" />
+		
+		<result column="rt_url" property="rtUrl" javaType="String" />
+	</resultMap>
+	
+	<resultMap type="com.nuoshi.console.view.EstatePhoto" id="layoutMap" extends="condition">
+		<result column="layoutcnt" property="layoutCount" javaType="int"/>
+		<result column="photocnt" property="commCount" javaType="int"/>
+		<result column="layout_photo_cnt" property="backupLayoutCount" javaType="int"/>
+		<result column="comm_photo_cnt" property="backupCommCount" javaType="int"/>
+		<result column="sort" property="order" javaType="int"/>
+	</resultMap>
+	
+	<resultMap type="com.nuoshi.console.domain.estate.EstateHouseCount" id="estateHouseCountMap">
+		<result column="resale_num" property="resaleCount" javaType="int" />
+		<result column="rent_num" property="rentCount" javaType="int" />
+	</resultMap>
+	
+	<sql id="getBasicInfoSql">
+		wy_com,wy_fee,dev_com,build_year,build_area,area,carinfo,university,school,market,nursery,hospital,
+		post_office,bank,floor,bus,subway,other_info
+	</sql>
+	
+	<!-- 用户初始化basic_info字段 初始化数据库之用 -->
+	<select id="getBasicInfo" resultMap="estateMap" useCache="false">
+		select 
+		<include refid="getBasicInfoSql"/>
+		,id from estate order by id desc limit
+		#{startIdx},#{pageSize}
+  	</select>
+  	
+  	<select id="getEstateByName" resultMap="estateMap" useCache="false">
+		select 
+		<include refid="getBasicInfoSql"/>
+		,id from estate WHERE name=#{name}  limit 1
+  	</select>
+  	
+	<sql id="queryByConditionSql">
+		<where>
+			<if test="cityId != null">cityid = #{cityId}</if>
+			<if test="distId != null">and distid = #{distId}</if>
+			<if test="blockId != null">and blockid = #{blockId}</if>
+			<if test="auth_Status != null">
+				<choose>
+					<!-- flag ==0 代表是点击了列表页的搜索按钮,auth_Status == '0' 标示在待审核状态的列表页 -->
+					<when test="auth_Status == 0">
+						<choose>
+							<when test=" isClicked == 0 ">
+								and (auth_Status = 0 or auth_Status = 1)
+							</when>
+							<otherwise>
+								and auth_Status = #{auth_Status}
+							</otherwise>
+						</choose>
+					</when>
+					<otherwise>
+						and auth_Status = #{auth_Status}
+					</otherwise>
+				</choose>
+			</if>
+			<if test="address !=null">AND addr like #{address}</if>
+			<if test="estateName !=null">AND name like #{estateName}</if>
+		</where>
+	</sql>
+	<!-- 根据小区名称拼音排序 -->
+	<select id="queryByCondition" resultMap="estateDataMap"
+		useCache="false">
+		select
+		id,name,photocnt,layoutcnt,cityid,distid,blockid,addr,wyType,resale_num,rent_num,orig_status,auth_Status,pinyin,create_user_id,create_user_name,create_time
+		from estate 
+		<include refid="queryByConditionSql"/>
+		order by CONVERT( name USING GBK ) asc limit #{startIdx},#{pageSize}
+	</select>
+	<select id="countByCondition" resultType="int" useCache="false">
+		select count(*) from estate 
+		<include refid="queryByConditionSql" />
+	</select>
+	<select id="getEstateInfoById" resultMap="estateMap" useCache="false">
+		select 
+		<include refid="getBasicInfoSql"/>
+		,id,name,cityid,distid,blockid,remark,namepy,alias,photoid,pinyin
+		from estate where id=#{estateId}
+  	</select>
+	<select id="getEstateDataById" resultMap="estateDataMap"
+		useCache="false">
+		select * from estate where id = #{estateId}
+  	</select>
+  	<select id="getEstateDataByIdAndAuthStatus" resultMap="estateDataMap"
+		useCache="false">
+		select * from estate where id = #{estateId}
+		<if test="authStatus != null">
+				<choose>
+					<when test="authStatus == 0">
+							and (auth_Status = 0 or auth_Status = 1)
+					</when>
+					<otherwise>
+							and auth_Status = #{authStatus}
+					</otherwise>
+				</choose>
+			</if>
+  	</select>
+  	
+  	<sql id="estatePhotoCondition">
+  		<where>
+			auth_Status = 1
+			 <if test="cityId != null">and cityid = #{cityId}</if>
+			<if test="distId != null">and distid = #{distId}</if>
+			<if test="blockId != null">and blockid = #{blockId}</if>
+			<choose>
+				<when test="hasOrNot == 'null'">
+				 <choose>
+		            <when test="photoType == 0 ">
+		                 and layout_photo_cnt = 0
+		            </when>
+		            <otherwise>
+		                and comm_photo_cnt = 0
+		            </otherwise>
+                </choose>	
+				</when>
+				<when test="hasOrNot == 'has' ">
+				<choose>
+		            <when test="photoType == 0 ">
+		                 <![CDATA[and (layout_photo_cnt between 1 and 59)]]>
+		            </when>
+		            <otherwise>
+		                 <![CDATA[and (comm_photo_cnt between 1 and 59)]]>
+		            </otherwise>
+                </choose>	
+				</when>
+				<when test="hasOrNot == 'full'">
+				<choose>
+	                    <when test="photoType == 0 ">
+	                         and layout_photo_cnt >= 60
+	                    </when>
+	                    <otherwise>
+	                        and comm_photo_cnt >= 60
+	                    </otherwise>
+	                </choose>   
+				</when>
+			</choose>
+	
+			<if test="estateName != null">and name like #{estateName}</if>
+			
+		</where>
+  	</sql>
+  	
+  	<sql id="getLayoutListSql">
+		<where>
+			auth_Status = 1
+			 <if test="cityId != null">and cityid = #{cityId}</if>
+			<if test="distId != null">and distid = #{distId}</if>
+			<if test="blockId != null">and blockid = #{blockId}</if>
+			<if test="empty =='yes'">
+                <choose>
+		            <when test="photoType == '0' ">
+		                 and layout_photo_cnt = 0
+		            </when>
+		            <otherwise>
+		                and comm_photo_cnt = 0
+		            </otherwise>
+                </choose>			    
+			</if>
+			<if test="empty =='no'">
+			     <if test="hasOver == 'yes'">
+				      <choose>
+	                    <when test="photoType == '0' ">
+	                         and layout_photo_cnt >= 60
+	                    </when>
+	                    <otherwise>
+	                        and comm_photo_cnt >= 60
+	                    </otherwise>
+	                </choose>   
+			     </if>
+			     <if test="hasOver == 'no'">
+                    <if test="photoType == '0' ">
+	                    <![CDATA[and (layout_photo_cnt between 1 and 59)]]>
+	                </if>
+	                <if test="photoType == '1' ">
+	                   <![CDATA[and (comm_photo_cnt between 1 and 59)]]>
+	                </if>
+	                        
+			   </if>
+			</if>
+			<if test="estateName != null">and name like #{estateName}</if>
+			
+		</where>
+	</sql>
+	<!-- 获得户型图 -->	
+	<select id="getPhotoList" parameterType="com.nuoshi.console.view.EstatePhoto" resultMap="layoutMap" useCache="false">
+		select id,cityid,blockid,distid,name,layoutcnt,layout_photo_cnt,photocnt,comm_photo_cnt from estate
+		<include refid="estatePhotoCondition"/>
+		<choose>
+			<when test="idOrder != null and idOrder != ''">
+				order by id asc			
+			</when>
+			<otherwise>
+				<choose>
+					<when test="photoType == 1 ">
+						order by comm_photo_cnt desc ,photocnt asc
+					</when>
+					<otherwise>
+						order by layout_photo_cnt desc ,layoutcnt asc
+					</otherwise>
+				</choose>
+			</otherwise>
+		</choose>
+		 limit #{start},#{limit} 
+	</select>
+	
+	<!-- 获得户型图 -->	
+	<select id="countPhotoList" parameterType="com.nuoshi.console.view.EstatePhoto" resultType="int" useCache="false">
+		select count(*) from estate
+		<include refid="estatePhotoCondition"/>
+	</select>
+	
+	<!--统计小区二手房数量 -->
+	<select id="countResaleCount" parameterType="com.nuoshi.console.view.EstatePhoto" resultType="int" useCache="false">
+		select count(*) from estate
+		<include refid="getLayoutListSql"/>
+	</select>
+	
+	<select id="getEstateHouseCount" resultMap="estateHouseCountMap" useCache="false">
+		select resale_num, rent_num,pinyin from estate where id = #{estateId}
+	</select>
+	<select id="getHouseAvgPriceByType" resultType="double" useCache="false">
+		select 
+		<if test="houseType==2">t.rentAvgPrice</if>
+		<if test="houseType==1">t.resaleAvgPrice</if>
+		 from stats_estate t where id=#{estateId}
+		 and statsMonth=#{month}
+	</select>
+	
+	<select id="getNewEstateHouseCount" resultMap="estateHouseCountMap" useCache="false">
+		select resale_num, rent_num from estate where pinyin = #{pinyin}
+	</select>
+	
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	
+	<definition name="rent.verify" extends="base.definition">
+		<put-attribute name="title" value="租房审核列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/rent/verify/list.jsp" />
+	</definition>
+	<definition name="allrent.verify" extends="base.definition">
+		<put-attribute name="title" value="租房管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/rent/verify/all.jsp" />
+	</definition>
+	<definition name="rent.house.list" extends="base.definition">
+		<put-attribute name="title" value="租房审核列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/rent/house/list.jsp" />
+	</definition>
+	<definition name="rent.verify.baseInfoList" extends="base.definition">
+		<put-attribute name="title" value="租房标题、描述审核列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/rent/verify/baseInfoList.jsp" />
+	</definition>
+	<definition name="rent.verifyPhoto" extends="base.definition">
+		<put-attribute name="title" value="照片审核列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/rent/verify/photo_list.jsp" />
+	</definition>
+	<definition name="rent.evaluation.list" extends="base.definition">
+		<put-attribute name="title" value="房源评价管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/rent/eval/list.jsp" />
+	</definition>
+	<definition name="rent.evaluation.detail" extends="base.definition">
+		<put-attribute name="title" value="房源评价列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/rent/eval/detail.jsp" />
+	</definition>
+
+</tiles-definitions> 

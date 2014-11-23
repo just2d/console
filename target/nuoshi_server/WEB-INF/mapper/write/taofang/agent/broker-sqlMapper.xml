@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.write.taofang.agent.BrokerWriteMapper">
+	
+	<cache eviction="LRU" flushInterval="86400000" readOnly="true"/>
+
+	<delete id="deleteBroker" parameterType="java.lang.String">
+		<![CDATA[
+		DELETE FROM broker WHERE id = #{id}
+		]]>
+	</delete>
+	<delete id="deleteBrokerByBrandId" parameterType="java.lang.String">
+		<![CDATA[
+		DELETE FROM broker WHERE brandid = #{brandId}
+		]]>
+	</delete>
+
+	<update id="updateBroker" parameterType="com.nuoshi.console.domain.agent.Broker">
+		UPDATE broker 
+		<set>
+		<if test="province !=null">
+		province=#{province},
+		</if>
+		<if test="city !=null">
+		city=#{city},
+		</if>
+		<if test="brand !=null">
+		brand=#{brand},
+		</if>
+		<if test="address !=null">
+		address=#{address},
+		</if>
+		<if test="team !=null">
+		team=#{team},
+		</if>
+		<if test="block !=null">
+		block=#{block},
+		</if>
+		<if test="district !=null">
+		district=#{district},
+		</if>
+		<if test="areaid !=null">
+		areaid=#{areaid},
+		</if>
+		<if test="brandid !=null">
+		brandid=#{brandid},
+		</if>
+		<if test="brandPinyin !=null">
+		brand_pinyin=#{brandPinyin},
+		</if>
+		<if test="addressPinyin !=null">
+		address_pinyin=#{addressPinyin},
+		</if>
+		<if test="flags !=null">
+		flags=#{flags} ,
+		</if>
+		<if test="type !=null">
+		type=#{type}
+		</if>
+		</set>
+		 WHERE id = #{id}
+	</update>
+	
+	<insert id="addBroker" parameterType="com.nuoshi.console.domain.agent.Broker" keyProperty="id" useGeneratedKeys="true" >
+		<![CDATA[
+		INSERT INTO broker(province,city,brand,address,team,block,district,areaid,brandid,brand_pinyin,address_pinyin,flags,type) 
+		            VALUES(#{province} ,#{city},#{brand},#{address},#{team},#{block},#{district},#{areaid},#{brandid},#{brandPinyin},#{addressPinyin},#{flags},#{type})
+		]]>
+		<selectKey resultType="int" keyProperty="id">
+			select last_insert_id() as id from broker limit 1
+		</selectKey>
+	</insert>
+	
+	
+</mapper>

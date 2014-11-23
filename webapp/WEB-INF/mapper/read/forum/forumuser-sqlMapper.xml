@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuoshi.console.persistence.read.forum.BbsUserReadMapper">
+
+	<resultMap type="com.nuoshi.console.domain.bbs.Forumuser" id="forumuser">
+
+		<result column="id" jdbcType="INTEGER" property="id" />
+		<result column="roleid" jdbcType="INTEGER" property="roleid" />
+		<result column="cityid" jdbcType="INTEGER" property="cityid" />
+		<result column="forumid" jdbcType="INTEGER" property="forumid" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="userid" jdbcType="INTEGER" property="userid" />
+		<result column="username" jdbcType="INTEGER" property="username" />
+		<result column="rolename" property="rolename" />
+	</resultMap>
+	<sql id="query">
+		select
+		u.id,
+		u.roleid,
+		u.cityid cityid,
+		u.forumid,
+		u.status ,
+		u.userid,
+		u.username username,
+		r.name rolename,
+		f.name forumname
+		from forumuser u
+		left join role r on r.id=u.roleid
+		left join tf_bbs_forums f on r.id=u.forumid
+   	 
+  
+  </sql>
+	<select id="selectAllByPage" resultMap="forumuser">
+		<include refid="query" />
+		where 1=1
+		order by u.id desc
+	</select>
+
+	<select id="selectById" resultMap="forumuser">
+		<include refid="query" />
+		where u.id=#{id}
+		order by u.id desc
+	</select>
+
+	<select id="selectByCondition" resultMap="forumuser">
+		<include refid="query" />
+		where 1=1
+		<if test="name != null">
+			and username=#{name}
+	   </if>
+		<if test="forumId != null">
+			and forumid = #{forumId}
+        </if>
+		order by u.id desc
+	</select>
+
+
+	<select id="selectByconditionByPage" resultMap="forumuser">
+		<include refid="query" />
+		where 1=1
+		<if test="name!=null">
+			and ( u.username like #{name} or f.name like #{name}
+			or r.name like #{name} )
+	 </if>
+		<if test="cityId!=null">
+			and cityid = #{cityId}
+	 </if>
+
+		order by u.id desc
+	</select>
+
+</mapper>

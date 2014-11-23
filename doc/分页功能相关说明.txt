@@ -1,0 +1,17 @@
+在dao层用分页查询时，方法的名字一定要以ByPage或者ForPage结尾，sql语句中不需要任何的分页语句（limit ）
+
+如：方法==public List<Admin> getAllAdminByPage() ；sql== select * from admin order by id
+然后在controller 层把查询结果设置到模型中
+public String list(Model model) {
+			List<Admin> ls= adminService.getAllAdminByPage();
+			model.addAttribute("adminList",ls);//查询结果设置到模型中
+			return "tiles:admin.list";
+		}
+页面加上分页页面:
+如下面的形式
+<form action="/admin/list" name="admin.list" > action 对应查询的路径
+
+这里是列表数据，用table或者其它形式显示
+
+<jsp:include page="/WEB-INF/snippets/page.jsp" />
+</form>

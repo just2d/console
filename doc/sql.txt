@@ -1,0 +1,220 @@
+use admin;
+
+CREATE TABLE `admin`.`tf_zixun` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `title` VARCHAR(100) COMMENT '标题',
+  `keyword` VARCHAR(45) COMMENT '关键词',
+  `label_word` VARCHAR(100) COMMENT '标签词',
+  `description` VARCHAR(128) COMMENT '描述',
+  `editor_id` INTEGER UNSIGNED COMMENT '责任编辑ID',
+  `editor_name` VARCHAR(20) COMMENT '编辑姓名',
+  `channel` TINYINT UNSIGNED COMMENT '淘房频道',
+  `city_id` INTEGER COMMENT '城市',
+  `check_status` TINYINT UNSIGNED DEFAULT 0 COMMENT '审核状态',
+  `create_time` TIMESTAMP NULL DEFAULT NULL COMMENT '创建时间',
+  `class_id` TINYINT UNSIGNED COMMENT '分类ID',
+  `class_name` VARCHAR(45) COMMENT '分类名称',
+  `search_url` VARCHAR(256) COMMENT '搜索房源条件',
+  `content` TEXT COMMENT '正文',
+  `deploy_status` TINYINT UNSIGNED DEFAULT 0 COMMENT '发布状态',
+  `click_count` INTEGER UNSIGNED DEFAULT 0 COMMENT '点击量',
+  `click_count_today` INTEGER UNSIGNED DEFAULT 0 COMMENT '24小时点击量',
+  `click_count_month` INTEGER UNSIGNED DEFAULT 0 COMMENT '本月点击量',
+  `click_count_tmp` INTEGER UNSIGNED DEFAULT 0 COMMENT '24小时之前的点击量',
+  `click_count_tmp2` INTEGER UNSIGNED DEFAULT 0 COMMENT '本月之前的点击量',
+  PRIMARY KEY(`id`)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin 
+COMMENT = '淘房资讯';
+
+CREATE TABLE `admin`.`zx_hot_word` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `zixun_id` INTEGER UNSIGNED NOT NULL DEFAULT 0 COMMENT '资讯ID',
+  `hot_word` VARCHAR(45) COMMENT '热词',
+  `url` VARCHAR(128) COMMENT '热词URL',
+  `order_index` TINYINT UNSIGNED DEFAULT 0 COMMENT '排序',
+  PRIMARY KEY(`id`)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin 
+COMMENT = '淘房资讯热词';
+
+INSERT INTO dict_list (list_index, list_key, list_value) VALUES ('zx_class', '房产政策', 1);
+INSERT INTO dict_list (list_index, list_key, list_value) VALUES ('zx_class', '行业动态', 2);
+INSERT INTO dict_list (list_index, list_key, list_value) VALUES ('zx_class', '楼市观察', 3);
+INSERT INTO dict_list (list_index, list_key, list_value) VALUES ('zx_class', '房价波动', 4);
+INSERT INTO dict_list (list_index, list_key, list_value) VALUES ('zx_class', '专家论市', 5);
+INSERT INTO dict_list (list_index, list_key, list_value) VALUES ('zx_class', '家具装修', 6);
+INSERT INTO dict_list (list_index, list_key, list_value) VALUES ('zx_class', '房屋风水', 7);
+
+ALTER TABLE links_master ADD COLUMN estate_pinyin VARCHAR(100) COMMENT '小区拼音';
+
+
+--脚本
+UPDATE tf_zixun SET click_count_today = click_count - click_count_tmp;
+
+UPDATE tf_zixun SET click_count_tmp = click_count;
+
+UPDATE tf_zixun SET click_count_month = click_count - click_count_tmp2;
+
+UPDATE tf_zixun SET click_count_tmp2 = click_count;
+
+use broker;
+
+-- 修改comm_photo 和 layout_photo 增加字段 del_flag -1删除；其余正常
+ALTER TABLE `comm_photo` ADD COLUMN `del_flag`  int(1) NULL DEFAULT 0 COMMENT '-1删除' AFTER `sort`,ADD INDEX `del_flag_u` (`del_flag`) ;
+ALTER TABLE `layout_photo` ADD COLUMN `del_flag`  int(1) NULL DEFAULT 0 COMMENT '-1删除' AFTER `sort`, ADD INDEX `del_flag_u` (`del_flag`) ;
+
+ALTER TABLE links_master ADD COLUMN check_time TIMESTAMP NULL DEFAULT NULL COMMENT '最近检查时间',
+ADD COLUMN tf_keyword_url_pr TINYINT COMMENT '淘房关键词页面PR',
+ADD COLUMN check_result VARCHAR(45) COMMENT '检查结果';
+
+ALTER TABLE links_master ADD COLUMN class_id varchar(100) COMMENT '分类信息', ADD INDEX link_class_idx (class_id);
+-- 2012-04-18
+CREATE TABLE `day_house_quality` (
+  `type` tinyint(2) NOT NULL DEFAULT '0' COMMENT '房源类型：　１　二手房，２　租房',
+  `all_option_num` int(10) DEFAULT '0' COMMENT '选填项都选的房源数',
+  `four_option_num` int(10) DEFAULT '0' COMMENT '选填项大于等于４的房源数',
+  `has_layout_num` int(10) DEFAULT '0' COMMENT '有户型图的房源数：户型图>=1',
+  `has_four_inner_num` int(10) DEFAULT '0' COMMENT '室内图≥4张',
+  `has_two_community` int(10) DEFAULT '0' COMMENT '小区图≥2张',
+  `has_all_photo` int(10) DEFAULT '0' COMMENT '户型图1张，室内图4张以上，小区图2张以上',
+  `has_innertype_photo_num` int(11) DEFAULT '0' COMMENT '已标识客厅、卧室等类别照片',
+  `has_hd_photo_num` int(10) DEFAULT '0' COMMENT '宽640*高480以上',
+  `photo_num` int(10) DEFAULT '0' COMMENT '照片总数',
+  `house_num` int(10) DEFAULT '0' COMMENT '房源总数',
+  `score0_house_num` int(10) DEFAULT '0' COMMENT '60分以下',
+  `score1_house_num` int(11) DEFAULT '0' COMMENT '61-70分',
+  `score2_house_num` int(11) DEFAULT '0' COMMENT '71-80分',
+  `score3_house_num` int(10) DEFAULT '0' COMMENT '81-90分',
+  `score4_house_num` int(10) DEFAULT '0' COMMENT '91分以上',
+  `entry_date` int(8) NOT NULL DEFAULT '0' COMMENT '录入时间-精确到某日',
+  PRIMARY KEY (`type`,`entry_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+-- 20120509
+ALTER TABLE sensitive_word ADD COLUMN user_type TINYINT(1) NOT NULL DEFAULT 0 COMMENT '用户类型:0-全部;1-普通用户;2-经纪人';
+
+ALTER TABLE agent_package ADD COLUMN default_free TINYINT(1) DEFAULT 0 COMMENT '0:不是默认免费套餐;1:是',
+ADD COLUMN order_index TINYINT(4) DEFAULT 0 COMMENT '显示排序';
+
+--修改套餐购买记录
+UPDATE agent_purchase ap, t_user tu SET ap.expired_date = '2012-07-11' 
+WHERE ap.active_status = 1 AND ap.agent_id = tu.id AND tu.cityid = 1 AND ap.active_date < '2012-05-12' AND ap.expired_date is null;
+
+UPDATE agent_purchase ap, t_user tu SET ap.expired_date = '2012-07-11' 
+WHERE ap.active_status = 1 AND ap.agent_id = tu.id AND tu.cityid = 4 AND ap.active_date < '2012-05-12' AND ap.expired_date is null;
+
+UPDATE agent_purchase ap, t_user tu SET ap.expired_date = '2012-07-16' 
+WHERE ap.active_status = 1 AND ap.agent_id = tu.id AND tu.cityid = 414 AND ap.expired_date is null;
+
+UPDATE agent_purchase ap, t_user tu SET ap.expired_date = DATE_ADD(active_date, INTERVAL 2 MONTH) 
+WHERE ap.active_status = 1 AND ap.agent_id = tu.id AND tu.cityid = 1 AND ap.active_date > '2012-05-12' AND ap.expired_date is null;
+
+UPDATE agent_purchase ap, t_user tu SET ap.expired_date = DATE_ADD(active_date, INTERVAL 2 MONTH) 
+WHERE ap.active_status = 1 AND ap.agent_id = tu.id AND tu.cityid = 4 AND ap.active_date > '2012-05-12' AND ap.expired_date is null;
+
+--用户反馈信息--
+CREATE TABLE `stat`.`user_feedback` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `city_id` INTEGER COMMENT '城市',
+  `city_name` VARCHAR(45) COMMENT '城市名称',
+  `page_url` VARCHAR(256) COMMENT '搜索房源条件',
+  `answer` TINYINT UNSIGNED DEFAULT 0 COMMENT '用户答案，1：能找到；2：找不到',
+  `feedback` VARCHAR(256) COMMENT '用户反馈',
+  `entry_time` TIMESTAMP NULL DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY(`id`)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin 
+COMMENT = '用户反馈';
+
+--经纪人删除记录--
+CREATE TABLE `admin`.`agent_delete_log` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `agent_id` INTEGER COMMENT '经纪人ID',
+  `name` VARCHAR(10) COMMENT '姓名',
+  `mobile` VARCHAR(11) COMMENT '手机号码',
+  `info` VARCHAR(256) COMMENT '备注',
+  `entry_id` INTEGER COMMENT '操作人ID',
+  `entry_name` VARCHAR(10) COMMENT '操作人姓名',
+  `entry_time` TIMESTAMP NULL DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY(`id`)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin 
+COMMENT = '经纪人删除记录';
+
+
+--内链关键词管理--
+CREATE TABLE `admin`.`link_word` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `keyword` VARCHAR(50) COMMENT '关键词',
+  `url` VARCHAR(100) COMMENT 'url',
+  `create_time` TIMESTAMP NULL DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY(`id`)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin 
+COMMENT = '内链关键词';
+
+
+
+CREATE TABLE `day_photo_audit_statis` (
+`upload_date`  INT(9) NOT NULL COMMENT '图片上传日期' ,
+`agent_id`  INT(11) NOT NULL COMMENT '经纪人id' ,
+`house_type`  TINYINT(2) NOT NULL COMMENT '房源类型：1出租房；2二手房' ,
+`city_id`  MEDIUMINT(11) NULL COMMENT '城市id' ,
+`agent_name`  VARCHAR(255) NULL COMMENT '经纪人姓名' ,
+`agent_phone`  VARCHAR(50) NULL COMMENT '经纪人手机' ,
+`w_layout_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '待审核户型图数' ,
+`w_inner_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '待审核室内图数' ,
+`w_estate_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '待审核小区图数' ,
+`w_all_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '待审核总数' ,
+`w_rate`  FLOAT(5,2) NULL COMMENT '待审率' ,
+`p_layout_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '通过户型图数' ,
+`p_inner_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '通过室内图数' ,
+`p_estate_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '通过小区图数' ,
+`p_all_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '通过总数' ,
+`p_rate`  FLOAT(5,2) NULL COMMENT '通过率' ,
+`r_layout_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '拒绝户型图数' ,
+`r_inner_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '拒绝室内图数' ,
+`r_estate_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '拒绝小区图数' ,
+`r_all_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '拒绝总数' ,
+`r_rate`  FLOAT(5,2) NULL COMMENT '违规率' ,
+`all_count`  MEDIUMINT(10) NULL DEFAULT 0 COMMENT '总数' ,
+
+
+PRIMARY KEY (`upload_date`, `agent_id`, `house_type`)
+)ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin 
+COMMENT = '房源图片审核统计';
+
+-- broker
+CREATE TABLE `photo_statis` (
+`house_id`  int(11) NOT NULL ,
+`house_type`  tinyint(2) NOT NULL ,
+`photo_id`  int(11) NOT NULL ,
+`agent_id`  int(11) NULL DEFAULT 0 COMMENT '经纪人ID' ,
+`category`  tinyint(2) NULL DEFAULT 0 COMMENT '图片类型：1户型图；2室内图；3小区图' ,
+`house_status`  tinyint(2) NULL DEFAULT 0 COMMENT '房源状态' ,
+`audit_status`  tinyint(2) NULL DEFAULT 0 COMMENT '图片审核状态：0待审核；1审核通过；2审核拒绝' ,
+PRIMARY KEY (`house_id`, `house_type`, `photo_id`)
+)ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin 
+COMMENT = '房源图片审核统计中间表';
+
+
+-- broker
+ALTER TABLE `house_photo`
+ADD INDEX `photo_id_idx` (`photoid`) ;
+
+ALTER TABLE `rent_photo`
+ADD INDEX `photo_id_idx` (`photoid`) ;
+
+ALTER TABLE `photo`
+ADD INDEX `cts_idx` (`cts`) ;
+
+
+--个别经纪人特殊套餐关系表--
+CREATE TABLE `broker`.`agent_package_relation` (
+  `agent_id` int(11) NOT NULL COMMENT '经纪人ID',
+  `package_id` int(11) NOT NULL COMMENT '套餐ID',
+  PRIMARY KEY(`agent_id`,`package_id`)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin 
+COMMENT = '经纪人套餐关系表';

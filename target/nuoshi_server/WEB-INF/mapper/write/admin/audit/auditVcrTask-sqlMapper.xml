@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.admin.audit.AuditVcrTaskWriteMapper">
+
+	<insert id="addAuditVcrTask" >
+		INSERT INTO audit_vcr_task (house_id,house_type,city_id,audit_result,auditor_id, auditor_name, agent_id, complain_count, vcr_time) 
+		VALUES (#{houseId}, #{houseType}, #{cityId}, 0, #{userId}, #{userName}, #{agentId}, #{complainCount}, #{vcrSubmitTime})
+    </insert>
+    
+    <update id="changeAuditResult">
+    	UPDATE audit_vcr_task SET audit_result = #{result}, reason = #{reason}, audit_time = now() 
+    	WHERE house_id = #{houseId} AND house_type = #{houseType} AND (audit_result IS NULL OR audit_result = 0)
+    </update>
+</mapper>

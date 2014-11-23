@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.agent.IdentityPhotoReadMapper">
+	
+	<select id="selectIdentityPhotoById" resultType="com.nuoshi.console.domain.agent.IdentityPhoto" parameterType="int">
+		<![CDATA[
+	        SELECT * FROM identity_photo WHERE id = #{id} AND owner = #{agentId}
+        ]]>
+    </select>
+	<select id="selectIdentityPhotoByIdList" resultType="com.nuoshi.console.domain.agent.IdentityPhoto" parameterType="int">
+	    SELECT * FROM identity_photo WHERE id in
+        <foreach item="item" collection="idList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </select>
+    
+    <select id="selectPhotoById" resultType="com.nuoshi.console.domain.photo.Photo" parameterType="int">
+    	<![CDATA[
+    		SELECT * FROM photo WHERE id = #{id}
+    	]]>
+    </select>
+    <select id="selectPhotoByIdList" resultType="com.nuoshi.console.domain.photo.Photo" parameterType="int">
+    		SELECT * FROM photo WHERE id in 
+    		<foreach item="item" collection="idList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </select>
+</mapper>

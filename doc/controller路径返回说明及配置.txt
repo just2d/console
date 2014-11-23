@@ -1,0 +1,33 @@
+访问路径说明：
+controller 访问路径＝class上@RequestMapping(value = "/admin")的value+方法上@RequestMapping(value = "/admin")的value
+class上@RequestMapping可以不写，不与就是为空
+如：
+@Controller
+@RequestMapping(value = "/test")
+public class TestCtroller {
+
+	
+	@RequestMapping(value = "/jquery/test")
+	public String jqueryTest() {
+
+		return "tiles:test.jquery_test";
+	}
+	@RequestMapping(value = "/validation/test")
+	public String validationTest() {
+
+		return "tiles:test.validation";
+	}
+要调用jqueryTest方法： 访问路径＝/test/jquery/test
+
+返回路径说明:
+controller返回值形式:
+1、"/admin/list"  对应的页面：/WEB-INF/jsp/admin/list.jsp
+2、"jsp:/admiin/list" 对应的页面： /WEB-INF/jsp/admin/list.jsp
+3、"redirect:/admin/list" 其中 /admin/list 为(客户端)跳转的路径
+4、"tiles:test.jquery_test" 其中test.jquery_test 对应tiles中定义的路径
+如：
+	<definition name="test.jquery_test" extends="base.definition">
+		<put-attribute name="title" value="jquery测试" />
+		<put-attribute name="body" value="/WEB-INF/jsp/tiles/test/jquery_test.jsp" />
+	</definition>
+tiles 对应的配置文件在resources/config/tiles 目录下

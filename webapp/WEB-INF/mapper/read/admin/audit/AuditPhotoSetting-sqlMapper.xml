@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.admin.audit.AuditPhotoSettingReadMapper">
+	<resultMap id="AuditPhotoSettingMap"
+		type="com.nuoshi.console.domain.audit.AuditPhotoSetting">
+		<id column="city_id" property="cityId"   />
+		<result column="illegal_rate" property="illegalRate"   />
+		<result column="day_max_photo_count" property="dayMaxPhotoCount"   />
+		<result column="audit_count" property="auditCount"   />
+		<result column="time_rule" property="timeRule"   />
+	</resultMap>	
+	<select id="getPhotoSettingByPage"  resultMap="AuditPhotoSettingMap">
+		select city_id,illegal_rate,day_max_photo_count,audit_count,time_rule from audit_photo_setting
+		where city_id=#{cityId}
+		<if test="timeRule!=null">
+		AND time_rule=#{timeRule}
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.topic.QueryBeanReadMapper">
+	<sql id="sel_queryBean">
+		SELECT 
+		p.key,
+		p.value,
+		p.val_min,
+		p.val_max 
+		FROM enums p 
+	</sql>
+	
+	<resultMap id="queryBeanMap" type="com.nuoshi.console.domain.topic.QueryBean">
+		<id property="key" column="key"/>
+		<result property="value" column="value"/>
+		<result property="valMin" column="val_min"/>
+		<result property="valMax" column="val_max"/>
+	</resultMap>
+	
+	<select id="selQueryBeanByType" parameterType="String" resultMap="queryBeanMap">
+		<include refid="sel_queryBean"/>
+		WHERE p.type = #{type} ORDER BY p.order_no ASC
+	</select>
+	
+	<select id="selQueryBeanByScope" resultMap="queryBeanMap">
+		<include refid="sel_queryBean"/>
+		WHERE p.scope in(#{low},#{high}) ORDER BY p.order_no ASC
+	</select>
+	
+	<select id="selResalePrices" resultMap="queryBeanMap">
+		<include refid="sel_queryBean"/>
+		WHERE p.type = #{type} AND p.scope IN (0, #{scope}) AND city_scale IN (-1, #{cityScale}) ORDER BY p.order_no ASC
+	</select>
+	
+</mapper>

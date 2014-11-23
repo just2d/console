@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.unionhouse.uresale.UResaleReadMapper">
+	<resultMap type="com.nuoshi.console.domain.estate.UnionLog" id="unionLog">
+		<result property="targetId" column="targetId" javaType="int"/>
+		<result property="targetName" column="targetName" javaType="String"/>
+		<result property="houseId" column="id" javaType="int"/>
+		<result property="estateid" column="estateid" javaType="int"/>
+		<result property="estatename" column="estatename" javaType="String"/>
+		<result property="cityid" column="cityid" javaType="int"/>
+		<result column="t_citycode" property="t_CityCode" javaType="String" />
+		<result property="distid" column="distid" javaType="int"/>
+		<result property="blockid" column="blockid" javaType="int"/>
+		<result property="fromTable" column="from_table" javaType="String"/>
+		<result property="operator" column="operator" javaType="String"/>
+	</resultMap>
+	 <select id="getResaleById"  resultType="hashmap">
+	
+		 SELECT
+           *
+        FROM u_resale r
+       
+        WHERE 
+        id = #{id}
+       
+	</select> 
+	 
+	<select id="getAll58ResaleByPage" resultType="hashmap" >
+	
+		 SELECT
+           *
+        FROM u_resale r
+       
+        WHERE 1=1
+          <if test="condition!=null">
+				${condition}
+		</if>
+        ORDER BY r.id DESC
+       
+       
+	</select> 
+	<select id="getAll58ResaleCount"   >
+		SELECT
+           count(0)
+ 		from u_resale r 
+ 
+			where 1=1
+        <if test="condition!=null">
+				${condition}
+		</if>
+       
+	</select>
+	<select id="countByEstateId" resultType="int">
+		select count(*) from u_resale where estateid=#{estateId}
+	</select>
+	<select id="getHouseByEstateId" resultMap="unionLog" resultType="map">
+		select id,estateid,estatename ,#{t_estate_id} as targetId,#{estateName} as targetName ,#{cityCode} as t_citycode,#{s_authStatus} as s_authStatus,#{fromTable} as from_table,#{operator} as operator,cityid ,distid ,blockid  from u_resale where estateid = #{s_estate_id}
+	</select>
+	
+	<select id="getAllUnionResaleByPage" resultType="com.nuoshi.console.domain.resale.Resale">
+		SELECT 
+			r.id id,
+			r.authorid authorid,
+			r.authorname author,
+			r.authorphone authorPhone,
+			r.cityid cityid,
+			r.sourceid sourceId,
+			r.evaluation_visible evaluationVisible 
+		FROM u_resale r  WHERE 
+		<foreach item="item" collection="conditions" separator="and">
+            ${item}
+        </foreach> 
+			
+	</select>
+	
+	<select id="getAllUnionResaleCount" resultType="int">
+		SELECT 
+			COUNT(1) 
+		FROM u_resale r  WHERE 
+		<foreach item="item" collection="conditions" separator="and">
+            ${item}
+        </foreach> 
+			
+	</select>
+	
+</mapper>

@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.read.taofang.agent.TranDetailReadMapper">
+	
+	<select id="getSuccessTranDetailByPage" resultType="com.nuoshi.console.domain.agent.AgentRecharge">
+	SELECT
+		ar.agent_username agentUserName,
+		ar.recharge_order_no rechargeOrderNo,
+		ar.recharge_amount rechargeAmount,
+		ar.recharge_type  rechargeType,
+		ar.paid_time paidTime,
+		ar.recharge_state rechargeState,
+		ar.entry_id entryId,
+		ar.agent_cityid agentCityId,
+		ar.entry_time entryTime
+	FROM
+		agent_recharge ar
+	WHERE
+		1=1
+	<if test="rechargeNo > 0">
+		AND ar.recharge_order_no =#{rechargeNo}	
+	</if>
+	<if test="userName !=null and userName != ''">
+		AND ar.agent_username =#{userName}
+	</if>
+	<if test="rechargeType >= 0">
+		AND ar.recharge_type = #{rechargeType}
+	</if>
+	<if test="startDate !=null and startDate!=''">
+	 	<![CDATA[ 
+		AND ar.paid_time >= #{startDate}
+		 ]]> 
+	</if>
+	<if test="endDate !=null and endDate != '' ">
+	 	<![CDATA[ 
+		AND ar.paid_time <= #{endDate}
+		 ]]> 
+	</if>
+	<choose>
+	<when test="rechargeState > 0">
+		 AND ar.recharge_state = #{rechargeState}
+	</when>
+	<otherwise>
+		AND ar.recharge_state in(2,4)
+	</otherwise>
+	</choose>
+	 order by ar.paid_time desc
+	</select>
+	
+	<select id="getSuccessTranDetailAmount" resultType="double">
+	SELECT
+		sum(ar.recharge_amount)
+	FROM
+		agent_recharge ar
+	WHERE
+		1=1
+	<if test="rechargeNo > 0">
+		AND ar.recharge_order_no =#{rechargeNo}	
+	</if>
+	<if test="userName !=null and userName != ''">
+		AND ar.agent_username =#{userName}
+	</if>
+	<if test="rechargeType >= 0">
+		AND ar.recharge_type = #{rechargeType}
+	</if>
+	<if test="startDate !=null and startDate!=''">
+	 	<![CDATA[ 
+		AND ar.paid_time >= #{startDate}
+		 ]]> 
+	</if>
+	<if test="endDate !=null and endDate != '' ">
+	 	<![CDATA[ 
+		AND ar.paid_time <= #{endDate}
+		 ]]> 
+	</if>
+	<choose>
+	<when test="rechargeState > 0">
+		 AND ar.recharge_state = #{rechargeState}
+	</when>
+	<otherwise>
+		AND ar.recharge_state in(2,4)
+	</otherwise>
+	</choose>
+	</select>
+
+<select id="getSuccessTranDetail" resultType="com.nuoshi.console.domain.agent.AgentRecharge">
+	SELECT
+		ar.agent_username agentUserName,
+		ar.recharge_order_no rechargeOrderNo,
+		ar.recharge_amount rechargeAmount,
+		ar.recharge_type  rechargeType,
+		ar.paid_time paidTime,
+		ar.recharge_state rechargeState,
+		ar.entry_id entryId,
+		ar.agent_cityid agentCityId,
+		ar.entry_time entryTime,
+		am.company company,
+		am.store store
+	FROM
+		agent_recharge ar LEFT JOIN agent_master am ON ar.agent_id = am.agent_id
+	WHERE
+		1=1
+	<if test="rechargeNo > 0">
+		AND ar.recharge_order_no =#{rechargeNo}	
+	</if>
+	<if test="userName !=null and userName != ''">
+		AND ar.agent_username =#{userName}
+	</if>
+	<if test="rechargeType >= 0">
+		AND ar.recharge_type = #{rechargeType}
+	</if>
+	<if test="startDate !=null and startDate!=''">
+	 	<![CDATA[ 
+		AND ar.paid_time >= #{startDate}
+		 ]]> 
+	</if>
+	<if test="endDate !=null and endDate != '' ">
+	 	<![CDATA[ 
+		AND ar.paid_time <= #{endDate}
+		 ]]> 
+	</if>
+	<choose>
+	<when test="rechargeState > 0">
+		 AND ar.recharge_state = #{rechargeState}
+	</when>
+	<otherwise>
+		AND ar.recharge_state in(2,4)
+	</otherwise>
+	</choose>
+	 order by ar.paid_time desc
+	</select>
+
+
+	<select id="getNotSuccessTranDetailByPage" resultType="com.nuoshi.console.domain.agent.AgentRecharge">
+	SELECT
+		ar.agent_username agentUserName,
+		ar.recharge_order_no rechargeOrderNo,
+		ar.recharge_amount rechargeAmount,
+		ar.create_time createTime,
+		ar.bank_order_no bankOrderNo,
+		ar.recharge_type rechargeType,
+		ar.acpt_bank_no acptBankNo,
+		ar.recharge_state rechargeState,
+		ar.agent_name agentName,
+		ar.agent_mobile agentMobile,
+		ar.agent_cityid agentCityId,
+		ar.bank_feedback_msg bankFeedbackMsg,
+		am.company company
+	FROM
+		agent_recharge ar LEFT JOIN agent_master am ON ar.agent_id = am.agent_id
+	WHERE
+		1=1
+	<if test="rechargeNo > 0">
+		AND ar.recharge_order_no =#{rechargeNo}	
+	</if>
+	<if test="userName !=null and userName != ''">
+		AND ar.agent_username =#{userName}
+	</if>
+	<if test="rechargeType >= 0">
+		AND ar.recharge_type = #{rechargeType}
+	</if>
+	<if test="startDate !=null and startDate!=''">
+	 	<![CDATA[ 
+		AND ar.create_time >= #{startDate}
+		 ]]> 
+	</if>
+	<if test="endDate !=null and endDate !='' ">
+	 	<![CDATA[ 
+		AND ar.create_time <= #{endDate}
+		 ]]> 
+	</if>
+	<choose>
+	<when test="rechargeState > 0">
+		 AND ar.recharge_state = #{rechargeState}
+	</when>
+	<otherwise>
+		AND ar.recharge_state in(1,3)
+	</otherwise>
+	</choose>
+	 order by ar.create_time desc
+	</select>
+	
+	<select id="getNotSuccessTranDetailAmount" resultType="double">
+	SELECT
+		sum(ar.recharge_amount)
+	FROM
+		agent_recharge ar LEFT JOIN agent_master am ON ar.agent_id = am.agent_id
+	WHERE
+		1=1
+	<if test="rechargeNo > 0">
+		AND ar.recharge_order_no =#{rechargeNo}	
+	</if>
+	<if test="userName !=null and userName != ''">
+		AND ar.agent_username =#{userName}
+	</if>
+	<if test="rechargeType >= 0">
+		AND ar.recharge_type = #{rechargeType}
+	</if>
+	<if test="startDate !=null and startDate!=''">
+	 	<![CDATA[ 
+		AND ar.create_time >= #{startDate}
+		 ]]> 
+	</if>
+	<if test="endDate !=null and endDate !='' ">
+	 	<![CDATA[ 
+		AND ar.create_time <= #{endDate}
+		 ]]> 
+	</if>
+	<choose>
+	<when test="rechargeState > 0">
+		 AND ar.recharge_state = #{rechargeState}
+	</when>
+	<otherwise>
+		AND ar.recharge_state in(1,3)
+	</otherwise>
+	</choose>
+	</select>
+	
+	<select id="getNotSuccessTranDetail" resultType="com.nuoshi.console.domain.agent.AgentRecharge">
+	SELECT
+		ar.agent_username agentUserName,
+		ar.recharge_order_no rechargeOrderNo,
+		ar.recharge_amount rechargeAmount,
+		ar.create_time createTime,
+		ar.bank_order_no bankOrderNo,
+		ar.recharge_type rechargeType,
+		ar.acpt_bank_no acptBankNo,
+		ar.recharge_state rechargeState,
+		ar.agent_name agentName,
+		ar.agent_mobile agentMobile,
+		ar.agent_cityid agentCityId,
+		ar.bank_feedback_msg bankFeedbackMsg,
+		am.company company
+	FROM
+		agent_recharge ar LEFT JOIN agent_master am ON ar.agent_id = am.agent_id
+	WHERE
+		1=1
+	<if test="rechargeNo > 0">
+		AND ar.recharge_order_no =#{rechargeNo}	
+	</if>
+	<if test="userName !=null and userName != ''">
+		AND ar.agent_username =#{userName}
+	</if>
+	<if test="rechargeType >= 0">
+		AND ar.recharge_type = #{rechargeType}
+	</if>
+	<if test="startDate !=null and startDate!=''">
+	 	<![CDATA[ 
+		AND ar.create_time >= #{startDate}
+		 ]]> 
+	</if>
+	<if test="endDate !=null and endDate != '' ">
+	 	<![CDATA[ 
+		AND ar.create_time <= #{endDate}
+		 ]]> 
+	</if>
+	<choose>
+	<when test="rechargeState > 0">
+		 AND ar.recharge_state = #{rechargeState}
+	</when>
+	<otherwise>
+		AND ar.recharge_state in(1,3)
+	</otherwise>
+	</choose>
+	 order by ar.create_time desc
+	</select>
+	
+	<select id="getTranDetailByPage" resultType="com.nuoshi.console.domain.agent.TranDetail">
+	<if test="type==0">
+		SELECT
+			td.agent_username agentUserName,
+			td.order_type orderType,
+			td.insert_time insertTime,
+			td.balance balance,
+			td.city_id cityId,
+			td.consume_type consumeType,
+			td.saler_id salerId,
+			td.amount amount
+		FROM
+		tran_detail td
+		WHERE td.order_type=0
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+		<if test="cityId > 0">
+			AND td.city_id = #{cityId}
+		</if>
+		<if test="userName !=null and userName != ''  ">
+			AND td.agent_username =#{userName}
+		</if>
+		ORDER BY td.insert_time desc	
+	</if>
+	<if test="type==1 or type==3">
+	SELECT
+		td.agent_username agentUserName,
+		td.order_type orderType,
+		td.insert_time insertTime,
+		td.balance balance,
+		td.city_id cityId,
+		td.consume_type consumeType,
+		td.saler_id salerId,
+		ap.port port,
+		ap.package_id packageId,
+		td.amount amount
+	FROM
+		tran_detail td,
+		agent_purchase ap 
+	WHERE td.order_no = ap.id
+	AND td.order_type=1
+	<if test="type==1">
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+	</if>
+	<if test="type==3">
+			<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND ap.active_date >= #{startDate}
+			 ]]> 
+			</if>
+			<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND ap.active_date <= #{endDate}
+			 ]]> 
+			</if>
+	</if>
+	
+	<if test="cityId > 0">
+		AND td.city_id = #{cityId}
+	</if>
+	<if test="userName !=null and userName != ''  ">
+		AND td.agent_username =#{userName}
+	</if>
+	ORDER BY td.insert_time desc
+	</if>
+	<if test="type ==-1">
+	SELECT
+			 t.agentUserName,
+			 t.orderType,
+			 t.insertTime,
+			 t.balance,
+			 t.consumeType,
+			 t.salerId,
+			 t.port,
+			 t.packageId,
+			 t.cityId,
+			 t.amount
+		FROM(
+		SELECT
+			td1.agent_username agentUserName,
+			td1.order_type orderType,
+			td1.insert_time insertTime,
+			td1.balance balance,
+			td1.consume_type consumeType,
+			td1.saler_id salerId,
+			''  port,
+			'' packageId,
+			td1.city_id cityId,
+			td1.amount amount
+		FROM
+		tran_detail td1
+		WHERE td1.order_type=0
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td1.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td1.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+		<if test="cityId > 0">
+			AND td1.city_id = #{cityId}
+		</if>
+		<if test="userName !=null and userName != ''  ">
+			AND td1.agent_username =#{userName}
+		</if>
+		union
+			SELECT 
+			td.agent_username agentUserName,
+			td.order_type orderType,
+			td.insert_time insertTime,
+			td.balance balance,
+			td.consume_type consumeType,
+			td.saler_id salerId,
+			ap.port port,
+			ap.package_id packageId,
+			td.city_id cityId,
+			td.amount amount
+			FROM
+				tran_detail td,
+				agent_purchase ap 
+			WHERE td.order_no = ap.id
+			AND td.order_type=1
+			
+			<if test="startDate !=null and startDate !=''">
+				<![CDATA[ 
+				AND td.insert_time >= #{startDate}
+				 ]]> 
+			</if>
+			<if test="endDate !=null and endDate !=''">
+				<![CDATA[ 
+				AND td.insert_time <= #{endDate}
+				 ]]> 
+			</if>
+			<if test="cityId > 0">
+				AND td.city_id = #{cityId}
+			</if>
+			<if test="userName !=null and userName != ''  ">
+				AND td.agent_username =#{userName}
+			</if>
+			) t
+			ORDER BY t.insertTime desc
+	</if>
+	
+	</select>
+	
+	<select id="getTranDetailZhongji" resultType="com.nuoshi.console.domain.agent.TranDetail">
+	<if test="type==0">
+		SELECT
+			td.order_type orderType,
+			td.amount amount
+		FROM
+			tran_detail td
+		WHERE td.order_type=0
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+		<if test="cityId > 0">
+			AND td.city_id = #{cityId}
+		</if>
+		<if test="userName !=null and userName != ''  ">
+			AND td.agent_username =#{userName}
+		</if>
+	</if>
+	<if test="type==1 or type==3">
+	SELECT
+			td.order_type orderType,
+			td.amount amount
+	FROM
+		tran_detail td,
+		agent_purchase ap 
+	WHERE td.order_no = ap.id
+	AND td.order_type=1
+	<if test="type==1">
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+	</if>
+	<if test="type==3">
+			<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND ap.active_date >= #{startDate}
+			 ]]> 
+			</if>
+			<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND ap.active_date <= #{endDate}
+			 ]]> 
+			</if>
+	</if>
+	
+	<if test="cityId > 0">
+		AND td.city_id = #{cityId}
+	</if>
+	<if test="userName !=null and userName != ''  ">
+		AND td.agent_username =#{userName}
+	</if>
+	</if>
+	<if test="type ==-1">
+		SELECT
+			td.order_type orderType,
+			td.amount amount
+		FROM
+		tran_detail td
+		WHERE td.order_type=0
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+		<if test="cityId > 0">
+			AND td.city_id = #{cityId}
+		</if>
+		<if test="userName !=null and userName != ''  ">
+			AND td.agent_username =#{userName}
+		</if>
+		union
+			SELECT
+				td.order_type orderType,
+				td.amount amount
+			FROM
+				tran_detail td,
+				agent_purchase ap 
+			WHERE td.order_no = ap.id
+			AND td.order_type=1
+			
+			<if test="startDate !=null and startDate !=''">
+				<![CDATA[ 
+				AND td.insert_time >= #{startDate}
+				 ]]> 
+			</if>
+			<if test="endDate !=null and endDate !=''">
+				<![CDATA[ 
+				AND td.insert_time <= #{endDate}
+				 ]]> 
+			</if>
+			<if test="cityId > 0">
+				AND td.city_id = #{cityId}
+			</if>
+			<if test="userName !=null and userName != ''  ">
+				AND td.agent_username =#{userName}
+			</if>
+		</if>	
+	</select>
+	
+	<select id="getTranDetailAnalysisActiveWithSales" resultType="com.nuoshi.console.domain.agent.TranDetailAnalysis">
+	SELECT
+		sum(ap.purchase_price) purchaseActiveAmountWithSales
+	FROM
+		agent_purchase ap,
+		tran_detail td
+	<choose>
+		<when test="agentId >0 ">
+		 WHERE ap.agent_id=#{agentId}
+		 AND ap.id =td.order_no
+		</when>
+		<otherwise>
+		 WHERE ap.id =td.order_no
+		</otherwise>
+	</choose>
+	AND  td.order_type=1
+	<if test="cityId > 0">
+		 AND td.city_id =#{cityId}
+	</if>
+	<if test="startDate !=null and startDate !=''">
+		<![CDATA[ 
+		AND ap.active_date >= #{startDate}
+		 ]]> 
+	</if>
+	<if test="endDate !=null and endDate !=''">
+		<![CDATA[ 
+		AND ap.active_date <= #{endDate}
+		 ]]> 
+	</if>
+	AND td.saler_id !=0
+	</select>
+	
+	<select id="getTranDetailAnalysisActiveWithoutSales" resultType="com.nuoshi.console.domain.agent.TranDetailAnalysis">
+	SELECT
+		sum(ap.purchase_price) purchaseActiveAmountWithoutSales
+	FROM
+		agent_purchase ap,
+		tran_detail td
+	<choose>
+		<when test="agentId >0 ">
+		 WHERE ap.agent_id=#{agentId}
+		 AND  ap.id =td.order_no
+		</when>
+		<otherwise>
+		 WHERE  ap.id =td.order_no
+		</otherwise>
+	</choose>
+	AND  td.order_type=1
+	<if test="cityId > 0">
+		 AND td.city_id =#{cityId}
+	</if>
+	<if test="startDate !=null and startDate !=''">
+		<![CDATA[ 
+		AND ap.active_date >= #{startDate}
+		 ]]> 
+	</if>
+	<if test="endDate !=null and endDate !=''">
+		<![CDATA[ 
+		AND ap.active_date <= #{endDate}
+		 ]]> 
+	</if>
+		AND td.saler_id =0
+	</select>
+	
+	
+	
+
+	
+	<select id="getTranDetailAnalysisRechargeWithSales" resultType="com.nuoshi.console.domain.agent.TranDetailAnalysis">
+		SELECT
+			sum(td.amount) rechargeAmountWithSales,
+			COUNT(DISTINCT td.agent_id) rechargeNumWithSales
+		FROM
+			tran_detail td
+		WHERE 1=1	
+		<if test="agentId > 0">
+			AND td.agent_id=#{agentId}
+		</if>
+		<if test="cityId > 0">
+		 	AND td.city_id =#{cityId}
+		</if>
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+			and td.order_type=0
+			and td.saler_id !=0
+	</select>
+	
+	<select id="getTranDetailAnalysisRechargeWithoutSales" resultType="com.nuoshi.console.domain.agent.TranDetailAnalysis">
+		SELECT
+			sum(td.amount) rechargeAmountWithoutSales,
+			COUNT(DISTINCT td.agent_id) rechargeNumWithoutSales
+		FROM
+			tran_detail td
+		WHERE 1=1 	
+		<if test="agentId > 0">
+			AND td.agent_id=#{agentId}
+		</if>
+		<if test="cityId > 0">
+		 	AND am.city_id =#{cityId}
+		</if>
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+			and td.order_type=0
+			and td.saler_id =0
+	</select>
+	
+	
+	<select id="getTranDetailAnalysisPurchaseWithSales" resultType="com.nuoshi.console.domain.agent.TranDetailAnalysis">
+		SELECT
+			sum(td.amount) purchaseAmountWithSales
+		FROM
+			tran_detail td
+		WHERE 1=1 	
+		<if test="agentId > 0">
+			AND td.agent_id=#{agentId}
+		</if>
+		<if test="cityId > 0">
+			 AND td.city_id =#{cityId}
+		</if>
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+			and td.order_type=1
+			and td.saler_id !=0
+	</select>
+	
+	<select id="getTranDetailAnalysisPurchaseWithoutSales" resultType="com.nuoshi.console.domain.agent.TranDetailAnalysis">
+		SELECT
+			sum(td.amount) purchaseAmountWithoutSales
+		FROM
+			tran_detail td
+		WHERE 1=1 	
+		<if test="agentId > 0">
+			AND td.agent_id=#{agentId}
+		</if>
+		<if test="cityId > 0">
+			 AND td.city_id =#{cityId}
+		</if>
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+			and td.order_type=1
+			and td.saler_id =0
+	</select>
+	
+	<select id="getTranDetailAnalysisOnlineBankRecharge" resultType="com.nuoshi.console.domain.agent.TranDetailAnalysis">
+		
+		SELECT
+			SUM(td.amount) rechargeOnlineAmount
+		FROM
+			tran_detail td,
+			agent_recharge ar 
+		where td.order_no = ar.recharge_order_no
+		
+		<if test="agentId > 0">
+			AND td.agent_id=#{agentId}
+		</if>
+		<if test="cityId > 0">
+			 AND td.city_id =#{cityId}
+		</if>
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+			and ar.recharge_type=0
+	</select>
+	
+	<select id="getTranDetailAnalysisZhifubaoRecharge" resultType="com.nuoshi.console.domain.agent.TranDetailAnalysis">
+		
+		SELECT
+			SUM(td.amount) rechargeZhifuboaAmount
+		FROM
+			tran_detail td,
+			agent_recharge ar 
+		where td.order_no = ar.recharge_order_no
+		
+		<if test="agentId > 0">
+			AND td.agent_id=#{agentId}
+		</if>
+		<if test="cityId > 0">
+			 AND td.city_id =#{cityId}
+		</if>
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+			and ar.recharge_type=1
+	</select>
+	
+	<select id="getTranDetailAnalysisShoujikaRecharge" resultType="com.nuoshi.console.domain.agent.TranDetailAnalysis">
+		
+		SELECT
+			SUM(td.amount) rechargeShoujikaAmount
+		FROM
+			tran_detail td,
+			agent_recharge ar 
+		where td.order_no = ar.recharge_order_no
+		<if test="agentId > 0">
+			AND td.agent_id=#{agentId}
+		</if>
+		<if test="cityId > 0">
+			 AND td.city_id =#{cityId}
+		</if>
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[ 
+			AND td.insert_time >= #{startDate}
+			 ]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ 
+			AND td.insert_time <= #{endDate}
+			 ]]> 
+		</if>
+			and ar.recharge_type=2
+	</select>
+</mapper>

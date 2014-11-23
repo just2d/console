@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.taofang.agent.AgentRechargeWriteMapper">
+
+  
+    <update id="updateRechargeToSuccess" parameterType="com.nuoshi.console.domain.agent.AgentRecharge">
+    	UPDATE agent_recharge ar SET ar.recharge_state = 2,ar.bank_serial_no =#{bankSerialNo},ar.paid_time=#{paidTime}   WHERE 	ar.recharge_order_no= #{rechargeOrderNo}
+    </update>
+    
+    <update id="updateRechargeToChong" parameterType="com.nuoshi.console.domain.agent.AgentRecharge">
+   		  UPDATE agent_recharge ar SET ar.recharge_state = 4,ar.entry_id =#{entryId},ar.entry_time =#{entryTime}  WHERE 	ar.recharge_order_no = #{rechargeOrderNo}
+    </update>
+    <update id="updateRechargeToIng" parameterType="com.nuoshi.console.domain.agent.AgentRecharge">
+    	UPDATE agent_recharge ar SET ar.recharge_state = 1  WHERE 	ar.order_number = #{rechargeOrderNo}
+    </update>
+    <update id="updateRechargeToFail"  parameterType="com.nuoshi.console.domain.agent.AgentRecharge">
+    	UPDATE agent_recharge ar SET  ar.recharge_state = 3 ,ar.bank_serial_no =#{bankSerialNo}   WHERE 	ar.recharge_order_no= #{rechargeOrderNo}
+    </update>
+    
+     <update id="updateBankMsg"  parameterType="com.nuoshi.console.domain.agent.AgentRecharge">
+    	UPDATE agent_recharge ar SET  ar.bank_serial_no =#{bankSerialNo}   WHERE 	ar.recharge_order_no= #{rechargeOrderNo}
+    </update>
+    
+     
+     <select id="getRechargeByRechargeNo" parameterType="com.nuoshi.console.domain.agent.AgentRecharge" resultType="com.nuoshi.console.domain.agent.AgentRecharge">
+    	SELECT
+		  agent_id agentId,
+		  recharge_order_no rechargeOrderNo,
+		  agent_username agentUserName,
+		  agent_name agnetName, 
+		  agent_mobile agentMobile,
+		  agent_cityid agentCityId,
+		  recharge_type rechargeType,
+		  create_time createTime,
+		  paid_time paidTime,
+		  recharge_amount rechargeAmount,
+		  currency_type currencyType,
+		  recharge_state rechargeState,
+		  acpt_bank_no acptBankNo,
+		  pay_channel payChannel,
+		  bank_order_no bankOrderNo,
+		  bank_feedback_msg bankFeedbackMsg ,
+		  bank_serial_no bankSerialNo,
+		  entry_id entryId,
+		  entry_time entryTime,
+		  saler_id salerId
+		FROM
+			agent_recharge ar
+		WHERE
+			 recharge_order_no = #{rechargeOrderNo}
+			 FOR UPDATE
+    </select>
+</mapper>

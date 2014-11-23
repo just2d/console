@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	
+	<definition name="forumuser.list" extends="base.definition">
+		<put-attribute name="title" value="论坛管理--版主管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forumuser/user.jsp" />
+	</definition>
+	
+	<definition name="forumuser.edit" extends="base.definition">
+		<put-attribute name="title" value="论坛管理--修改用户信息" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forumuser/edituser.jsp" />
+	</definition>
+	
+	<definition name="forumuser.role" extends="base.definition">
+		<put-attribute name="title" value="论坛管理--权限管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forumuser/role.jsp" />
+	</definition>
+
+</tiles-definitions> 

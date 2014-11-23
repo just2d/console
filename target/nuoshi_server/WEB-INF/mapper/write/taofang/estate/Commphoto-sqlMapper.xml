@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.nuoshi.console.persistence.write.taofang.estate.CommPhotoWriteMapper">
+	<insert id="batchAddEstatePhoto" parameterType = "int">
+		insert into comm_photo (estateid,photoid,l,m,s,cts,uts) 
+			select estate_id as estateid,photo_id as photoid,l,m,s,now(),now() from stat_estate_housephoto 
+		WHERE id in 
+    	<foreach item="id" collection="idList" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+	</insert>	
+	
+	<update id="del58CommPhotos" parameterType = "int">
+		update comm_photo set del_flag = -1 where estateid = #{estateid}  and sourceid = 1	
+	</update>
+	
+	<delete id="batchDelBackupPhoto" parameterType = "int">
+		delete from stat_estate_housephoto where id in 
+		<foreach item="id" collection="idList" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+	</delete>
+	
+	<delete id="batchDelCommPhoto" parameterType = "int">
+		delete from comm_photo where id in 
+		<foreach item="id" collection="idList" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+	</delete>
+	
+	<insert id="batchAddBackupPhoto" parameterType = "Object">
+		insert into stat_estate_housephoto (estate_id,photo_id,l,m,s,entry_time,category) 
+			select estateid as estate_id,photoid as photo_id,l,m,s,now(),#{category} from comm_photo 
+		WHERE id in 
+    	<foreach item="id" collection="idList" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+	</insert>
+	
+	<update id="updateOrderById" parameterType="java.util.Map" >
+		update comm_photo set sort = #{order} where id = #{id}
+	</update>
+	
+	<insert id="addCommPhoto" >
+		insert into comm_photo (estateid,l,m,s,cts,uts,photoid) values (#{estateId},#{l},#{m},#{s},#{cts},#{uts},#{photoId})
+		<selectKey resultType="int" keyProperty="id" order="BEFORE">  
+        	select LAST_INSERT_ID()   
+    	</selectKey> 
+	</insert>
+	
+</mapper>

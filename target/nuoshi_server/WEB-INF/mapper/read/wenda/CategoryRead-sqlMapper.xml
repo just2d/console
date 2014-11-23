@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.wenda.CategoryManageReadMapper">
+	<select id="getCategoryList" parameterType="com.nuoshi.console.domain.wenda.Category" resultType="com.nuoshi.console.domain.wenda.Category">
+		SELECT
+			id id,
+			name name,
+			pinyin pinyin,
+			pid pid,
+			layer layer,
+			display_order displayOrder,
+			questions questions,
+			keyword keyword,
+			status status,
+			close_time closeTime,
+			title title,
+			describle describle,
+			pageword pageword,
+			location location
+		FROM tf_qa_category
+		WHERE 1=1
+		<if test="id!=null">
+			and id = #{id}
+		</if>
+		<if test="name!=null">
+			and name = #{name}
+		</if>
+		<if test="pinyin!=null">
+			and pinyin = #{pinyin}
+		</if>
+		<if test="pid!=null">
+			and pid = #{pid}
+		</if>
+		<if test="layer!=null">
+			and layer = #{layer}
+		</if>
+		<if test="displayOrder!=null">
+			and display_order = #{displayOrder}
+		</if>
+		<if test="questions!=null">
+			and questions = #{questions}
+		</if>
+		<if test="status!=null">
+			and status = #{status}
+		</if>
+		<if test="keyword!=null">
+			and keyword = #{keyword}
+		</if>
+		order by id desc
+	</select>
+	<select id="getCategoryById" parameterType="Integer" resultType="com.nuoshi.console.domain.wenda.Category">
+		SELECT
+			id id,
+			name name,
+			pinyin pinyin,
+			pid pid,
+			layer layer,
+			display_order displayOrder,
+			questions questions,
+			keyword keyword,
+			status status,
+			close_time closeTime,
+			title title,
+			describle describle,
+			pageword pageword,
+			location location
+		FROM tf_qa_category
+		WHERE id = #{id}
+		order by id desc
+	</select>
+	<select id="getCategoryByIds" parameterType="java.util.List" resultType="com.nuoshi.console.domain.wenda.Category">
+		SELECT
+			id id,
+			name name,
+			pinyin pinyin,
+			pid pid,
+			layer layer,
+			display_order displayOrder,
+			questions questions,
+			keyword keyword,
+			status status,
+			close_time closeTime,
+			title title,
+			describle describle,
+			pageword pageword,
+			location location
+		FROM tf_qa_category
+		WHERE id in 
+		<foreach item="item" collection="idList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+		order by id desc
+	</select>
+</mapper>

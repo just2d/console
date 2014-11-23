@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.read.admin.control.LinkWordReadMapper">
+	
+	<select id="getLinkWordByPage" resultType="com.nuoshi.console.domain.control.LinkWord">
+		SELECT 
+			id id,
+			keyword keyword,
+			url url,
+			create_time createTime 
+		FROM 
+			link_word 
+		<if test="conditions != null">
+		WHERE
+			<foreach item="condition" collection="conditions" separator="AND">
+           		${condition}
+       		</foreach>
+	    </if>
+		ORDER BY id DESC
+	</select>
+	
+	<select id="getLinkWordCount" resultType="int">
+		SELECT COUNT(1) FROM link_word 
+		<if test="conditions != null">
+		WHERE
+			<foreach item="condition" collection="conditions" separator="AND">
+           		${condition}
+       		</foreach>
+	    </if>
+	</select>
+	
+	<select id="getLinkWordById" resultType="com.nuoshi.console.domain.control.LinkWord">
+		SELECT 
+			id id,
+			keyword keyword,
+			url url,
+			create_time createTime 
+		FROM link_word WHERE id = #{id}
+	</select>
+</mapper>

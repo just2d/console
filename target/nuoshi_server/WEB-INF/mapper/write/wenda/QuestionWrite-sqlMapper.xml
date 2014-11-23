@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.wenda.QuestionWriteMapper">
+	<update id="sign"  parameterType="java.util.List">
+		update tf_qa_question set audit_sign=#{sign} 
+		where id in
+		<foreach collection="idList" item="item" open="(" separator="," close=")">
+    		#{item}
+    	</foreach>
+    	and audit_sign is null
+	</update>
+	<update id="updateStatus"  parameterType="java.util.List">
+		update tf_qa_question set status=#{status} 
+		<if test="isClearAuditSign">
+		, audit_sign = null
+		</if>
+		<if test="solvingStatus!=null">
+		, solving_status = #{solvingStatus}
+		</if>
+		where id in
+		<foreach collection="idList" item="item" open="(" separator="," close=")">
+    		#{item}
+    	</foreach>
+	</update>
+	<update id="updateQuestionCategory" parameterType="com.nuoshi.console.domain.wenda.Category" >
+		update tf_qa_question set 
+		category_id=#{category.pid} 
+		,category_name=#{category.parentName}
+		, category_id1 = #{category.id}
+		,category_name1=#{category.name}
+		,cate_url=#{category.cateUrl}
+		,url=#{questionUrl}
+		where id = #{questionId}
+	</update>
+	<update id="recountAnswerForQuestion"  >
+		    UPDATE tf_qa_question
+			SET answers =
+				(
+					SELECT
+						count(0) AS num
+					FROM
+						tf_qa_answer p
+					WHERE
+						p.question_id = #{questionId}
+					AND p.status in
+					<foreach item="item" collection="statusList" open="(" separator="," close=")" >
+		            	#{item}
+		        	</foreach>
+				) 
+			WHERE
+				tf_qa_question.id = #{questionId}
+	</update>
+	<update id="updateQuestionByCategory" parameterType="com.nuoshi.console.domain.wenda.Category">
+		update tf_qa_question
+		<if test="category.pid != 0 ">
+			set category_name1 = #{category.name}
+			where category_id1 = #{category.id}
+		</if>
+		<if test="category.pid == 0 ">
+			set category_name = #{category.name}
+			where category_id = #{category.id}
+		</if>
+	</update>
+	<update id="changeQuestionBlack"  >
+		update tf_qa_question set black_sign=#{type} 
+		where author_id =#{userId}
+	</update>
+</mapper>

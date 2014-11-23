@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.unionhouse.urent.URentWriteMapper">
+ 	
+
+     <delete id="deleteRent" parameterType="int">
+        DELETE FROM u_rent WHERE id = #{rentid}  
+    </delete>
+    
+    <update id="unionEstate">
+    	update u_rent set estateid = #{t_estate_id},estatename=#{estateName}, cityid = #{cityId},distid = #{distId},blockid = #{blockId} where estateid = #{s_estate_id} 
+    </update>
+    
+    <update id="updateEstateId">
+        update u_rent set estateid = #{estateid},estatename=#{estatename} where estateid = #{targetId}
+    </update>
+    
+     <update id="changeVisible">
+    	UPDATE u_rent set evaluation_visible = #{status} WHERE id = #{houseId} AND sourceid = #{sourceId}
+    </update>
+</mapper>

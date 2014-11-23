@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.read.unionhouse.estate.UEstateMappingReadMapper">
+	<resultMap id="UEstateMappingResultMap" type="com.nuoshi.console.domain.estate.UEstateMapping">
+		<id column="id" property="id" />
+		<result column="estate_id" property="estateId" />
+		<result column="estate_dist_id" property="estateDistId" />
+		<result column="estate_block_id" property="estateBlockId" />
+		<result column="u_estate_id" property="uEstateId" />
+		<result column="source_id" property="sourceId" />
+		<result column="create_time" property="createTime" />
+		<result column="last_update_time" property="lastUpdateTime" />
+		<result column="last_update_user_id" property="lastUpdateUserId" />
+	</resultMap>
+
+	<sql id="UEstateMapping">
+		m.id,
+		m.estate_id,
+		m.estate_dist_id,
+		m.estate_block_id,
+		m.u_estate_id,
+		m.source_id,
+		m.create_time,
+		m.last_update_time,
+		m.last_update_user_id,
+		m.estate_name estateName,
+		u.estate_name uEstateName
+	</sql>
+	<select id="getById" resultMap="UEstateMappingResultMap">
+		select
+			m.id,
+			m.estate_id,
+			m.estate_dist_id,
+			m.estate_block_id,
+			m.u_estate_id,
+			m.source_id,
+			m.create_time,
+			m.last_update_time,
+			m.last_update_user_id,
+			m.estate_name estateName
+			from u_estate_mapping m
+		where  m.id = #{id}
+	</select>
+	
+	<select id="getMappingByOwnEstateId" resultMap="UEstateMappingResultMap">
+		select
+			<include refid="UEstateMapping" />
+		from u_estate_mapping m ,
+			union_estate u
+		where m.u_estate_id = u.u_estate_id
+		and m.estate_id = #{estateId}
+		AND m.source_id =#{sourceId}
+		and u.source_id =#{sourceId}
+	</select>
+	
+	<select id="getMappingByUnionEstateId" resultMap="UEstateMappingResultMap" >
+		select
+			<include refid="UEstateMapping" />
+			from u_estate_mapping m ,
+			union_estate u
+		where m.u_estate_id = u.u_estate_id
+		and u.source_id =#{sourceId}
+		and m.u_estate_id = #{estateId}
+		AND m.source_id =#{sourceId}
+	</select>
+	
+	<select id="getMappingByOwnEstateName" resultMap="UEstateMappingResultMap">
+		select
+			<include refid="UEstateMapping" />
+		from u_estate_mapping m ,
+			union_estate u
+		where  m.u_estate_id = u.u_estate_id
+		and m.estate_name = #{estateName}
+		AND m.source_id =#{sourceId}
+		and u.source_id =#{sourceId}
+	</select>
+	
+	<select id="getMappingByUnionEstateName" resultMap="UEstateMappingResultMap" >
+		select
+			<include refid="UEstateMapping" />
+			from u_estate_mapping m ,
+			union_estate u
+		where m.u_estate_id = u.u_estate_id
+		and u.source_id =#{sourceId}
+		and u.estate_name = #{estateName}
+		AND m.source_id =#{sourceId}
+	</select>
+	
+	<select id="getEstateMappingNum" resultType="java.lang.Integer">
+		SELECT count(0) FROM u_estate_mapping WHERE estate_id =  #{estateId} AND source_id =#{sourceId}
+	</select>
+	
+	<select id="getUnionEstateMappingNum" resultType="java.lang.Integer">
+		SELECT count(0) FROM u_estate_mapping WHERE u_estate_id =  #{estateId} AND source_id =#{sourceId}
+	</select>
+	
+	<select id="getUnionEstateNum" resultType="java.lang.Integer">
+		SELECT count(0) FROM union_estate WHERE u_estate_id =  #{estateId} AND source_id =#{sourceId}
+	</select>
+	
+	<select id="getMappingNum" resultType="java.lang.Integer" parameterType="com.nuoshi.console.domain.estate.UEstateMapping">
+		SELECT count(0) FROM u_estate_mapping WHERE estate_id =  #{estateId} AND source_id =#{sourceId} AND u_estate_id=#{uEstateId}
+	</select>
+</mapper>

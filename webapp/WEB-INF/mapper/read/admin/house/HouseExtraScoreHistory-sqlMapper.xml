@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.read.admin.house.HouseExtraScoreHistoryReadMapper">
+	<resultMap id="HouseExtraScoreHistoryResultMap" type="com.nuoshi.console.domain.house.HouseExtraScoreHistory">
+		<id column="id" property="id" />
+		<result column="house_type" property="houseType" />
+		<result column="house_id" property="houseId" />
+		<result column="score" property="score" />
+		<result column="entry_date" property="entryDate" />
+		<result column="operator" property="operator" />
+	</resultMap>
+
+	<sql id="HouseExtraScoreHistory_Column_List">
+		id,
+		house_type,
+		house_id,
+		score,
+		entry_date,
+		operator
+	</sql>
+	<select id="getByHouseId" resultMap="HouseExtraScoreHistoryResultMap" >
+		select
+			<include refid="HouseExtraScoreHistory_Column_List" />
+			from house_extra_score_history
+		where house_id = #{houseId} and house_type = #{houseType}
+	</select>
+</mapper>

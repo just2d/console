@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	
+	<definition name="user.index" extends="base.definition">
+		<put-attribute name="title" value="后台管理首页" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/index.jsp" />
+	</definition>
+	<definition name="user.list" extends="base.definition">
+		<put-attribute name="title" value="管理员列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/list.jsp" />
+	</definition>
+	<definition name="user.modifyInfo" extends="base.definition">
+		<put-attribute name="title" value="修改个人信息" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/ModifyInfo.jsp" />
+	</definition>
+	<definition name="user.modifyUserInfo" extends="base.definition">
+		<put-attribute name="title" value="修改用户信息" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/ModifyUserInfo.jsp" />
+	</definition>
+	<definition name="user.assignRole" extends="base.definition">
+		<put-attribute name="title" value="修改用户信息" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/assignRole.jsp" />
+	</definition>
+	<definition name="role.list" extends="base.definition">
+		<put-attribute name="title" value="角色列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/role/list.jsp" />
+	</definition>
+	<definition name="role.authority" extends="base.definition">
+		<put-attribute name="title" value="角色列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/role/authority.jsp" />
+	</definition>
+	<definition name="function.list" extends="base.definition">
+		<put-attribute name="title" value="角色列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/function/list.jsp" />
+	</definition>
+	<definition name="function.main" extends="base.definition">
+		<put-attribute name="title" value="功能菜单 " />
+		<put-attribute name="menu" value="/WEB-INF/jsp/user/function/left.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/function/main.jsp" />
+	</definition>
+
+</tiles-definitions> 

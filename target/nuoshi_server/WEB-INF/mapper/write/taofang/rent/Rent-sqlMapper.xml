@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.taofang.rent.RentWriteMapper">
+    
+     <insert id="insertRentInvalidReason" parameterType="com.nuoshi.console.domain.reason.InvalidReason">
+        INSERT INTO invalid_rent (id, reason)
+        VALUES (#{id}, #{reason})
+        ON DUPLICATE KEY UPDATE reason = #{reason}
+    </insert>
+     <delete id="deleteRentPhotoOld"  >
+        DELETE FROM rent_photo WHERE houseid = #{houseid}  and photoid = #{photoid}
+    </delete>
+    <delete id="deleteRentPhoto"  >
+        DELETE FROM photo_rent WHERE rent_id = #{houseid}  and id = #{photoid}
+    </delete>
+     <delete id="deleteRejectPhoto"  >
+        DELETE FROM reject_photo WHERE house_id = #{houseid}  and photo_id = #{photoid} and inalbum =#{inalbum}
+    </delete>
+     <update id="updatePhotoStatus" parameterType="int">
+        UPDATE rent SET photo_status = #{photoStatus}  WHERE id = #{houseid}
+    </update>
+    
+    <delete id="deletePhoto"  >
+        DELETE FROM photo WHERE id = #{photoid}
+    </delete>
+	<update id="updateRent" parameterType="com.nuoshi.console.domain.rent.Rent">
+		UPDATE rent SET layout_count = #{layoutCount}, inner_count =  #{innerCount}, community_count = #{communityCount},
+		photo_count = #{photoCount} WHERE id = #{id}
+    </update>
+    
+    <update id="updateRentStatus">
+    	UPDATE rent set audit_status = #{auditStatus} WHERE id = #{id}
+    </update>
+    
+    <update id="updateRentPhotoCountAdd">
+    	UPDATE rent set photo_count=photo_count+1,
+    	<if test="auditStep==1">layout_count=layout_count+1</if>
+    	<if test="auditStep==2">inner_count=inner_count+1</if>
+    	<if test="auditStep==3">community_count=community_count+1</if>
+    	WHERE id = #{houseId}
+    </update>
+    
+    <update id="updateRentPhotoCountCut">
+    	UPDATE rent set photo_count=photo_count-1,
+    	<if test="auditStep==1">layout_count=layout_count-1</if>
+    	<if test="auditStep==2">inner_count=inner_count-1</if>
+    	<if test="auditStep==3">community_count=community_count-1</if>
+    	WHERE id = #{houseId}
+    </update>
+
+	<update id="rejectHouse">
+		UPDATE rent set house_status = 2, audit_status = 2, house_label=null,vcr_url = null,vcr_check_status= 0,complain_num = 0 ,vcr_audit_sign = 0 ,audit_sign=null,update_base = 0 WHERE id = #{houseId}
+	</update>
+	
+	<update id="updateHouseStatus">
+		UPDATE rent set house_status = #{houseStatus} WHERE id = #{id}
+	</update>
+	
+	<update id="updateAuditStatus">
+    	UPDATE rent set audit_status = #{auditStatus},audit_sign = null WHERE id = #{id}
+    </update>
+	<update id="updateAuditStatusByIdList">
+    	UPDATE rent set 
+    	<if test="houseStatus!=null">
+    	house_status=#{houseStatus}, 
+    	</if>
+    	<if test="status!=null">
+    	audit_status = #{status},
+    	</if>
+    	audit_sign = #{sign}
+    	WHERE id in 
+    	<foreach item="item" collection="houseIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </update>
+    
+    <update id="updateRentAuditFlag">
+    	UPDATE rent set 
+    	update_base= #{houseResult}  
+    	WHERE id in 
+    	<foreach item="item" collection="houseIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </update>
+    
+    <update id="signHouse">
+    	update rent t set t.audit_sign=#{auditSign}
+		where t.id in 
+        <foreach item="item" collection="sqlList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </update>
+    
+    <insert id="moveRent2RejectOld" parameterType="java.lang.String">
+    	INSERT INTO reject_photo(house_id,photo_id,reason,inalbum,audit_user_id,note,type,photobrowse,photo_type)
+    	SELECT houseid,photoid,#{reason},inalbum,#{j},note,2,#{photobrowse},category FROM rent_photo WHERE houseid=#{houseid} AND photoid=#{photoid}
+    </insert>
+    
+    <insert id="moveRent2Reject" parameterType="java.lang.String">
+    	INSERT INTO reject_photo(house_id,photo_id,reason,inalbum,audit_user_id,note,type,photobrowse,photo_type)
+    	SELECT rent_id,id,#{reason},0 inalbum,#{j},'',2,#{photobrowse},FLOOR(category/100)+1 category FROM photo_rent WHERE rent_id=#{houseid} AND id=#{photoid}
+    </insert>
+    
+    <update id="deleteRentPhotoCountStatus" parameterType="java.lang.String">
+    	UPDATE rent SET photo_count=photo_count-#{num},photo_status=1,
+    	<if test="type==1">
+    		layout_count=layout_count-#{num}
+    	</if>
+    	<if test="type==2">
+    		inner_count=inner_count-#{num}
+    	</if>
+    	<if test="type==3">
+    		community_count=community_count-#{num}
+    	</if>
+    	WHERE id=#{houseid}
+    </update>
+    
+    <!-- 更新房源的封面图片 -->
+    <update id="updateCoverImg">
+    	UPDATE rent SET photoid=#{photoid} , phototiny=#{phototiny} , photobrowse = #{photobrowse} WHERE id=#{id}
+    </update>
+    
+    <insert id="reAuditPhotoPass">
+    	INSERT INTO rent_photo(houseid,photoid,category,note,order_index,usestatus,inalbum)
+    	VALUES (#{houseId},#{photoId},#{auditStep},#{extra},0,1,#{inalbum})
+    </insert>
+    
+    <insert id="reAuditPhotoReject">
+    	INSERT INTO reject_photo(house_id,type,photo_id,reason,photobrowse,inalbum,audit_user_id,note,photo_type)
+    	VALUES (#{houseId},#{houseType},#{photoId},#{rejectReason},#{houseDescribe},#{inalbum},#{dealerId},#{extra},#{auditStep})
+    </insert>
+    
+    <update id="unionEstate">
+    	update rent set estateid = #{t_estate_id}, estate_name=#{estateName},city_id = #{cityId},dist_id = #{distId},block_id = #{blockId} where estateid = #{s_estate_id} 
+    </update>
+    <update id="outOfStockByAgentId">
+    	UPDATE rent SET house_status = 3,extra_score=0, house_label=null,vcr_url = null,vcr_check_status= 0,complain_num = 0 ,vcr_audit_sign = 0 ,audit_sign=null  WHERE authorid = #{agentId} and ( house_status = 1 or house_status = 6 )
+    </update>
+    <update id="updateHouseScore">
+    	UPDATE rent SET base_score = #{score} where id = #{houseid}
+    </update>
+    <update id="unshelveAll"    >
+  		UPDATE rent SET house_status = 3, extra_score=0,house_label=null,vcr_url = null,vcr_check_status= 0,vip_pic_flag = 'N',push_flag = 'N', complain_num = 0 ,vcr_audit_sign = 0 ,audit_sign=null  WHERE authorid = #{agentId} and ( house_status = 1 or house_status = 6 )
+    </update>
+    <update id="updateRentPhotoCountOld" parameterType="java.lang.Integer">
+    	UPDATE rent r  
+    	SET photo_count =( SELECT count(*) FROM rent_photo p WHERE p.houseid = r.id  ), 
+    		r.layout_count =( SELECT count(*) FROM rent_photo p WHERE p.houseid = r.id and p.category = 1  ),
+    		r.inner_count =( SELECT count(*) FROM rent_photo p WHERE p.houseid = r.id and p.category = 2  ),
+    		r.community_count =( SELECT count(*) FROM rent_photo p WHERE p.houseid = r.id and p.category = 3 ) 
+    	where r.id=#{houseId}
+    </update>
+     <update id="updateRentPhotoCount" parameterType="java.lang.Integer">
+     <![CDATA[ 
+    	UPDATE rent r  
+    	SET photo_count =( SELECT count(*) FROM photo_rent p WHERE p.rent_id = r.id  ), 
+    		r.layout_count =( SELECT count(*) FROM photo_rent p WHERE p.rent_id = r.id  and p.category >= 1 and p.category <= 99 ),
+    		r.inner_count =( SELECT count(*) FROM photo_rent p WHERE p.rent_id = r.id and p.category >=100 and p.category <= 199  ),
+    		r.community_count =( SELECT count(*) FROM photo_rent p WHERE p.rent_id = r.id and p.category >=200 and p.category <=250 ) 
+    	where r.id=#{houseId}
+    	 ]]> 
+    </update>
+    
+    <update id="changeVcrAuditSign">
+		UPDATE rent SET vcr_audit_sign = #{status} 
+		WHERE id IN 
+		<foreach item="item" collection="houseIds" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+	</update>
+	
+	<update id="approveVcr">
+		UPDATE rent set vcr_check_status = 2 WHERE id = #{houseId}
+	</update>
+	
+	<update id="rejectVcr">
+		UPDATE rent set vcr_check_status = NULL, vcr_url = NULL, vcr_audit_sign = null, house_label = replace(house_label, ',V', ''), vcr_submit_time =null, complain_num = 0 
+		WHERE id = #{houseId} AND (house_status = 1 OR house_status = 6) AND (vcr_url IS NOT NULL AND vcr_url != '')
+	</update>
+	
+	<update id="changeVisible">
+		UPDATE rent SET evaluation_visible = #{status} WHERE id = #{houseId}
+	</update>
+	<update id="addExtraScore">
+		UPDATE rent SET extra_score = #{score} ,uts = now() WHERE id = #{houseId}
+	</update>
+	
+	<update id="updateStatusAndAppealExpiredTime">
+		UPDATE rent SET <if test="houseStatus != null">house_status = #{houseStatus} ,</if> appeal_expired_time = null  WHERE id = #{houseId}
+	</update>
+	<update id="updateStore">
+		UPDATE rent SET store_id = #{newStoreId},store_name=#{storeName} WHERE store_id = #{oldStoreId}
+	</update>
+	<update id="updateCompanyName">
+		UPDATE rent SET broker_name = #{companyName},company_id =#{newCompanyId} WHERE company_id =#{oldCompanyId} 
+	</update>
+	<update id="updateStoreNameByStoreId">
+		UPDATE rent SET store_name = #{storeName} WHERE store_id = #{storeId}
+	</update>
+	
+	<update id="updateLocaleByEstate" parameterType="com.nuoshi.console.domain.estate.EstateInfo">
+		UPDATE rent SET dist_id = #{distId},block_id =#{blockId} WHERE estateid = #{estateId}
+	</update>
+	
+	<update id="updateEstateNameByEstateId" parameterType="com.nuoshi.console.domain.estate.EstateInfo">
+		UPDATE rent SET estate_name = #{estateName} WHERE estateid = #{estateId}
+	</update>
+</mapper>

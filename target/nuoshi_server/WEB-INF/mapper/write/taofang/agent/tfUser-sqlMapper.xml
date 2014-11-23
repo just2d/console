@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.taofang.agent.TFUserWriteMapper">
+    
+    <update id="updateFlags" parameterType="com.nuoshi.console.domain.agent.AgentMaster">
+        UPDATE t_user SET headtiny = #{headTiny}, headbrowse = #{headBrowse} WHERE id = #{agentId}
+    </update>
+    	  <update id="updateAnswerCount" parameterType="java.lang.Integer" >
+	    UPDATE t_user
+	    <if test="isAdd">
+		SET answers = answers+1
+	    </if>
+	    <if test="!isAdd">
+		SET answers = answers-1
+	    </if>
+		where id = #{userId}
+	  </update>
+	    <update id="updateQuestionCount" parameterType="java.lang.Integer" >
+	    UPDATE t_user
+	     <if test="isAdd">
+		SET questions = questions+1
+	     </if>
+	     <if test="!isAdd">
+		SET questions = questions-1
+	     </if>
+		where id = #{userId}
+	  </update>
+	  
+	  <delete id="delete">
+	  	DELETE FROM t_user WHERE id =#{userId}
+	  </delete>
+    
+</mapper>

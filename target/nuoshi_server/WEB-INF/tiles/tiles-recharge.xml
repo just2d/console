@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+	<definition name="recharge.successlist" extends="base.definition">
+		<put-attribute name="title" value="支付成功订单管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/recharge/successlist.jsp" />
+	</definition>
+
+	<definition name="recharge.notsuccesslist" extends="base.definition">
+		<put-attribute name="title" value="未支付成功订单管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/recharge/notsuccesslist.jsp" />
+	</definition>
+
+
+	<definition name="recharge.query" extends="base.definition">
+		<put-attribute name="title" value="后台用户明细查询" />
+		<put-attribute name="body" value="/WEB-INF/jsp/recharge/query.jsp" />
+	</definition>
+
+</tiles-definitions> 

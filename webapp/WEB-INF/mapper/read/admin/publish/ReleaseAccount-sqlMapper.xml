@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.admin.publish.ReleaseAccountReadMapper">
+	<select id="queryById" resultType="com.nuoshi.console.domain.user.Publisher" parameterType="int">
+		select id,user_id as userId,user_name as userName,login_name as loginName,city_id as cityId,role,type,status 
+		from
+		release_account where id=#{id}
+	</select>
+	<select id="queryByUserId" resultType="com.nuoshi.console.domain.user.Publisher" parameterType="int">
+		select id,user_id as userId,user_name as userName,login_name as loginName,city_id as cityId,role,type,status 
+		from
+		release_account where user_id=#{userId}
+	</select>
+	<select id="query" resultType="com.nuoshi.console.domain.user.Publisher" parameterType="java.util.Map">
+		select id,user_id as userId,user_name as userName,login_name as loginName,city_id as cityId,role,type,status 
+		from release_account 
+		<where>
+		<if test="map.role!=null and map.role!=0">
+			role=#{map.role}
+		</if>
+		<if test="map.cityId!=null and map.cityId!=0">
+			and city_id=#{map.cityId}
+		</if>
+		<if test="map.userId!=null and map.userName==null">
+			and user_id=#{map.userId}
+		</if>
+		<if test="map.userName!=null and map.userId==null">
+			and user_name like concat('%',#{map.userName},'%')
+		</if>
+		<if test="map.userId!=null and map.userName!=null">
+			and (user_id=#{map.userId} or user_name like concat('%',#{map.userName},'%') )
+		</if>
+		</where>
+		order by id desc
+	</select>
+</mapper>

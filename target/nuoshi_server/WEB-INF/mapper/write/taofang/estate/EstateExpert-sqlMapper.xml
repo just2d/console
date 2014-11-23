@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.write.taofang.estate.EstateExpertWriteMapper">
+	<resultMap id="EstateExpertResultMap" type="com.nuoshi.console.domain.estate.EstateExpert">
+		<id column="id" property="id" />
+		<result column="estate_id" property="estateId" />
+		<result column="estate_name" property="estateName" />
+		<result column="expert_type" property="expertType" />
+		<result column="start_time" property="startTime" />
+		<result column="end_time" property="endTime" />
+		<result column="agent_id" property="agentId" />
+		<result column="agent_name" property="agentName" />
+		<result column="agent_phone" property="agentPhone" />
+		<result column="assigned_by" property="assignedBy" />
+	</resultMap>
+
+	<sql id="EstateExpert_Column_List">
+		id,
+		estate_id,
+		estate_name,
+		expert_type,
+		start_time,
+		end_time,
+		agent_id,
+		agent_name,
+		agent_phone,
+		assigned_by
+	</sql>
+	<insert id="add" parameterType="com.nuoshi.console.domain.estate.EstateExpert" useGeneratedKeys="true" keyProperty="id">
+		insert into estate_expert (
+			estate_id,
+			estate_name,
+			expert_type,
+			start_time,
+			end_time,
+			agent_id,
+			agent_name,
+			agent_phone,
+			assigned_by
+		)
+		values (
+			#{estateId},
+			#{estateName},
+			#{expertType},
+			#{startTime},
+			#{endTime},
+			#{agentId},
+			#{agentName},
+			#{agentPhone},
+			#{assignedBy}
+		)
+	</insert>
+
+	<delete id="deleteById" parameterType="int">
+		delete from estate_expert where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="com.nuoshi.console.domain.estate.EstateExpert">
+		update estate_expert
+			<set>
+				<if test="estateId != null">
+					estate_id = #{estateId},
+				</if>
+				<if test="estateName != null">
+					estate_name = #{estateName},
+				</if>
+				<if test="expertType != null">
+					expert_type = #{expertType},
+				</if>
+				<if test="startTime != null">
+					start_time = #{startTime},
+				</if>
+				<if test="endTime != null">
+					end_time = #{endTime},
+				</if>
+				<if test="agentId != null">
+					agent_id = #{agentId},
+				</if>
+				<if test="agentName != null">
+					agent_name = #{agentName},
+				</if>
+				<if test="agentPhone != null">
+					agent_phone = #{agentPhone},
+				</if>
+				<if test="assignedBy != null">
+					assigned_by = #{assignedBy}
+				</if>
+			</set>
+		where id = #{id}
+	</update>
+</mapper>

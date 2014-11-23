@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.write.admin.auditHistory.AuditHistoryWriteMapper">
+	<resultMap id="BaseResultMap"
+		type="com.nuoshi.console.domain.auditHistory.AuditHistory">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="house_id" property="houseId" jdbcType="INTEGER" />
+		<result column="house_type" property="houseType" jdbcType="INTEGER" />
+		<result column="author_id" property="authorId" jdbcType="INTEGER" />
+		<result column="author_name" property="authorName" jdbcType="VARCHAR" />
+		<result column="effect_time" property="effectTime" jdbcType="TIMESTAMP" />
+		<result column="audit_result" property="auditResult" jdbcType="TINYINT" />
+	</resultMap>
+
+	<insert id="saveAuditHistory" parameterType="com.nuoshi.console.domain.auditHistory.AuditHistory">
+		insert into audit_history(
+		house_id,
+		house_type,
+		author_id,
+		author_name,
+		effect_time,
+		audit_result,
+		city_id)
+		values(
+		#{houseId},
+		#{houseType},
+		#{authorId},
+		#{authorName},
+		#{effectTime},
+		#{auditResult},
+		#{cityId});
+		<selectKey resultType="int" keyProperty="id">
+			select
+			last_insert_id() as id from audit_history limit 1
+		</selectKey>
+	</insert>
+
+	<update id="updateAuditHistory" parameterType="com.nuoshi.console.domain.auditHistory.AuditHistory">
+		update audit_history
+		<set>
+			<if test="houseId != null">
+				house_id = #{houseId},
+			</if>
+			<if test="houseType != null">
+				house_type = #{houseType},
+			</if>
+			<if test="authorId != null">
+				author_id = #{authorId},
+			</if>
+			<if test="authorName != null">
+				author_name = #{authorName},
+			</if>
+			<if test="effectTime != null">
+				effect_time = #{effectTime},
+			</if>
+			<if test="auditResult != null">
+				audit_result = #{auditResult},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+
+
+	<update id="updateAuditHistoryForResult" parameterType="com.nuoshi.console.domain.auditHistory.AuditHistory">
+		update audit_history
+		<set>
+			<if test="effectTime != null">
+				effect_time = #{effectTime},
+			</if>
+			<if test="auditResult != null">
+				audit_result = #{auditResult},
+			</if>
+		</set>
+		where id in
+		<foreach item="item" collection="auditHistoryList" open="("
+			separator="," close=")">
+			#{item.id}
+		</foreach>
+	</update>
+	
+
+
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from audit_history
+		where id = #{id}
+	</delete>
+	
+	<delete id="deleteReauditHistory" parameterType="java.lang.Integer">
+		DELETE FROM reaudit_history WHERE sub_history_id = #{subHistoryId}
+	</delete>
+	
+	<delete id="deleteReauditHistoryNew">
+		DELETE FROM reaudit_history WHERE sub_history_id = #{id} AND photo_id = #{photoId}
+	</delete>
+
+	<insert id="insertSub" parameterType="com.nuoshi.console.domain.auditHistory.SubAuditHistory">
+		INSERT INTO
+		sub_audit_history (
+		photo_id,
+		audit_id,
+		audit_step,
+		audit_time,
+		dealer_name,
+		dealer_id,
+		extra,
+		audit_result,
+		inalbum,
+		reject_reason,
+		house_describe,
+		photo_url
+		)
+		VALUES
+		(#{photoId},#{auditId},#{auditStep},#{auditTime},#{dealerName},#{dealerId},#{extra},#{auditResult},#{inalbum},#{rejectReason},#{houseDescribe},#{photoUrl})
+	</insert>
+	
+	
+	<update id="updateAuditHistoryAtSubIds">
+		UPDATE audit_history 
+		SET sub_ids = CASE
+		WHEN length(sub_ids) + length(#{id}) > 100 THEN
+			#{id}
+		ELSE
+			CONCAT(sub_ids, #{id})
+		END
+		WHERE id in 
+		<foreach collection="sub_ids" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+		AND house_type = #{house_type}
+	</update>
+	
+	
+	<insert id="saveReauditHistory" parameterType="com.nuoshi.console.domain.auditHistory.ReauditHistory">
+		INSERT INTO reaudit_history(history_id,sub_history_id,audit_id,reaudit_id,reaudit_time,result,house_id,house_type)
+		VALUES(#{historyId},#{subHistoryId},#{auditId},#{reauditId},#{reauditTime},#{result},#{houseId},#{houseType})
+	</insert>
+	
+	<insert id="addReauditHistoryNew" parameterType="com.nuoshi.console.domain.auditHistory.ReauditHistory">
+		INSERT INTO reaudit_history(history_id,sub_history_id,audit_id,reaudit_id,reaudit_time,result,photo_id)
+		VALUES(#{historyId},#{subHistoryId},#{auditId},#{reauditId},#{reauditTime},#{result},#{photo_id})
+	</insert>
+	
+	
+	<update id="updateAuditHouseQualityUsingFlag">
+		UPDATE audit_history
+		SET using_flag = #{userName}
+		WHERE house_id in 
+		<foreach item="item" collection="list" open="(" separator="," close=")">
+			#{item.houseId}
+		</foreach>
+		
+	</update>
+	
+	
+	<delete id="deleteReauditHistoryByLogId">
+		DELETE FROM reaudit_history WHERE house_id=#{houseId} and house_type=#{houseType} and audit_id= #{dealerId}
+	</delete>
+	
+</mapper>

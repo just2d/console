@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+ 
+	<definition name="msg.send" extends="base.definition">
+		<put-attribute name="title" value="发送站内信" />
+		<put-attribute name="body" value="/WEB-INF/jsp/message/sendmessage.jsp" />
+	</definition>
+
+</tiles-definitions> 

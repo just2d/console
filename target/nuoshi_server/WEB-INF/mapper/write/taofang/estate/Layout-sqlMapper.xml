@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.nuoshi.console.persistence.write.taofang.estate.LayoutWriteMapper">
+	<resultMap type="com.nuoshi.console.view.EstatePhotoDetail" id="layoutDetail" >
+		<result column="id" property="id" javaType="int"/>
+		<result column="estate_id" property="estateId" javaType="int"/>
+		<result column="l" property="lPhoto" javaType="String"/>
+		<result column="s" property="sPhoto" javaType="String"/>
+		<result column="m" property="mPhoto" javaType="String"/>
+		<result column="beds" property="beds" javaType="int"/>
+		<result column="category" property="beds" javaType="int"/>
+		<result column="sort" property="order" javaType="String"/>
+	</resultMap>
+	<insert id="batchAddEstatePhoto" parameterType = "int">
+		insert into layout_photo (estateid,photoid,beds,l,m,s,cts,uts) 
+			select estate_id as estateid,photo_id as photoid,beds,l,m,s,now(),now() from stat_estate_housephoto 
+		WHERE id in 
+    	<foreach item="id" collection="idList" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+	</insert>
+	
+	<update id="del58LayoutPhotos" parameterType = "int">
+		update layout_photo set del_flag = -1 where estateid = #{estateid} and sourceid = 1	
+	</update>
+		
+	<delete id="batchDelBackupPhoto" parameterType = "int">
+		delete from stat_estate_housephoto where id in 
+		<foreach item="id" collection="idList" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+	</delete>
+	
+	<delete id="batchDelLayoutPhoto" parameterType = "int">
+		delete from layout_photo where id in 
+		<foreach item="id" collection="idList" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+	</delete>
+	
+	<insert id="batchAddBackupPhoto" parameterType = "Object">
+		insert into stat_estate_housephoto (estate_id,photo_id,beds,l,m,s,entry_time,category) 
+			select estateid as estate_id,photoid as photo_id,beds,l,m,s,now(),#{category} from layout_photo 
+		WHERE id in 
+    	<foreach item="id" collection="idList" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+	</insert>
+	
+	<update id="updateOrderById" parameterType="java.util.Map" >
+		update layout_photo set sort = #{order} where id = #{id}
+	</update>
+	
+	<insert id="addLayoutPhoto" parameterType="com.nuoshi.console.view.EstatePhotoDetail" useGeneratedKeys="true" keyProperty="id">
+		<![CDATA[  
+		insert into layout_photo (estateid,beds,l,m,s,cts,uts) values (#{estateId},#{beds},#{lPhoto},#{mPhoto},#{sPhoto},NOW(),NOW())
+		]]> 
+		<selectKey resultType="int" keyProperty="id" >  
+        	select LAST_INSERT_ID()   
+    	</selectKey>  
+	</insert>
+</mapper>

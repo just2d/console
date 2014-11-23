@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.read.stat.DayWebStatisReadMapper">
+	<resultMap id="DayWebStatisResultMap" type="com.nuoshi.console.domain.web.DayWebStatis">
+		<result column="city_id" property="cityId" />
+		<result column="entry_date" property="entryDate" />
+		<result column="pay_agent_num" property="payAgentNum" />
+		<result column="free_agent_num" property="freeAgentNum" />
+		<result column="verify_agent_num" property="verifyAgentNum" />
+		<result column="online_resale_num" property="onlineResaleNum" />
+		<result column="online_rent_num" property="onlineRentNum" />
+		<result column="pub_resale_num" property="pubResaleNum" />
+		<result column="pub_rent_num" property="pubRentNum" />
+		<result column="login_user_num" property="loginUserNum" />
+		<result column="pub_house_agent_num" property="pubHouseAgentNum" />
+		<result column="city_name" property="cityName" />
+		<result column="dist_name" property="distName" />
+	</resultMap>
+
+	<sql id="DayWebStatis_Column_List">
+		city_id,
+		entry_date,
+		pay_agent_num,
+		free_agent_num,
+		verify_agent_num,
+		online_resale_num,
+		online_rent_num,
+		pub_resale_num,
+		pub_rent_num,
+		login_user_num,
+		pub_house_agent_num,
+		city_name
+	</sql>
+
+	
+
+	<select id="getCityDataByDate" resultMap="DayWebStatisResultMap" >
+		select 
+		 city_id cityId,
+		 city_name cityName,
+		entry_date entryDate,
+		sum(pay_agent_num) payAgentNum ,
+		sum(free_agent_num) freeAgentNum ,
+		sum(verify_agent_num) verifyAgentNum,
+		sum(online_resale_num) onlineResaleNum,
+		sum(online_rent_num) onlineRentNum,
+		sum(pub_resale_num)pubResaleNum ,
+		sum(pub_rent_num) pubRentNum,
+		sum(login_user_num) loginUserNum,
+		sum(pub_house_agent_num) pubHouseAgentNum
+		from day_web_statis where entry_date = #{date} 
+		group by cityId
+	</select>
+	<select id="getAllDataByDate" resultMap="DayWebStatisResultMap" >
+
+		select
+		<if test="cityId > 0">
+		 city_id cityId,
+		 city_name cityName,
+		</if>
+		<if test="distId > 0">
+		 dist_id distId,
+		 dist_name cityName,
+		</if>
+		entry_date entryDate,
+		sum(pay_agent_num) payAgentNum ,
+		sum(free_agent_num) freeAgentNum ,
+		sum(verify_agent_num) verifyAgentNum,
+		sum(online_resale_num) onlineResaleNum,
+		sum(online_rent_num) onlineRentNum,
+		sum(pub_resale_num)pubResaleNum ,
+		sum(pub_rent_num) pubRentNum,
+		sum(login_user_num) loginUserNum,
+		sum(pub_house_agent_num) pubHouseAgentNum
+		<![CDATA[
+			from day_web_statis where entry_date >= #{startDate} and entry_date<=#{endDate}
+		]]>
+		<if test="cityId > 0">
+			and  city_id = #{cityId}
+		</if>
+		<if test="distId > 0">
+			and  dist_id = #{distId}
+		</if>
+		
+		GROUP BY entry_date order by entry_date desc
+		
+	</select>
+	
+	
+</mapper>

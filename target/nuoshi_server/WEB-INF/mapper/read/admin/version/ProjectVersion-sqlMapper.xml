@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.read.admin.version.ProjectVersionReadMapper">
+	<resultMap id="ProjectVersionResultMap" type="com.nuoshi.console.domain.version.ProjectVersion">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="version_url" property="versionUrl" />
+	</resultMap>
+
+	<sql id="ProjectVersion_Column_List">
+		id,
+		name,
+		version_url
+	</sql>
+	<select id="getById" resultMap="ProjectVersionResultMap" parameterType="int">
+		select
+			<include refid="ProjectVersion_Column_List" />
+			from project_version
+		where id = #{id}
+	</select>
+	<select id="getAll" resultMap="ProjectVersionResultMap" parameterType="int">
+		select
+			<include refid="ProjectVersion_Column_List" />
+			from project_version
+	</select>
+	
+</mapper>

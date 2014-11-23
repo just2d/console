@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.nuoshi.console.persistence.read.taofang.estate.LayoutReadMapper">
+	<resultMap type="com.nuoshi.console.view.BasePhoto" id="photoBase" >
+		<result column="id" property="id" javaType="int"/>
+		<result column="estate_id" property="estateId" javaType="int"/>
+		<result column="l" property="lPhoto" javaType="String"/>
+	</resultMap>
+	<resultMap type="com.nuoshi.console.view.EstatePhotoDetail" id="layoutDetail" extends="photoBase">
+		<result column="s" property="sPhoto" javaType="String"/>
+		<result column="m" property="mPhoto" javaType="String"/>
+		<result column="beds" property="beds" javaType="int"/>
+		<result column="category" property="beds" javaType="int"/>
+		<result column="sort" property="order" javaType="String"/>
+		<result column="display_order" property="order" javaType="String"/>
+		<result column="sourceid" property="sourceId" javaType="int"/>
+	</resultMap>
+	<!-- 获得小区的户型图-->
+	<select id="getLayoutPhotoList" parameterType="com.nuoshi.console.view.EstatePhoto" resultMap="layoutDetail">
+		 <![CDATA[
+		select id,category%10 beds,display_order sort,0 sourceid from photo_estate where estate_id = #{estateId} and  category < 200 AND delete_flag != 1 
+		]]>
+	</select>
+	
+	<select id="getLayoutPhotoListOld" parameterType="com.nuoshi.console.view.EstatePhoto" resultMap="layoutDetail">
+		select id,beds,s,l,sort,sourceid from layout_photo where estateid = #{estateId} and del_flag != -1
+	</select>
+	
+	<!-- 获得小区备选库户型图-->
+	<select id="getBackupLayoutPhoto" parameterType="com.nuoshi.console.view.EstatePhoto" resultMap="layoutDetail">
+		 <![CDATA[
+		select id,1 category from photo_resale where estate_id = #{estateId} and category >= 1 and category <= 99 and reserve_flag = 'Y' limit 30
+		]]> 
+	</select>
+	
+	<select id="getBackupLayoutPhotoOld" parameterType="com.nuoshi.console.view.EstatePhoto" resultMap="layoutDetail">
+		select id,category,m,l from stat_estate_housephoto where estate_id = #{estateId} and category = 1 limit 30 
+	</select>
+	
+	<!-- 获得小区备选库户型图数量-->
+	<select id="countBackupLayoutPhoto" parameterType="com.nuoshi.console.view.EstatePhoto" resultType="int" >
+	<![CDATA[
+		select count(0) from photo_resale where estate_id = #{estateId} and category >= 1 and category <= 99 and reserve_flag = 'Y'
+		]]>  
+	</select>
+	
+	<select id="countBackupLayoutPhotoOld" parameterType="com.nuoshi.console.view.EstatePhoto" resultType="int" >
+		select count(0) from stat_estate_housephoto where estate_id = #{estateId} and category = 1 
+	</select>
+	
+	
+	<!-- 获得小区户型图详情-->
+	<select id="getEstatePhotoById" parameterType="com.nuoshi.console.view.EstatePhoto" resultMap="layoutDetail">
+		select id,display_order from photo_estate where id = #{id}
+	</select>
+	
+	<select id="getEstatePhotoByIdOld" parameterType="com.nuoshi.console.view.EstatePhoto" resultMap="layoutDetail">
+		select id,sort from layout_photo where id = #{id}
+	</select>
+	
+	<select id="getEstatePhotoByOrder" parameterType="com.nuoshi.console.view.EstatePhoto" resultMap="layoutDetail">
+	<![CDATA[
+		select id,display_order from photo_estate where display_order = #{order} and category <200 AND delete_flag != 1 
+		]]> 
+	</select>
+	
+	<select id="getEstatePhotoByOrderOld" parameterType="com.nuoshi.console.view.EstatePhoto" resultMap="layoutDetail">
+		select id,sort from layout_photo where sort = #{order} and del_flag != -1
+	</select>
+	
+	<select id="countLayoutNum" parameterType="com.nuoshi.console.view.EstatePhoto" resultType="int" useCache="false">
+	<![CDATA[
+		select count(*) from photo_estate where estate_id = #{estateId} and category < 200 AND delete_flag != 1 
+		]]>  
+	</select>
+	<select id="countLayoutNumOld" parameterType="com.nuoshi.console.view.EstatePhoto" resultType="int" useCache="false">
+		select count(*) from layout_photo where estateid = #{estateId} and del_flag != -1
+	</select>
+	
+	<select id="countDelLayoutNum" parameterType="com.nuoshi.console.view.EstatePhoto" resultType="int" useCache="false">
+		<![CDATA[
+		select count(*) from photo_estate where estate_id = #{estateId} and category < 200 AND delete_flag != 1 
+		]]>  
+	</select>
+	<select id="countDelLayoutNumOld" parameterType="com.nuoshi.console.view.EstatePhoto" resultType="int" useCache="false">
+		select count(*) from layout_photo where estateid = #{estateId} and sourceid = 1 and del_flag != -1
+	</select>
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.admin.user.FunctionReadMapper">
+
+	<select id="getAllSubByPage" parameterType="int" resultType="com.nuoshi.console.domain.user.Function">
+		SELECT * from function r where r.parentId = #{id}
+	</select>
+	<select id="getAllSubCount" parameterType="int" resultType="com.nuoshi.console.domain.user.Function">
+		SELECT count(0) from function r where r.parentId = #{id}
+	</select>
+	<select id="getAll" parameterType="int" resultType="com.nuoshi.console.domain.user.Function">
+		SELECT * from function 
+	</select>
+	<select id="selectFunctionById" parameterType="int" resultType="com.nuoshi.console.domain.user.Function">
+		SELECT * from function WHERE id=#{id}
+	</select>
+	<select id="selectFunctionByRoleId" parameterType="int" resultType="com.nuoshi.console.domain.user.Function">
+		SELECT f.* from function f join role_function rf on rf.functionId = f.ID where  rf.roleId=#{roleId}
+	</select>
+	<select id="selectFunctionByUserId" parameterType="int" resultType="com.nuoshi.console.domain.user.Function">
+		SELECT
+				f.*
+			FROM
+				user_role ur
+				LEFT JOIN `role` r on ur.roleId = r.id LEFT JOIN role_function rf ON rf.roleId = ur.roleId
+				LEFT JOIN `function` f ON f.ID = rf.functionId
+			WHERE
+		ur.userId = #{userId} and  r.status = 1
+	</select>
+	
+	<select  id="selectFunctionByName" parameterType="string" resultType="com.nuoshi.console.domain.user.Function">
+		SELECT * from function WHERE name=#{name} 
+
+			<if test="id!=null">
+				and		id != #{id}
+			</if>
+	
+		limit 0,1
+	</select>
+
+	<select id="getAllFunctionByPage"  resultType="com.nuoshi.console.domain.user.Function">
+		SELECT * from function r
+	</select>
+	<select id="getAllFunctionCount"  resultType="com.nuoshi.console.domain.user.Function">
+		SELECT count(0) from function r
+	</select>
+	<select id="getAllSearchSubFunctionByPage"  resultType="com.nuoshi.console.domain.user.Function">
+		SELECT * from function r 
+		 WHERE r.parentId = #{parentId}
+       
+        <if test="condition!=null">
+ 			 ${condition}
+		</if>
+	</select>
+	<select id="getAllSearchSubFunctionCount" resultType="com.nuoshi.console.domain.user.Function">
+		SELECT count(0) from function r 
+		  WHERE r.parentId = #{parentId}
+        <if test="condition!=null">
+ 			 ${condition}
+		</if>
+	</select>
+	
+	
+</mapper>

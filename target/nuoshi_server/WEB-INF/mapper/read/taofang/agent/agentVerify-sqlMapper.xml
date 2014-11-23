@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.agent.AgentVerifyReadMapper">
+	
+	<select id="getAllVerifyByPage" resultType="com.nuoshi.console.domain.agent.AgentVerifyAdminView" parameterType="int">
+		<![CDATA[
+	        SELECT av.id,av.agentid,av.head,av.idcard,av.namecard,av.pubdate,av.editdate,av.admin,av.flags,av.headmsg,
+	        av.idcardmsg,av.namecardmsg,av.idnum,av.brand,av.addr,av.brokerid,av.fullbrand,av.fulladdr,av.headid,av.futs,
+	        av.callnumber,av.user400id,av.registerstep,u.mobile,u.name,u.cityid,u.distid,u.blockid  
+	        FROM agent_verify as av
+	        LEFT JOIN user as u ON av.agentid = u.id
+	        WHERE (av.flags & #{mask}) = #{mask}  
+        	ORDER BY editdate
+        ]]>
+    </select>
+    
+    <select id="getAllVerify2ByPage" resultType="com.nuoshi.console.domain.agent.AgentVerifyAdminView">
+        <![CDATA[
+	        SELECT av.id,av.agentid,av.head,av.idcard,av.namecard,av.pubdate,av.editdate,av.admin,av.flags,av.headmsg,
+	        av.idcardmsg,av.namecardmsg,av.idnum,av.brand,av.addr,av.brokerid,av.fullbrand,av.fulladdr,av.headid,av.futs,
+	        av.callnumber,av.user400id,av.registerstep,u.mobile,u.name ,u.cityid,u.distid,u.blockid 
+	        FROM agent_verify as av
+	        LEFT JOIN user as u ON av.agentid = u.id
+	        WHERE 
+        ]]>
+        <if test="conditions != null">
+			<foreach item="condition" collection="conditions" separator="AND">
+           		${condition}
+       		</foreach>
+	    </if>
+       	ORDER BY editdate
+    </select>
+    
+    <select id="selectVerifyByAgentId" resultType="com.nuoshi.console.domain.agent.AgentVerify" parameterType="int">
+        SELECT av.id,av.agentid,av.head,av.idcard,av.namecard,av.pubdate,av.editdate,av.admin,av.flags,av.headmsg,
+	        av.idcardmsg,av.namecardmsg,av.idnum,av.brand,av.addr,av.brokerid,av.fullbrand,av.fulladdr,av.headid,av.futs,
+	        av.callnumber,av.user400id,av.registerstep FROM agent_verify av WHERE av.agentid = #{agentId} limit 0,1
+    </select>
+    
+    <select id="selectVerifyViewById" resultType="com.nuoshi.console.domain.agent.AgentVerifyAdminView" parameterType="int">
+        SELECT av.id,av.agentid,av.head,av.idcard,av.namecard,av.pubdate,av.editdate,av.admin,av.flags,av.headmsg,
+	        av.idcardmsg,av.namecardmsg,av.idnum,av.brand,av.addr,av.brokerid,av.fullbrand,av.fulladdr,av.headid,av.futs,
+	        av.callnumber,av.user400id,av.registerstep,u.mobile,u.name 
+        FROM agent_verify as av
+        LEFT JOIN user as u ON av.agentid = u.id
+        WHERE agentid = #{agentId}
+        LIMIT 0,1
+    </select>
+    
+    <select id="selLocalDir" resultType="String" parameterType="int">
+    	SELECT LocalName FROM t_local WHERE LocalID = #{id}
+    </select>
+    
+    <select id="selectBrokerById" resultType="com.nuoshi.console.domain.agent.Broker" parameterType="int">
+    	SELECT id,province,city,brand,address,team,block,district,areaid,brandid,flags FROM broker WHERE id = #{id}
+    </select>
+    
+    <select id="selectBrokerIdByBrandAddr" resultType="int">
+    	SELECT DISTINCT id FROM broker WHERE 
+    	<if test="conditions != null">
+			<foreach item="condition" collection="conditions" separator="AND">
+           		${condition}
+       		</foreach>
+	    </if>
+		LIMIT 1
+    </select>
+
+</mapper>

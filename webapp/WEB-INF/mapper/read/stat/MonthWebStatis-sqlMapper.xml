@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.read.stat.MonthWebStatisReadMapper">
+	<resultMap id="MonthWebStatisResultMap" type="com.nuoshi.console.domain.web.MonthWebStatis">
+		<result column="city_id" property="cityId" />
+		<result column="entry_date" property="entryDate" />
+		<result column="pay_agent_num" property="payAgentNum" />
+		<result column="free_agent_num" property="freeAgentNum" />
+		<result column="verify_agent_num" property="verifyAgentNum" />
+		<result column="online_resale_num" property="onlineResaleNum" />
+		<result column="online_rent_num" property="onlineRentNum" />
+		<result column="pub_resale_num" property="pubResaleNum" />
+		<result column="pub_rent_num" property="pubRentNum" />
+		<result column="login_user_num" property="loginUserNum" />
+		<result column="pub_house_agent_num" property="pubHouseAgentNum" />
+		<result column="city_name" property="cityName" />
+		<result column="month" property="month" />
+	</resultMap>
+
+	<sql id="MonthWebStatis_Column_List">
+		city_id,
+		month,
+		pay_agent_num,
+		free_agent_num,
+		verify_agent_num,
+		online_resale_num,
+		online_rent_num,
+		pub_resale_num,
+		pub_rent_num,
+		login_user_num,
+		pub_house_agent_num,
+		city_name,
+		month
+	</sql>
+
+
+
+	<select id="getCityDataByDate" resultMap="MonthWebStatisResultMap">
+		select
+		city_id cityId,
+		city_name cityName,
+		month month,
+		sum(pay_agent_num) payAgentNum,
+		sum(free_agent_num) freeAgentNum ,
+		sum(verify_agent_num)
+		verifyAgentNum,
+		sum(online_resale_num) onlineResaleNum,
+		sum(online_rent_num) onlineRentNum,
+		sum(pub_resale_num)pubResaleNum ,
+		sum(pub_rent_num) pubRentNum,
+		sum(login_user_num) loginUserNum,
+		sum(pub_house_agent_num) pubHouseAgentNum
+		from month_web_statis where
+		month = #{date}
+		group by cityId
+	</select>
+	<select id="getAllDataByDate" resultMap="MonthWebStatisResultMap">
+		select
+		<if test="cityId > 0">
+			city_id cityId,
+			city_name cityName,
+		</if>
+		<if test="distId > 0">
+			dist_id distId,
+			dist_name cityName,
+		</if>
+		entry_date entryDate,
+		month month,
+		sum(pay_agent_num) payAgentNum ,
+		sum(free_agent_num) freeAgentNum ,
+		sum(verify_agent_num)
+		verifyAgentNum,
+		sum(online_resale_num) onlineResaleNum,
+		sum(online_rent_num) onlineRentNum,
+		sum(pub_resale_num)pubResaleNum ,
+		sum(pub_rent_num) pubRentNum,
+		sum(login_user_num) loginUserNum,
+		sum(pub_house_agent_num) pubHouseAgentNum
+		<![CDATA[
+			from month_web_statis where month >= #{startDate} and month<=#{endDate}
+		]]>
+		<if test="cityId > 0">
+			and city_id = #{cityId}
+		</if>
+		<if test="distId > 0">
+			and dist_id = #{distId}
+		</if>
+
+		GROUP BY month order by month desc
+
+	</select>
+
+
+</mapper>

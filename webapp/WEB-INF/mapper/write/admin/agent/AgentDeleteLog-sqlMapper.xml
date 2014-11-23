@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.admin.agent.AgentDeleteLogWriteMapper">
+
+	<insert id="addAgentDeleteLog" parameterType="com.nuoshi.console.domain.agent.AgentDeleteLog" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO agent_delete_log (agent_id, name, mobile, info, entry_id, entry_name, entry_time) VALUES 
+		(#{agentId}, #{name}, #{mobile}, #{info}, #{entryId}, #{entryName}, now())
+	</insert>
+	
+</mapper>

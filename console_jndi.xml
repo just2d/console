@@ -1,0 +1,237 @@
+<jndi>
+    <!-- 淘房经纪人broker【只读】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/broker/read</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/broker?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+    <!-- 淘房经纪人broker【写】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/broker/write</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/broker?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+    <!-- 淘房unionhouse(联盟)【只读】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/unionhouse/read</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/union_house?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+    <!-- 淘房unionhouse(联盟)【写】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/unionhouse/write</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/union_house?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+    <!-- 淘房admin【只读】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/admin/read</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/admin?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+    <!-- 淘房admin【写】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/admin/write</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/admin?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+    <!-- 淘房广告adv_house【只读】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/adv/read</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/adv_house?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+    <!-- 淘房广告adv_house【写】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/adv/write</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/adv_house?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+    <!-- 淘房论坛 forum【只读】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/forum/read</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/form?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+    <!-- 淘房 论坛 forum【写】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/forum/write</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/forum?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+    <!-- 淘房问答 tf_qa【只读】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/wenda/read</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/tf_qa?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+    <!-- 淘房问答 tf_qq【写】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/wenda/write</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/tf_qa?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+    <!-- 淘房历史库 histroy 数据【写】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/history/write</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/history?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+
+    <!-- 淘房统计【读】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/stat/read</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/stat?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+    <!-- 淘房统计【写】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/stat/write</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.100:3306/stat?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+    <!-- crm【只读】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/crm/read</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/crm?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+
+    <!-- crm【写】数据源配置 -->
+    <database>
+        <jndi-name>jdbc/taofang/crm/write</jndi-name>
+        <driver type="com.mysql.jdbc.Driver">
+            <url>jdbc:mysql://10.58.99.74:3306/crm?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;rewriteBatchedStatements=true
+            </url>
+            <user>root</user>
+            <password>taofang</password>
+        </driver>
+        <prepared-statement-cache-size>8</prepared-statement-cache-size>
+        <max-connections>20</max-connections>
+        <max-idle-time>30s</max-idle-time>
+    </database>
+</jndi>

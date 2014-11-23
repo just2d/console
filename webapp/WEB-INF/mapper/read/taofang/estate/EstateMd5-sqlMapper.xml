@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.nuoshi.console.persistence.read.taofang.estate.EstateMd5ReadMapper">
+	<resultMap type="com.nuoshi.console.domain.estate.EstateMd5" id="md5Map">
+		<result column="estateid" property="estateId" javaType="int" />
+		<result column="md5" property="md5" javaType="String" />
+		<result column="category" property="category" javaType="String" />
+	</resultMap>
+	<!-- 用户初始化basic_info字段 初始化数据库之用 -->
+	<select id="queryMd5Exist" resultMap="md5Map" useCache="false">
+		select estateid,md5,category from estate_md5 where estateid=#{estateId} and md5 = #{md5} 
+		<if test="category != null and category !=''">
+		and category = #{category} 
+		</if>
+		limit 1
+  	</select>
+</mapper>

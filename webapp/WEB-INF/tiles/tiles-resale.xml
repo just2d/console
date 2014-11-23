@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	
+	<definition name="resale.verify" extends="base.definition">
+		<put-attribute name="title" value="房源审核列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/resale/verify/list.jsp" />
+	</definition>
+	<definition name="allresale.verify" extends="base.definition">
+		<put-attribute name="title" value="房源管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/resale/verify/all.jsp" />
+	</definition>
+	<definition name="resale.house.list" extends="base.definition">
+		<put-attribute name="title" value="房源审核列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/resale/house/list.jsp" />
+	</definition>
+	<definition name="resale.verify.baseInfoList" extends="base.definition">
+		<put-attribute name="title" value="二手房标题、描述审核列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/resale/verify/baseInfoList.jsp" />
+	</definition>
+	<definition name="resale.verifyPhoto" extends="base.definition">
+		<put-attribute name="title" value="照片审核列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/resale/verify/photo_list.jsp" />
+	</definition>
+	<definition name="house.vcrList" extends="base.definition">
+		<put-attribute name="title" value="视频审核列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/house/vcrList.jsp" />
+	</definition>
+	<definition name="house.vcrHistoryList" extends="base.definition">
+		<put-attribute name="title" value="视频审核列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/house/vcrHistoryList.jsp" />
+	</definition>
+	<definition name="resale.evaluation.list" extends="base.definition">
+		<put-attribute name="title" value="房源评价管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/resale/eval/list.jsp" />
+	</definition>
+	<definition name="resale.evaluation.detail" extends="base.definition">
+		<put-attribute name="title" value="房源评价列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/resale/eval/detail.jsp" />
+	</definition>
+</tiles-definitions> 

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.write.taofang.agent.AgentStoreWriteMapper">
+	
+	<cache eviction="LRU" flushInterval="86400000" readOnly="true"/>
+
+	<delete id="deleteAgentStore" parameterType="java.lang.String">
+		<![CDATA[
+		DELETE FROM agent_store WHERE id = #{id}
+		]]>
+	</delete>
+	<delete id="deleteAgentStoreByAgentCompanyId" parameterType="java.lang.String">
+		<![CDATA[
+		DELETE FROM agent_store WHERE company_id = #{companyId}
+		]]>
+	</delete>
+
+	<update id="updateAgentStore" parameterType="com.nuoshi.console.domain.agent.AgentStore">
+		UPDATE agent_store 
+		<set>
+		<if test="sourceId !=null">
+		source_id=#{sourceId},
+		</if>
+		<if test="storeType !=null">
+		store_type=#{storeType},
+		</if>
+		<if test="addressPinyin !=null">
+		address_pinyin=#{addressPinyin},
+		</if>
+		<if test="namePinyin !=null">
+		name_pinyin=#{namePinyin},
+		</if>
+		<if test="address !=null">
+		address=#{address},
+		</if>
+		<if test="name !=null">
+		name=#{name},
+		</if>
+		<if test="companyId !=null">
+		company_id=#{companyId},
+		</if>
+		<if test="blockId !=null">
+		block_id=#{blockId},
+		</if>
+		<if test="distId !=null">
+		dist_id=#{distId},
+		</if>
+		<if test="cityId !=null">
+		city_id=#{cityId},
+		</if>
+		<if test="auditId !=null">
+		audit_id=#{auditId},
+		</if>
+		<if test="auditTime !=null">
+		audit_time=#{auditTime}
+		</if>
+		
+		</set>
+		 WHERE id = #{id}
+	</update>
+	<update id="updateAgentStoreForCompany" parameterType="com.nuoshi.console.domain.agent.AgentStore">
+		UPDATE agent_store 
+		<set>
+		<if test="newCompanyId !=null">
+		company_id=#{newCompanyId},
+		</if>
+		</set>
+		 WHERE company_id = #{oleCompanyId}
+	</update>
+	
+	<insert id="addAgentStore" parameterType="com.nuoshi.console.domain.agent.AgentStore" keyProperty="id" useGeneratedKeys="true" >
+		<![CDATA[
+		INSERT INTO agent_store(
+		city_id,
+		dist_id,
+		block_id,
+		company_id,
+		name,
+		address,
+		name_pinyin,
+		address_pinyin,
+		store_type,
+		source_id,
+		audit_id,
+		audit_time
+		) 
+		VALUES(#{cityId} ,
+		#{distId},#{blockId},
+		#{companyId},#{name},
+		#{address},#{namePinyin},
+		#{addressPinyin},#{storeType},#{sourceId},#{auditId},#{auditTime})
+		]]>
+		<selectKey resultType="int" keyProperty="id">
+			select last_insert_id() as id from agent_store limit 1
+		</selectKey>
+	</insert>
+	
+	<update id="updateTfAsAccount">
+		UPDATE tf_as_account SET store_id = #{newStoreId}, store_name = #{storeName} WHERE store_id = #{oldStoreId}
+	</update>
+	
+	<delete id="deleteTfAsAccount">
+		DELETE FROM tf_as_account WHERE store_id = #{oldStoreId} AND role =1
+	</delete>
+	
+	<insert id="addStoreAccount">
+	INSERT INTO tf_as_account ( user_name, PASSWORD, company_id, company_name,store_id,store_name, create_time, role ) VALUES ( #{userName},'96e79218965eb72c92a549dd5a330112',#{companyId},#{companyName},#{id},#{name},now(),1);
+	</insert>
+	<update id="updateTfAsAccountName">
+	 update tf_as_account set user_name = #{userName},store_name = #{storeName} where store_id = #{storeId} and role = 1
+	</update>
+	
+</mapper>

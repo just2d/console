@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.resale.ResaleEvaluationReadMapper">
+	
+	<select id="getHouseEvaluationByPage" resultType="com.nuoshi.console.domain.base.HouseEvaluation">
+		SELECT 
+			id id,
+			user_id userId,
+			user_name userName,
+			house_id houseId,
+			source_id sourceId,
+			exist exist,
+			price_acu priceAcu,
+			photo_acu photoAcu,
+			info_acu infoAcu,
+			comment_words commentWords,
+			valid valid,
+			anonymous anonymous,
+			cts createTime,
+			ext ext 
+		FROM resale_real_evaluation WHERE house_id = #{houseId} AND valid = 1 AND source_id = #{sourceId} ORDER BY id DESC 
+	</select>
+	
+	<select id="getHouseEvaluationCount" resultType="int">
+		SELECT 
+			COUNT(1) 
+		FROM resale_real_evaluation WHERE house_id = #{houseId} AND valid = 1 AND source_id = #{sourceId}
+	</select>
+	
+	<select id="runCommand" resultType="int">
+		${sql}
+	</select>
+	
+	<select id="runFloatCommand" resultType="float">
+		${sql}
+	</select>
+	
+</mapper>

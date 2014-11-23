@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.admin.user.UserMapper">
+	<resultMap id="userResultMap" type="com.nuoshi.console.domain.user.User" >
+		<id property="id" column="id"/>
+		<result property="userName" column="user_name"/>
+		<result property="password" column="password"/>
+		<result property="sex" column="sex" />
+		<result property="email" column="email" />
+		<result property="cityId" column="city_id" />
+		<result property="role" column="role" />
+		<result property="mobile" column="mobile"/>
+		<result property="chnName" column="chn_name"/>
+	</resultMap>
+	
+	<select id="getUserByName" parameterType="string"  resultType="user" resultMap="userResultMap">
+		<![CDATA[
+			select * from user where user_name=#{username}
+        ]]>
+       
+	</select> 
+	<select id="getAllUserByPage" resultType="user" resultMap="userResultMap">
+		<![CDATA[
+			SELECT id, user_name, password, sex, email, city_id, role, mobile, chn_name FROM user 
+			WHERE role = 'MC0' AND status = 0 ORDER BY id DESC
+        ]]>
+       
+	</select> 
+	
+	<select id="getAllConsoleUser" resultMap="userResultMap">
+		<![CDATA[
+			SELECT id, user_name, password, sex, email, city_id, role, mobile, chn_name FROM user 
+			WHERE role = 'MC0' AND status = 0 ORDER BY id DESC
+        ]]>
+       
+	</select> 
+	
+	<select id="getAllUserCount" resultType="user" resultMap="userResultMap">
+		<![CDATA[
+			SELECT COUNT(1) FROM user WHERE role = 'MC0' AND status = 0
+        ]]>
+       
+	</select> 
+
+	<select id="verifyUser" parameterType="User" resultMap="userResultMap">
+		SELECT id,user_name,password,sex,email,city_id,chn_name,role FROM user WHERE user_name = #{userName} and password = #{password}
+	</select>
+	
+	<select id="selectUserById" parameterType="int" resultMap="userResultMap">
+		SELECT id,user_name,password,sex,mobile,email,chn_name FROM user WHERE id=#{id}
+	</select>
+	
+	<update id="updateUserInfo" parameterType="User">
+		UPDATE user SET password = #{password},sex = #{sex},mobile = #{mobile},email = #{email},chn_name = #{chnName}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateUserStatus" parameterType="User">
+		UPDATE user SET last_login_date = #{lastLoginDate},online = 1,login_ip = #{loginIP} 
+		WHERE id = #{id}
+	</update>
+	<update id="logoutUserStatus" parameterType="int">
+		UPDATE user SET online = 0 
+		WHERE id = #{id}
+	</update>
+	<delete id="deleteRoles" parameterType="string" >
+		delete from user_role WHERE userId = #{userId}
+	</delete>
+	<insert id="saveRoles"   useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO user_role (userid, roleId) VALUES (#{userId},#{roleId});
+	</insert>
+	<select id="selectUserByRole" resultMap="userResultMap">SELECT id,chn_name FROM user WHERE role = #{role1} or role = #{role2}</select>
+	
+	<insert id="addUser" parameterType="com.nuoshi.console.domain.user.User" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO user (password, sex, mobile, email, chn_name, user_name, role, entry_datetime, status) VALUES (#{password}, #{sex}, #{mobile}, #{email}, #{chnName}, #{userName}, 'MC0', #{entryDateTime}, 0);
+	</insert>
+	
+	<update id="delUser" parameterType="int">
+		UPDATE user SET status = 1 WHERE id = #{id}
+	</update>
+	
+	<select id="getAllSearchUserByPage" parameterType="String" resultMap="userResultMap">
+		SELECT id, user_name, password, sex, email, city_id, role, mobile, chn_name FROM user 
+			WHERE role = 'MC0' AND status = 0 AND chn_name LIKE #{chnName} ORDER BY id DESC
+	</select>
+	
+	<select id="getAllUserByRole" parameterType="String" resultMap="userResultMap">
+		SELECT u.id, u.user_name, u.password, u.sex, u.email, u.city_id, u.role, u.mobile, u.chn_name 
+		FROM user u, user_role ur, role r WHERE u.id = ur.userId AND ur.roleId = r.id AND r.name = '专题管理'
+	</select>
+	
+	<select id="getAllZixunUser" parameterType="String" resultMap="userResultMap">
+		SELECT u.id, u.user_name, u.password, u.sex, u.email, u.city_id, u.role, u.mobile, u.chn_name 
+		FROM user u, user_role ur, role r WHERE u.id = ur.userId AND ur.roleId = r.id AND r.name = '资讯管理'
+	</select>
+	
+	<select id="getAllUsersByRoleId" parameterType="int" resultMap="userResultMap">
+		SELECT u.id, u.user_name, u.password, u.sex, u.email, u.city_id, u.role, u.mobile, u.chn_name 
+			FROM user u, user_role ur WHERE u.id = ur.userId AND u.status != 1 AND ur.roleId = ${roleId} 
+	</select>
+	
+</mapper>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.admin.audit.AuditPhotoSettingWriteMapper">
+	<insert id="updatePhotoSetting"  parameterType="com.nuoshi.console.domain.audit.AuditPhotoSetting" >
+		 insert into audit_photo_setting(city_id,illegal_rate,day_max_photo_count,audit_count,time_rule)values(#{cityId},#{illegalRate},#{dayMaxPhotoCount},#{auditCount},#{timeRule}) 
+		 on DUPLICATE key update  illegal_rate = values(illegal_rate),day_max_photo_count=values(day_max_photo_count),audit_count=values(audit_count)
+		 
+	</insert>
+</mapper>

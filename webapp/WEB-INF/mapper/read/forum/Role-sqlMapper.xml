@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.forum.BbsRoleReadMapper">
+
+	<select id="selectRoleById" parameterType="int" resultType="com.nuoshi.console.domain.bbs.Role">
+		SELECT * from role WHERE id=#{id}
+	</select>
+
+	<select id="getAll" parameterType="int" resultType="com.nuoshi.console.domain.bbs.Role">
+		SELECT * from role  
+	</select>
+	
+	<select id="getRoleByUserId" parameterType="int" resultType="com.nuoshi.console.domain.bbs.Role">
+		SELECT
+				r.*
+			FROM
+				user_role ur
+				LEFT JOIN role r ON ur.roleId = r.id
+			WHERE
+		ur.userId = #{userId}
+	</select>
+	
+	<select id="selectByconditionByPage"  resultType="com.nuoshi.console.domain.bbs.Role" >
+		select * from role
+		 where  1=1 
+	 <if test="condition!=null">
+	    and name like #{condition}   or code like #{condition}
+	 </if>
+	 </select>
+	
+	
+	<select id="getAllRoleByPage" parameterType="int" resultType="com.nuoshi.console.domain.bbs.Role">
+		SELECT * from role r
+	</select>
+		<select  id="selectRoleByName" parameterType="string" resultType="com.nuoshi.console.domain.bbs.Role">
+		SELECT * from role WHERE name=#{name} 
+
+			<if test="id!=null">
+				and		id != #{id}
+			</if>
+	
+		limit 0,1
+	</select>
+	<select  id="getRoleByCode" parameterType="string" resultType="com.nuoshi.console.domain.bbs.Role">
+		SELECT * from role WHERE code=#{code}
+		<if test="id!=null">
+				and		id != #{id}
+			</if>
+		 limit 0,1
+	</select>
+</mapper>

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.admin.audit.AuditTaskWriteMapper">
+    <insert id="buildTask" parameterType="java.lang.String">
+        <if test="auditStep==101">
+		INSERT INTO audit_task(house_id,house_type,city_id,base_info) 
+		</if>
+		<if test="auditStep==102">
+		INSERT INTO audit_task(house_id,house_type,city_id,household_photo) 
+		</if>
+		<if test="auditStep==103">
+		INSERT INTO audit_task(house_id,house_type,city_id,estate_photo) 
+		</if>
+		<if test="auditStep==104">
+		INSERT INTO audit_task(house_id,house_type,city_id,indoor_photo) 
+		</if>
+			SELECT t.id,#{type},t.city_id,#{auditUserId} FROM 
+			<if test="type==1">
+			rent t 
+			</if>
+			<if test="type==2">
+			resale t 
+			</if>
+			WHERE t.audit_sign=#{auditSign}
+			AND t.audit_status=#{auditStatus}
+			AND t.house_status=#{houseStatus}
+			<if test="cityId!=-1">
+				AND t.city_id=#{cityId}
+			</if>
+    </insert>
+    <insert id="buildTaskByIds" >
+        <if test="auditStep==101">
+		INSERT INTO audit_task(house_id,house_type,city_id,base_info) 
+		</if>
+		<if test="auditStep==102">
+		INSERT INTO audit_task(house_id,house_type,city_id,household_photo) 
+		</if>
+		<if test="auditStep==103">
+		INSERT INTO audit_task(house_id,house_type,city_id,estate_photo) 
+		</if>
+		<if test="auditStep==104">
+		INSERT INTO audit_task(house_id,house_type,city_id,indoor_photo) 
+		</if>
+			SELECT t.id,#{type},t.city_id,#{auditUserId} FROM 
+			<if test="type==1">
+			rent t 
+			</if>
+			<if test="type==2">
+			resale t 
+			</if>
+			WHERE t.id in
+		<foreach item="item" collection="idList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </insert>
+    <insert id="buildResaleTaskByParam" >
+        <if test="auditStep==101">
+		INSERT INTO audit_task(house_id,house_type,city_id,pubdate,base_info,estate_photo,household_photo,indoor_photo,layout_count,inner_count,community_count) 
+		</if>
+		<if test="auditStep==102">
+		INSERT INTO audit_task(house_id,house_type,city_id,pubdate,base_info,estate_photo,household_photo,indoor_photo,layout_count,inner_count,community_count) 
+		</if>
+		<if test="auditStep==103">
+		INSERT INTO audit_task(house_id,house_type,city_id,pubdate,base_info,estate_photo,household_photo,indoor_photo,layout_count,inner_count,community_count) 
+		</if>
+		<if test="auditStep==104">
+		INSERT INTO audit_task(house_id,house_type,city_id,pubdate,base_info,estate_photo,household_photo,indoor_photo,layout_count,inner_count,community_count) 
+		</if>
+		value (#{info.id},#{type},#{info.cityid},#{info.pubdate},#{result.stepBase},#{result.stepEstate},#{result.stepLayout},#{result.stepInner},#{info.layoutCount},#{info.innerCount},#{info.communityCount}) 
+    </insert>
+    <insert id="buildRentTaskByParam" >
+        <if test="auditStep==101">
+		INSERT INTO audit_task(house_id,house_type,city_id,pubdate,base_info,estate_photo,household_photo,indoor_photo,layout_count,inner_count,community_count) 
+		</if>
+		<if test="auditStep==102">
+		INSERT INTO audit_task(house_id,house_type,city_id,pubdate,base_info,estate_photo,household_photo,indoor_photo,layout_count,inner_count,community_count) 
+		</if>
+		<if test="auditStep==103">
+		INSERT INTO audit_task(house_id,house_type,city_id,pubdate,base_info,estate_photo,household_photo,indoor_photo,layout_count,inner_count,community_count) 
+		</if>
+		<if test="auditStep==104">
+		INSERT INTO audit_task(house_id,house_type,city_id,pubdate,base_info,estate_photo,household_photo,indoor_photo,layout_count,inner_count,community_count) 
+		</if>
+		value (#{info.id},#{type},#{info.cityid},#{info.pubdate},#{result.stepBase},#{result.stepEstate},#{result.stepLayout},#{result.stepInner},#{info.layoutCount},#{info.innerCount},#{info.communityCount}) 
+    </insert>
+    <update id="setAuditTaskResult">
+    	update audit_task t 
+    	<if test="auditStep==101">
+		set t.base_info = #{result} 
+		</if>
+		<if test="auditStep==102">
+		set t.household_photo = #{result} 
+		</if>
+		<if test="auditStep==103">
+		set t.estate_photo = #{result} 
+		</if>
+		<if test="auditStep==104">
+		set t.indoor_photo = #{result} 
+		</if>
+    	where t.house_type=#{auditType}
+    	AND t.house_id in 
+        <foreach item="item" collection="houseIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </update>
+    <update id="updateAuditTaskUser">
+    	update audit_task t 
+    	<if test="auditStep==101">
+		set t.base_info = #{auditUserId} 
+		</if>
+		<if test="auditStep==102">
+		set t.household_photo = #{auditUserId} 
+		</if>
+		<if test="auditStep==103">
+		set t.estate_photo = #{auditUserId} 
+		</if>
+		<if test="auditStep==104">
+		set t.indoor_photo = #{auditUserId} 
+		</if>
+    	where t.house_id in 
+        <foreach item="item" collection="taskIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </update>
+    <update id="updateAuditTaskStatus">
+    	update audit_task t 
+    	<if test="auditStep==101">
+		set t.base_info = #{auditResult} 
+		</if>
+		<if test="auditStep==102">
+		set t.household_photo = #{auditResult} 
+		</if>
+		<if test="auditStep==103">
+		set t.estate_photo = #{auditResult} 
+		</if>
+		<if test="auditStep==104">
+		set t.indoor_photo = #{auditResult} 
+		</if>
+		where t.house_type=#{auditType}
+    	AND t.house_id in 
+        <foreach item="item" collection="houseIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </update>
+    <delete id="deleteAuditTask">
+    	delete from audit_task  
+    	where house_type = #{auditType} 
+    	and house_id in 
+    	 <foreach item="item" collection="houseIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </delete>
+    <update id="updateAuditTaskAuditUser">
+    	update audit_task t 
+    	<if test="auditStep==101">
+		set t.base_info = #{sign} 
+		</if>
+		<if test="auditStep==102">
+		set t.household_photo = #{sign} 
+		</if>
+		<if test="auditStep==103">
+		set t.estate_photo = #{sign} 
+		</if>
+		<if test="auditStep==104">
+		set t.indoor_photo = #{sign} 
+		</if>
+		where t.id in 
+        <foreach item="item" collection="taskIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </update>
+    <insert id="buileAgentTaskByParam" parameterType="java.lang.Integer">
+		INSERT INTO agent_audit_task(agent_id,city_id,auditor_id) 
+		value (#{agentId},#{cityId},#{auditUserId}) 
+    </insert>
+     <delete id="deleteAgentAuditTask">
+    	delete from agent_audit_task  
+    	where agent_id in 
+    	 <foreach item="item" collection="agentIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </delete>
+    <update id="emptyAgentTask">
+    	update agent_audit_task t 
+		set t.auditor_id = #{sign} 
+		where t.auditor_id in 
+        <foreach item="item" collection="auditUserIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </update>
+    <update id="updateAgentTaskUser">
+    	update agent_audit_task t 
+		set t.auditor_id = #{sign} 
+		where t.agent_id in 
+        <foreach item="item" collection="agentIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </update>
+    <update id="emptyWenDaTask">
+    	update qa_audit_task t 
+		set t.auditor_id = #{value} 
+		where t.auditor_id in 
+        <foreach item="item" collection="userIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+        limit #{emptyNum}
+    </update>
+    <update id="deleteWenDaTaskForBlackList">
+    	delete from qa_audit_task 
+    	<if test="userIdList!=null">
+			where auditor_id in 
+	        <foreach item="item" collection="userIdList" open="(" separator="," close=")" >
+	            #{item}
+	        </foreach>
+        </if>
+    </update>
+     <update id="updateWenDaTaskUser">
+    	update qa_audit_task t 
+		set t.auditor_id = #{auditUserId} 
+		where t.wen_da_id in 
+        <foreach item="item" collection="wenDaIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+        and t.type=#{type}
+    </update>
+     <insert id="saveWenDaTask" parameterType="com.nuoshi.console.domain.audit.WenDaAuditTask">
+    	insert into qa_audit_task(wen_da_id,city_id,auditor_id,type) values(#{id},#{cityId},#{auditorId},#{type})
+    </insert>
+    <delete id="deleteWenDaTask" parameterType="java.util.List">
+    	delete from qa_audit_task where wen_da_id in
+    	  <foreach item="item" collection="idList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+        and type=#{type}
+    </delete>
+</mapper>

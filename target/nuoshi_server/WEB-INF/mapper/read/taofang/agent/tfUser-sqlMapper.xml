@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.agent.TFUserReadMapper">
+	<select id="selectAgentById" resultType="com.nuoshi.console.domain.agent.AgentMaster" parameterType="int">
+        SELECT
+			am.agent_id agentId,
+			am.idcard_num idcardNumber,
+			am.status status,
+			am.company company,
+			am.company_id companyId,
+			am.store store,
+			am.store_id storeId,
+			am.credit credit,
+			am.400_number v400Number,
+			am.400_userid v400UserId,
+			am.dist_id distId,
+			am.block_id blockId,
+			am.msg_idcard  msgIdcard,
+			am.msg_namecard msgNamecard,
+			am.msg_head  msgHead,
+			u.id id,
+			u.user_name userName,
+			u.nick_name nickName,
+			u.name name,
+			u.role role,
+			u.NAME NAME,
+			u.sex sex,
+			u.email email,
+			u.mobile mobile,
+			u.cityid cityId,
+			u.ONLINE ONLINE,
+			u.reg_ip regIp,
+			u.open_id openId,
+			u.reg_source regSource,
+			u.headtiny headtiny,
+			u.headbrowse headbrowse,
+			u.create_time createTime,
+			u.update_time updateTime,
+			u.login_count loginCount,
+			u.password password,
+			us.msginnew msgInCount 
+		FROM
+			agent_master am
+		LEFT JOIN t_user u ON u.id = am.agent_id LEFT JOIN user_stats us ON am.agent_id = us.id 
+		WHERE
+			am.agent_id = #{agentId}
+    </select>
+   <!--  <select id="selectUserMobileById" resultType="com.nuoshi.console.domain.user.TFUser" >
+    	select t.id,t.name,t.mobile from t_user t where t.id=#{userId}
+    
+    </select> -->
+    <select id="selectAgentByNick" resultType="com.nuoshi.console.domain.agent.AgentMaster" parameterType="String">
+    	SELECT
+		am.agent_id agentId,
+		am.saler_id salerId
+		FROM
+			t_user u,
+			agent_master am
+		WHERE
+			u.id = am.agent_id
+		AND u.nick_name =  #{nickName}
+    </select>
+    
+    <select id="getUserByIdStr" resultType="com.nuoshi.console.domain.user.TFUser">
+    	SELECT id,user_name userName, NAME, mobile, cityid cityId,email FROM t_user WHERE role = 1 AND id = #{id}
+    </select>
+    
+    <select id="getUserByConditionByPage" resultType="com.nuoshi.console.domain.user.TFUser" parameterType="com.nuoshi.console.domain.agent.AgentSearch">
+    	SELECT id, user_name userName,NAME, mobile, cityid cityId ,email FROM t_user WHERE role = 1
+    	<if test="city != null and city != '0'  and city > 0 ">
+    		AND cityid = #{city}
+    	</if>
+    	<if test="searchtxt != null and searchtxt !=''">
+    		<if test="type == 'name' ">
+    			AND  user_name LIKE concat('%',#{searchtxt},'%')
+    		</if>
+    		<if test="type == 'mobile' ">
+    			AND  mobile LIKE  concat('%',#{searchtxt},'%')
+    		</if>
+    		<if test="type == 'email' ">
+    			AND  email LIKE  concat('%',#{searchtxt},'%')
+    		</if>
+    	</if>
+    	ORDER BY id DESC
+    </select>
+</mapper>

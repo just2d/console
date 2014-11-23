@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.pckage.AgentPurchaseReadMapper">
+
+	<resultMap id="BaseResultMap" type="com.nuoshi.console.domain.pckage.AgentPurchase" >
+	    <id column="id" property="id" jdbcType="INTEGER" />
+	    <result column="agent_id" property="agentId"   />
+	    <result column="package_id" property="packageId"  />
+	    <result column="purchase_date" property="purchaseDate"  />
+	    <result column="purchase_price" property="purchasePrice"  />
+	    <result column="active_date" property="activeDate" />
+	    <result column="expired_date" property="expiredDate"  />
+	    <result column="active_status" property="activeStatus"   />
+	    <result column="house_amount" property="houseAmount"   />
+	    <result column="label_amount" property="labelAmount"  />
+	    <result column="refresh_house_times" property="refreshHouseTimes"  />
+	    <result column="consume_house_amount" property="consumeHouseAmount"   />
+	    <result column="consume_label_amount" property="consumeLabelAmount"   />
+	    <result column="port" property="port"   />
+  	</resultMap>
+    
+   	<select id="getAgentPurchase" resultMap="BaseResultMap">
+        select * from  agent_purchase where  agent_id = #{agentId}  and package_id = #{packageId} and  port= #{port}
+    </select>
+    
+    <select id="getAvailableActivePackage" resultMap="BaseResultMap">
+       	<![CDATA[
+        SELECT * FROM agent_purchase WHERE agent_id = #{agentId} AND active_status = 0 AND NOW()>= active_date  
+        ORDER BY active_date ASC	
+		]]>
+			
+    </select>
+    
+      <select id="getAvailableAndUseStatusPackage" resultMap="BaseResultMap">
+       	<![CDATA[
+        SELECT * FROM agent_purchase WHERE agent_id = #{agentId} AND active_status in( 0,1) and (expired_date >= NOW() or expired_date is null)	
+		]]>
+			
+    </select>
+    
+    
+   	<select id="getActiveAndUseStatusPackage" resultMap="BaseResultMap">
+        SELECT * FROM agent_purchase WHERE agent_id = #{agentId} AND active_status = 1
+    </select>
+    
+    <select id="getCountByPackageId" resultType="int">
+    	SELECT COUNT(1) FROM agent_purchase WHERE package_id = #{packageId}
+    </select>
+</mapper>

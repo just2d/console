@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+	<definition name="control.blacklist" extends="base.definition">
+		<put-attribute name="title" value="黑名单管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/control/blacklist.jsp" />
+	</definition>
+	
+	<definition name="control.sensitiveWord" extends="base.definition">
+		<put-attribute name="title" value="关键词管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/control/sensitiveword.jsp" />
+	</definition>
+	
+	<definition name="control.linkword" extends="base.definition">
+		<put-attribute name="title" value="内链关键词管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/control/linkword.jsp" />
+	</definition>
+
+	<definition name="control.housedesclinkword" extends="base.definition">
+		<put-attribute name="title" value="房源内链关键词" />
+		<put-attribute name="body" value="/WEB-INF/jsp/control/housedesclinkword.jsp" />
+	</definition>
+</tiles-definitions> 

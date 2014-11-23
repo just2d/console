@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.photo.PhotoRentReadMapper" >
+  
+  
+  <select id="getAllPhotoInPhotos" resultType="com.nuoshi.console.domain.agent.HousePhoto">
+		SELECT
+			id photoid ,category%10 direction
+		FROM
+			photo_rent
+		WHERE audit_status = 0 AND 
+			id in
+			<foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+	</select>
+  
+  	<!-- 根据houseidList和category查图片信息,复用sURL,mURL等字段储存信息,因为没有对应的实体类 -->
+	<select id="getNewRentPhotosByHouseListAndType" resultType="com.nuoshi.console.domain.auditHistory.SubAuditHistory">
+		SELECT rent_id auditId,id photoId
+		FROM photo_rent
+		WHERE rent_id IN
+		<foreach collection="houseIdIntList" open="(" separator="," close=")" item="item">
+			#{item}
+		</foreach>
+		<if test=" type == 1">
+		<![CDATA[ 
+			AND  category >= 1 AND  category <= 99
+		]]> 
+		</if>
+		<if test=" type ==2">
+		<![CDATA[ 
+			AND  category >= 100 AND  category <= 199
+		]]> 
+		</if>
+		<if test=" type == 3">
+		<![CDATA[ 
+			AND  category >= 200 AND  category <= 250
+		]]> 
+		</if>
+		AND id IN
+		<foreach collection="photoIdList" open="(" separator="," close=")" item="item1">
+			#{item1}
+		</foreach>
+	</select>
+  
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.admin.user.RoleReadMapper">
+
+	<select id="selectRoleById" parameterType="int" resultType="com.nuoshi.console.domain.user.Role">
+		SELECT * from role WHERE id=#{id}
+	</select>
+	<select id="selectAllByUserId" parameterType="int" resultType="com.nuoshi.console.view.RoleView">
+		SELECT
+			r.*,
+			ur.userId
+		FROM
+			role r
+			LEFT JOIN user_role ur ON ur.roleId = r.id
+		WHERE
+	ur.userId =#{userId}
+	</select>
+	<select id="getAll" parameterType="int" resultType="com.nuoshi.console.domain.user.Role">
+		SELECT * from role  
+	</select>
+	<select id="getRoleByUserId" parameterType="int" resultType="com.nuoshi.console.domain.user.Role">
+		SELECT
+				r.*
+			FROM
+				user_role ur
+				LEFT JOIN role r ON ur.roleId = r.id
+			WHERE
+		ur.userId = #{userId}
+	</select>
+	<select  id="selectRoleByName" parameterType="string" resultType="com.nuoshi.console.domain.user.Role">
+		SELECT * from role WHERE name=#{name} 
+
+			<if test="id!=null">
+				and		id != #{id}
+			</if>
+	
+		limit 0,1
+	</select>
+	<select  id="getRoleByCode" parameterType="string" resultType="com.nuoshi.console.domain.user.Role">
+		SELECT * from role WHERE code=#{code}
+		<if test="id!=null">
+				and		id != #{id}
+			</if>
+		 limit 0,1
+	</select>
+	<select id="getAllRoleByPage" parameterType="int" resultType="com.nuoshi.console.domain.user.Role">
+		SELECT * from role r
+	</select>
+	<select id="getAllSearchRoleByPage"  resultType="com.nuoshi.console.domain.user.Role">
+		SELECT * from role r
+		 WHERE 1=1
+       
+        <if test="condition!=null">
+ 			 ${condition}
+		</if>
+	</select>
+	<select id="getAllSearchRoleByCount" resultType="int"  >
+		SELECT count(*) from role r
+		 WHERE 1=1
+       
+        <if test="condition!=null">
+ 			 ${condition}
+		</if>
+	</select>
+	<select id="getRoleByProperty"  resultType="com.nuoshi.console.domain.user.Role">
+		SELECT * from role r 
+		<where>
+			<if test="propertyName!=null and propertyName='name'">
+					name = #{value}
+			</if>
+		</where>
+	</select>
+	
+</mapper>

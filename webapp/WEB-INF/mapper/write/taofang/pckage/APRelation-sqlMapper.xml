@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuoshi.console.persistence.write.taofang.pckage.APRelationWriteMapper">
+    
+   <insert id="addAPRelation" parameterType="com.nuoshi.console.domain.pckage.AgentPackageRelation">
+        INSERT INTO agent_package_relation (
+            agent_id,
+            package_id,
+            price)
+        VALUES (
+            #{agentId},
+            #{packageId},
+            #{price})
+    </insert>
+    
+    <delete id="delAPRelation" parameterType="int">
+    	DELETE FROM agent_package_relation WHERE agent_id = #{agentId}
+    </delete>
+    <delete id="delAPRelationByPackageId" parameterType="int">
+    	DELETE FROM agent_package_relation WHERE package_id = #{packageId}
+    </delete>
+</mapper>

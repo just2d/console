@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.nuoshi.console.persistence.write.taofang.estate.EstateMd5WriteMapper">
+	
+	<insert id="saveEstateMd5Info">
+		insert into estate_md5 (category,estateid,md5,photoid) values(#{category},#{estateId},#{md5},#{photoid})
+	</insert>
+	
+	<delete id="batchDeleteMd5Info">
+		delete from estate_md5 where category = #{category} and photoid in 
+		<foreach item="id" collection="idList" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+	</delete>
+</mapper>

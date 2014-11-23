@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.topic.LocaleReadMapper">
+	<sql id="sel_local">
+		SELECT 
+		p.LocalID,
+		p.DirName,
+		p.LocalName,
+		p.Pid,
+		p.CityType,
+		p.Depth 
+		FROM t_local p 
+	</sql>
+	
+	<resultMap id="localMap" type="com.nuoshi.console.domain.topic.Locale">
+		<id property="id" column="LocalID"/>
+		<result property="name" column="LocalName"/>
+		<result property="code" column="DirName"/>
+		<result property="parentId" column="Pid"/>
+		<result property="scale" column="CityType"/>
+		<result property="depth" column="Depth"/>
+	</resultMap>
+	
+	<select id="selLocaleById" parameterType="int" resultMap="localMap">
+		<include refid="sel_local"/>
+		WHERE p.LocalID = #{id}
+	</select>
+	
+	<select id="selChildren" parameterType="int" resultMap="localMap">
+		<include refid="sel_local"/>
+		WHERE p.pid = #{pid} ORDER BY p.order_no ASC
+	</select>
+	
+	<select id="selAllLocale" parameterType="int" resultMap="localMap">
+		<include refid="sel_local"/>
+		<![CDATA[
+		WHERE p.Depth <= #{depth}
+		]]>
+	</select>
+	
+	<select id="getCityListByChar" resultMap="localMap">
+  		<include refid="sel_local"/>
+  		<where>
+  			<if test="Depth != null">
+  				p.Depth = #{Depth}
+  			</if>
+  			<if test="dirName != null">
+  				AND p.DirName like #{dirName}
+  			</if>
+  			 ORDER BY p.order_no ASC
+  		</where>
+  	</select>
+  	<select id="getCityIdByName" resultType="int">
+  		SELECT LocalID FROM t_local WHERE Pid = 0 AND LocalName =#{cityName}
+  	</select>
+</mapper>

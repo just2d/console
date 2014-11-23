@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.read.taofang.agent.AgentManageReadMapper">
+	
+	<cache eviction="LRU" flushInterval="86400000" readOnly="true"/>
+
+	<select id="getAllAgentByPage" resultType="com.nuoshi.console.domain.agent.AgentManage" useCache="false">
+		<![CDATA[
+		SELECT
+		u.id,u.name,u.mobile,am.city_id cityid,am.dist_id distid,am.block_id blockid,u.create_time AS cts, am.status as status,am.pay_status payStatus,am.verify_status verifyStatus,
+		am.company brand,am.store AS address,am.400_number as phone400,am.ban_flag as banFlag,am.package_id as packageId,am.label_num as labelNum,am.available_label_num  as availableLabelNum
+		FROM t_user u LEFT JOIN agent_master am 
+		ON u.id = am.agent_id
+		WHERE u.role = 2
+		]]>
+		<if test="conditionList != null">
+		AND
+			<foreach item="condition" collection="conditionList" separator="AND">
+           		${condition}
+       		</foreach>
+	    </if>
+		ORDER BY u.id DESC
+	</select>
+	
+	<!-- Add by Hailei 2012-04-11 添加指定的count sql，避免由Order By排序带来的性能影响 -->
+	<select id="getAllAgentCount" >
+		<![CDATA[
+		SELECT
+		     count(0)
+		FROM t_user u LEFT JOIN agent_master am 
+		ON u.id = am.agent_id
+		WHERE u.role = 2
+		]]>
+		<if test="conditionList != null">
+		AND
+			<foreach item="condition" collection="conditionList" separator="AND">
+           		${condition}
+       		</foreach>
+	    </if>
+	</select>
+
+	<select id="getAllHouseByPage" resultType="com.nuoshi.console.domain.agent.HouseInfo" useCache="false">
+	   	SELECT h.id,e.name,title,flattype,price,enterdate,houseType,baseScore,status, houseLabel FROM 
+		(SELECT id,title,flattype,price,enterdate,'zufang' AS houseType,base_score baseScore,estateid, house_status AS status,house_label as houseLabel
+		FROM rent WHERE authorid = #{id} and house_status != -1
+		<if test="conditionList != null">
+		AND
+			<foreach item="condition" collection="conditionList" separator="AND">
+           		${condition}
+       		</foreach>
+	    </if>
+		UNION SELECT id,title,flattype,price,enterdate,'ershoufang' AS houseType,base_score baseScore,estateid, house_status AS status,house_label as houseLabel
+		FROM resale WHERE authorid = #{id} and house_status != -1
+		<if test="conditionList != null">
+		AND
+			<foreach item="condition" collection="conditionList" separator="AND">
+           		${condition}
+       		</foreach>
+	    </if>
+		) h 
+		LEFT JOIN estate e ON h.estateid = e.id
+	</select>
+	
+	<select id="getIllegalCount" resultType="java.lang.Integer" useCache="false">
+		<![CDATA[
+	 	SELECT SUM((SELECT COUNT(1) c FROM rent WHERE house_status =2 AND authorid = #{id})+ 
+		(SELECT COUNT(1) c FROM resale WHERE house_status =2  AND authorid = #{id}))
+		]]>
+	</select>
+
+	<select id="getAgentInfo" resultType="com.nuoshi.console.domain.agent.AgentManage" useCache="false">
+		<![CDATA[
+		SELECT t_user.id,t_user.name,am.city_id as cityid,am.dist_id as distid,am.block_id as blockid,am.company as brand,am.store AS address,am.pay_status payStatus,am.verify_status verifyStatus
+		FROM t_user LEFT JOIN agent_master am 
+		ON t_user.id = am.agent_id
+		WHERE t_user.id = #{id}
+		]]>
+	</select>
+
+
+	<select id="getLocalName" resultType="java.lang.String" useCache="false">
+		<![CDATA[
+		SELECT localname FROM t_local WHERE localid = #{id}
+		]]>
+	</select>
+
+	<select id="getDirName" resultType="java.lang.String" useCache="false">
+		<![CDATA[
+		SELECT dirname FROM t_local WHERE localid = #{id}
+		]]>
+	</select>
+
+	<select id="getCityDist" resultType="com.nuoshi.console.domain.agent.CityDist" useCache="true">
+		<![CDATA[
+		SELECT localid,localname,pid,dirName FROM t_local WHERE pid = #{pid}
+		]]>
+	</select>
+
+	<select id="getBrandByBlockId" resultType="java.lang.String" useCache="false">
+		<![CDATA[
+		SELECT DISTINCT brand FROM broker WHERE block = #{blockid} AND brand <> '未验证' AND brand <> ''
+		ORDER BY brand
+		]]>
+	</select>
+
+	<select id="getAddressByBrand" resultType="java.lang.String" useCache="false">
+		<![CDATA[
+		SELECT DISTINCT address FROM broker WHERE brand = #{brand} AND address <> ''
+		ORDER BY address
+		]]>
+	</select>
+	
+	<select id="getAgentMasterBrand" resultType="java.lang.String" useCache="false">
+		<![CDATA[
+		SELECT company FROM agent_master WHERE agent_id = #{id}
+		]]>
+	</select>
+	
+	<select id="getAgentVerifyAddress" resultType="java.lang.String" useCache="false">
+		<![CDATA[
+		SELECT store FROM agent_master WHERE agent_id = #{id}
+		]]>
+	</select>
+	
+	<select id="getAgentBrokerBrand" resultType="java.lang.String" useCache="false">
+		<![CDATA[
+		SELECT brand FROM broker WHERE id = 1
+		]]>
+	</select>
+	
+	<select id="getAgentBrokerAddress" resultType="java.lang.String" useCache="false">
+		<![CDATA[
+		SELECT address FROM broker WHERE id = 1
+		]]>
+	</select>
+	
+	<select id="getUser400Id" resultType="java.lang.Integer" useCache="false">
+		<![CDATA[
+		SELECT 400_userid FROM agent_master WHERE agent_id = #{id}
+		]]>
+	</select>
+	
+	<select id="getUserCallNumber" resultType="java.lang.String" useCache="false">
+		<![CDATA[
+		SELECT 400_number FROM agent_master WHERE agent_id = #{id}
+		]]>
+	</select>
+	
+	<select id="getAgentIdByMobile" resultType="java.lang.Integer" useCache="false">
+		<![CDATA[
+		SELECT id FROM t_user WHERE mobile = #{mobile}
+		]]>
+	</select>
+	
+	<select id="gett_userRole" resultType="java.lang.Integer" useCache="false">
+		SELECT role FROM t_user WHERE mobile = #{mobile}
+	</select>
+	
+	
+</mapper>

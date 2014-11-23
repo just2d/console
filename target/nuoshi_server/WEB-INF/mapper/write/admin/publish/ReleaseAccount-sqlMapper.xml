@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.admin.publish.ReleaseAccountWriteMapper">
+
+	<insert id="add" parameterType="com.nuoshi.console.domain.user.Publisher" keyProperty="id" useGeneratedKeys="true" >
+		INSERT INTO 
+		release_account(user_id,user_name,login_name,city_id,role,type,status) 
+		VALUES(#{user.userId},#{user.userName},#{user.loginName},#{user.cityId},#{user.role},#{user.type},#{user.status})
+	</insert>
+	
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from release_account where 
+		id in 
+		<foreach item="item" collection="ids" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+	</delete>
+	
+</mapper>

@@ -1,0 +1,1 @@
+1、svn 下载代码时把工程设置建为web 工程,把smc/resources,

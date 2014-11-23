@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.write.admin.control.LinkWordWriteMapper">
+
+	<insert id="addLinkWord" parameterType="com.nuoshi.console.domain.control.LinkWord" useGeneratedKeys="true" keyProperty="id">
+		<![CDATA[
+		INSERT INTO link_word(keyword,url,create_time)
+		VALUES(#{keyword},#{url},now())
+		]]>
+	</insert>
+	
+	<update id="updateLinkWord" parameterType="com.nuoshi.console.domain.control.LinkWord">
+		UPDATE link_word SET keyword = #{keyword},url = #{url} WHERE id = #{id}
+	</update>
+	
+	<delete id="deleteLinkWord">
+		DELETE FROM link_word WHERE id = #{id}
+	</delete>
+	
+</mapper>

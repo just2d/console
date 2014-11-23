@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.read.taofang.agent.BrandReadMapper">
+	
+	<cache eviction="LRU" flushInterval="86400000" readOnly="true"/>
+
+	<select id="searchBrandBySql" parameterType="java.lang.String" resultType="com.nuoshi.console.domain.agent.Brand" useCache="false">
+		<![CDATA[
+		SELECT t.id,t.`name`,t.logo,t.brokercnt,t.cts,t.city,t.flag FROM `brand` t where 1=1 
+		
+		]]>
+		
+	</select>
+	<select id="getBrandById" parameterType="java.lang.Integer" resultType="com.nuoshi.console.domain.agent.Brand" useCache="false">
+		<![CDATA[
+		SELECT t.id,t.`name`,t.logo,t.brokercnt,t.cts,t.city,t.flag FROM `brand` t where t.id=#{brandId} 
+		
+		]]>
+		
+	</select>
+
+
+	
+</mapper>

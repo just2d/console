@@ -1,0 +1,978 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.rent.RentReadMapper">
+	
+		<resultMap type="com.nuoshi.console.domain.estate.UnionLog" id="unionLog">
+		<result property="targetId" column="targetId" javaType="int"/>
+		<result property="targetName" column="targetName" javaType="String"/>
+		<result property="houseId" column="id" javaType="int"/>
+		<result property="estateid" column="estateid" javaType="int"/>
+		<result property="estatename" column="estate_name" javaType="String"/>
+		<result property="cityid" column="city_id" javaType="int"/>
+		<result column="t_citycode" property="t_CityCode" javaType="String" />
+		<result property="distid" column="dist_id" javaType="int"/>
+		<result property="blockid" column="block_id" javaType="int"/>
+		<result property="fromTable" column="from_table" javaType="String"/>
+		<result property="operator" column="operator" javaType="String"/>
+	</resultMap>
+	
+
+	<sql id="rentSelect">
+		SELECT r.id,
+		r.price,
+		r.area,
+		r.decoration,
+		r.flattype,
+		r.beds,
+		r.baths,
+		r.livings,
+		r.floor,
+		r.totalfloor,
+		r.title,
+		rd.description extinfo,
+		r.faceto,
+		r.completion,
+		r.paytype,
+		r.equipment,
+		r.facility,
+		r.flatting,
+		r.pubdate,
+		r.deposit,
+		r.authorid,
+		r.editdate,
+		r.photoid,
+		r.phototiny,
+		r.photobrowse,
+		r.flags,
+		r.lockts,
+		r.rts,
+		r.type,
+		r.photo_count photoCount,
+		r.renttype,
+		r.enterdate,
+		r.userinnercode,
+		r.layout_count layoutCount ,
+		r.inner_count innerCount ,
+		r.community_count communityCount,
+		r.house_status,
+		r.audit_status,
+		r.audit_sign auditSign,
+		r.author_phone as authorMobile,
+		r.author_name as authorName,
+		r.city_id as cityid,
+		r.estate_name as estatename,
+		e.addr as brandAddress,
+		r.broker_name as brand,
+		r.pic_mode picMode,
+		r.extra_score extraScore
+		FROM rent r
+		LEFT JOIN estate e ON r.estateid=e.id 
+		LEFT JOIN rent_desc rd ON rd.id = r.id  
+	</sql>
+
+	<select id="getAuditHouseCount"  resultType="com.nuoshi.console.domain.stat.AuditSearch">
+		
+		SELECT
+			t.pubdate pubDate, 
+			t.inner_count innerCount,
+			t.community_count estateCount,
+			t.layout_count layoutCount
+		FROM
+			rent t
+		WHERE 
+		 ${condition}  
+			
+	</select>
+	<select id="getAuditCount" resultType="com.nuoshi.console.domain.stat.AuditSearch">
+		SELECT
+			t.pubdate pubDate, 
+			t.inner_count innerCount,
+			t.community_count estateCount,
+			t.layout_count layoutCount
+		FROM
+			resale t
+		WHERE  1=1 AND t.id in 
+		<foreach item="item" collection="listId" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		 ${condition}
+	</select>
+	
+	<select id="getSubHistoryInfo" parameterType="java.lang.Integer" resultType="com.nuoshi.console.domain.auditHistory.SubAuditHistory">
+
+		select t.id houseId, t.title extra ,t.author_name as authorName,t.authorid authorId,rd.description houseDescribe
+		from rent t left join rent_desc rd on rd.id = t.id
+		WHERE t.id in
+		<foreach item="item" collection="houseIdList" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+
+	<select id="selectRentById" parameterType="int" resultType="com.nuoshi.console.domain.rent.Rent">
+		SELECT
+		rent.id,
+		authorid ,
+		estateid ,
+		city_id cityId,
+		price ,
+		area ,
+		decoration ,
+		flattype ,
+		floor ,
+		type ,
+		totalfloor ,
+		estate_name estatename,
+		title ,
+		rd.description extinfo ,
+		faceto ,
+		pubdate ,
+		completion ,
+		paytype ,
+		deposit ,
+		equipment ,
+		facility ,
+		flatting ,
+		renttype ,
+		editdate ,
+		phototiny ,
+		photobrowse ,
+		photoid ,
+		beds ,
+		baths ,
+		livings ,
+		lockts ,
+		rts ,
+		photo_count photoCount,
+		userinnercode ,
+		layout_count layoutCount ,
+		inner_count innerCount ,
+		community_count communityCount,
+		house_status,
+		audit_status,
+		record_code recordCode,
+		label_word labelWord,
+		house_label houseLabel,
+		update_base updateBase
+		FROM rent left join rent_desc rd on rd.id = rent.id WHERE rent.id = #{id}
+	</select>
+	<select id="selectRentInfoByIds" resultType="com.nuoshi.console.domain.rent.RentInfo">
+		<include refid="rentSelect" />		
+		 WHERE r.id in 
+		 <foreach collection="list" item="item" open="(" separator="," close=")">
+		 	#{item}
+		 </foreach>
+	</select>
+
+	<select id="getRent4VerifyByPage" parameterType="string" resultType="com.nuoshi.console.domain.rent.RentInfo">
+		<include refid="rentSelect" />
+		WHERE r.audit_status = 0 AND (r.house_status = 1 or r.house_status=6)
+		<if test="condition!=null">
+			${condition}
+		</if>
+		ORDER BY r.id DESC
+
+	</select>
+
+	<select id="getRent4VerifyCount" parameterType="string">
+
+		SELECT
+		count(0)
+		FROM rent r
+		WHERE r.audit_status = 0 AND (r.house_status = 1 or r.house_status=6)
+		<if test="condition!=null">
+			${condition}
+		</if>
+	</select>
+
+	<select id="getAllRent4VerifyByPage" resultType="com.nuoshi.console.domain.rent.RentInfo">
+		<include refid="rentSelect" />
+		WHERE r.house_status>=0
+		<if test="condition!=null">
+			${condition}
+		</if>
+		ORDER BY r.id DESC
+
+	</select>
+	
+	
+	<select id="getAllRent4VerifyCount">
+		SELECT
+		count(0)
+		FROM rent r
+		WHERE r.house_status>=0
+		<if test="condition!=null">
+			${condition}
+		</if>
+	</select>
+	<select id="getAllVerifyRent" resultType="com.nuoshi.console.domain.rent.RentInfo">
+
+		<include refid="rentSelect" />
+		WHERE 
+        <![CDATA[
+            r.authorid = #{authorid} AND r.audit_status = 0 AND (r.house_status = 1 or r.house_status=6)
+             ]]>
+		ORDER BY r.id DESC
+
+
+	</select>
+	<select id="selectRentPhotoCountByHouseId" resultType="hashMap">
+		SELECT
+			count(0) as num
+		FROM
+			photo_rent
+		WHERE
+		rent_id = #{houseid} 
+		
+		<if test=" category == 1">
+		<![CDATA[ 
+			AND  category >= 1 AND  category <= 99
+		]]> 
+		</if>
+		<if test=" category ==2">
+		<![CDATA[ 
+			AND  category >= 100 AND  category <= 199
+		]]> 
+		</if>
+		<if test=" category == 3">
+		<![CDATA[ 
+			AND  category >= 200 AND  category <= 250
+		]]> 
+		</if>
+		
+
+
+	</select>
+	
+	<select id="selectRentPhotoCountByHouseIdOld" resultType="hashMap">
+	 <![CDATA[
+		SELECT
+			count(0) as num
+		FROM
+			rent_photo
+		WHERE
+		rent_photo.houseid = #{houseid} and category = #{category}
+        ]]>
+
+
+	</select>
+	<select id="getAllHousePhoto" resultType="com.nuoshi.console.domain.agent.HousePhoto">
+		<![CDATA[
+	   SELECT
+			house.houseid houseid,
+			house.category,
+			house.note,
+			house.inalbum,
+			house.innertype,
+			house.usestatus,
+			house.cover,
+			house.photo_status photoStatus,
+			house.photoid photoid,
+			photo.s sURL,
+			photo.m mURL,
+			photo.l lURL,
+			photo.direction
+		FROM
+		rent_photo house
+		LEFT JOIN photo photo ON photo.id = house.photoid
+		WHERE
+		house.houseid = #{houseid}
+        ]]>
+	</select>
+	
+	<select id="getAllHousePhotoOld" resultType="com.nuoshi.console.domain.agent.HousePhoto">
+		<![CDATA[
+	   SELECT
+			house.houseid houseid,
+			house.category,
+			house.note,
+			house.inalbum,
+			house.innertype,
+			house.usestatus,
+			house.cover,
+			house.photo_status photoStatus,
+			house.photoid photoid,
+			photo.s sURL,
+			photo.m mURL,
+			photo.l lURL,
+			photo.direction
+		FROM
+		rent_photo house
+		LEFT JOIN photo photo ON photo.id = house.photoid
+		WHERE
+		house.houseid = #{houseid}
+        ]]>
+	</select>
+	
+	<select id="getUnauditPhotoCategory" resultType="java.lang.Integer">
+		<![CDATA[
+	   SELECT distinct FLOOR(category/100)+1 category FROM
+		photo_rent  
+		WHERE audit_status = 0 and 
+		rent_id = #{houseid}
+        ]]>
+	</select>
+	
+	<select id="getUnauditPhotoCategoryOld" resultType="java.lang.Integer">
+		<![CDATA[
+	   SELECT distinct house.category FROM
+		rent_photo house
+		LEFT JOIN photo photo ON photo.id = house.photoid
+		WHERE photo.audit_status = 0 and 
+		house.houseid = #{houseid}
+        ]]>
+	</select>
+
+	<select id="getRentInfoInalbum" resultType="int">
+		SELECT 0 inalbum FROM
+		photo_rent WHERE rent_id=#{houseid} and id=#{photoid}
+	</select>
+	
+	<select id="getRentInfoInalbumOld" resultType="int">
+		SELECT inalbum FROM
+		rent_photo WHERE houseid=#{houseid} and photoid=#{photoid}
+	</select>
+
+	<select id="getAllHousePhotoByTypeOld" resultType="com.nuoshi.console.domain.agent.HousePhoto">
+		SELECT
+		house.houseid houseid,
+		house.category,
+		house.note,
+		house.usestatus,
+
+		<if test="inalbum==1">
+			<if test="type==1">
+				house.photoid photoid,
+				photo.s sURL,
+				photo.m mURL,
+				photo.l lURL
+				FROM
+				rent_photo house
+				LEFT JOIN layout_photo photo ON photo.photoid = house.photoid
+			</if>
+			<if test="type==2">
+				house.photoid photoid,
+				photo.s sURL,
+				photo.m mURL,
+				photo.l lURL
+				FROM
+				rent_photo house
+				LEFT JOIN photo photo ON photo.id = house.photoid
+			</if>
+			<if test="type==3">
+				house.photoid photoid,
+				photo.s sURL,
+				photo.m mURL,
+				photo.l lURL
+				FROM
+				rent_photo house
+				LEFT JOIN comm_photo photo ON photo.photoid = house.photoid
+			</if>
+		</if>
+
+		<if test="inalbum==0">
+			house.photoid photoid,
+			photo.s sURL,
+			photo.m mURL,
+			photo.l lURL
+			FROM
+			rent_photo house
+			LEFT JOIN photo photo ON photo.id = house.photoid
+		</if>
+
+		WHERE
+		house.houseid = #{houseid} AND house.category=#{type} AND
+		house.photoid=#{photoid}
+	</select>
+	
+		<select id="getAllHousePhotoByType" resultType="com.nuoshi.console.domain.agent.HousePhoto">
+		SELECT
+		photo.rent_id houseid,
+		FLOOR(photo.category/100)+1 category,
+		photo.id photoid
+		FROM
+		photo_rent photo
+		WHERE
+		photo.rent_id = #{houseid}
+		<if test=" type == 1">
+		<![CDATA[ 
+			AND  photo.category >= 1 AND  photo.category <= 99
+		]]> 
+		</if>
+		<if test=" type ==2">
+		<![CDATA[ 
+			AND  photo.category >= 100 AND  photo.category <= 199
+		]]> 
+		</if>
+		<if test=" type == 3">
+		<![CDATA[ 
+			AND  photo.category >= 200 AND  photo.category <= 250
+		]]> 
+		</if>
+		AND photo.id=#{photoid}
+	</select>
+	
+	<select id="getAllPhotoInPhotos" resultType="com.nuoshi.console.domain.agent.HousePhoto">
+		SELECT
+			id photoid,m mURL,direction
+		FROM
+			photo
+		WHERE audit_status = 0 AND 
+			id in
+			<foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+	</select>
+	
+	<select id="getCommPhotos" resultType="com.nuoshi.console.domain.agent.HousePhoto">
+		SELECT
+			id photoid
+		FROM
+			photo_estate
+		WHERE
+			id in
+			<foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+			and category =200
+	</select>
+	
+	<select id="getCommPhotosOld" resultType="com.nuoshi.console.domain.agent.HousePhoto">
+		SELECT
+			photoid,m mURL
+		FROM
+			comm_photo
+		WHERE
+			photoid in
+			<foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+	</select>
+	
+	<select id="getLayoutPhotos" resultType="com.nuoshi.console.domain.agent.HousePhoto">
+		SELECT
+			id photoid
+		FROM
+			photo_estate
+		WHERE
+			id in
+			<foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+			<![CDATA[
+			and category <200
+			]]>
+	</select>
+	
+		<select id="getLayoutPhotosOld" resultType="com.nuoshi.console.domain.agent.HousePhoto">
+		SELECT
+			photoid,m mURL
+		FROM
+			layout_photo
+		WHERE
+			photoid in
+			<foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+	</select>
+	
+
+
+	<select id="getRentPhoto" resultType="com.nuoshi.console.domain.agent.HousePhoto">
+	   SELECT
+			photo.rent_id houseid,
+			FLOOR(photo.category/100)+1 category,
+			photo.id photoid
+		FROM
+		photo_rent photo
+		WHERE
+		rent_id = #{houseid} 
+		<if test=" category == 1">
+		<![CDATA[ 
+			AND  photo.category >= 1 AND  photo.category <= 99
+		]]> 
+		</if>
+		<if test=" category ==2">
+		<![CDATA[ 
+			AND  photo.category >= 100 AND  photo.category <= 199
+		]]> 
+		</if>
+		<if test=" category == 3">
+		<![CDATA[ 
+			AND  photo.category >= 200 AND  photo.category <= 250
+		]]> 
+		</if>
+	</select>
+	
+	<select id="getRentPhotoOld" resultType="com.nuoshi.console.domain.agent.HousePhoto">
+		<![CDATA[
+	   SELECT
+			house.houseid houseid,
+			house.category,
+			house.note,
+			house.usestatus,
+			house.photoid photoid,
+			photo.s sURL,
+			photo.m mURL,
+			photo.l lURL
+		FROM
+		rent_photo house
+		LEFT JOIN photo photo ON photo.id = house.photoid
+		WHERE
+		house.houseid = #{houseid} and house.category = #{category}
+        ]]>
+	</select>
+	<select id="getRentFromAuditTaskByIdList" resultType="com.nuoshi.console.domain.rent.RentInfo">
+		<include refid="rentSelect" />
+		WHERE (r.house_status = #{houseStatus} or r.house_status=6)
+		AND r.id in
+		<foreach item="item" collection="rentInfoIdList" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND r.audit_status = #{auditStatus}
+		AND r.pic_mode =1
+	</select>
+
+	<select id="getRentIdForAudit" resultType="java.lang.Integer">
+		select t.id from rent t force index(idx_rent_housestatus) 
+		where t.audit_status=#{auditStatus}
+		and (t.house_status=#{houseStatus} or t.house_status=6)
+		<if test="cityId!=-1">
+			and t.city_id=#{cityId}
+		</if>
+		and vip_pic_flag = #{vipFlag} 
+		and t.audit_sign is null 
+		and t.pic_mode =1 
+		LIMIT #{num}
+	</select>
+	<select id="getMyRentInfo" resultType="com.nuoshi.console.domain.rent.RentInfo">
+		SELECT rent.id
+		id,photo.id photoid,rent.decoration,0 inalbum,FLOOR(photo.category/100)+1 category,rent.flattype
+		from photo_rent photo
+		LEFT JOIN rent rent ON photo.rent_id=rent.id
+		WHERE photo.rent_id in
+		<foreach item="item" collection="houseIds" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<if test=" type == 1">
+		<![CDATA[ 
+			AND  photo.category >= 1 AND  photo.category <= 99
+		]]> 
+		</if>
+		<if test=" type ==2">
+		<![CDATA[ 
+			AND  photo.category >= 100 AND  photo.category <= 199
+		]]> 
+		</if>
+		<if test=" type == 3">
+		<![CDATA[ 
+			AND  photo.category >= 200 AND  photo.category <= 250
+		]]> 
+		</if>
+	</select>
+	
+	<select id="getMyRentInfoOld" resultType="com.nuoshi.console.domain.rent.RentInfo">
+		SELECT rent_photo.houseid
+		id,rent_photo.photoid,rent.decoration,inalbum,category,rent.flattype
+		from rent_photo
+		LEFT JOIN rent ON rent_photo.houseid=rent.id
+		WHERE houseid in
+		<foreach item="item" collection="houseIds" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND category=#{type} AND rent_photo.photoid != 0 AND
+		rent_photo.photoid IS NOT NULL
+	</select>
+	<select id="getRentInfoCity" resultType="com.nuoshi.console.domain.rent.RentInfo">
+		select t.id,
+		t.city_id as cityId,
+		t.author_name as authorName,
+		t.authorid,
+		t.pubdate,
+		t.layout_count as layoutCount,
+		t.inner_count as innerCount,
+		t.community_count as communityCount,
+		t.update_base updateBase  
+		from rent t where t.id in
+		<foreach item="item" collection="rentIdList" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="countByEstateId" resultType="int">
+		select count(*) from
+		rent where estateid=#{estateId}
+	</select>
+
+
+	<select id="getInconformityHouseIds" resultType="java.lang.Integer">
+		select t.id from rent t where t.id in
+		<foreach item="item" collection="houseIds" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+        <![CDATA[
+        and ((t.house_status != 1 and t.house_status !=6 ) or t.audit_status != 0) 
+         ]]>
+	</select>
+
+	<select id="getPhotoCountOByStep" resultType="java.lang.Integer">
+		select t.id from rent t where t.id in
+		<foreach item="item" collection="houseIdList" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+
+		<if test="auditStep==102">
+			and t.layout_count &lt;= 0
+		</if>
+		<if test="auditStep==103">
+			and t.community_count &lt;= 0
+		</if>
+		<if test="auditStep==104">
+			and t.inner_count &lt;= 0
+		</if>
+	</select>
+	
+
+	<!-- 得到应该更新封面的houseid的List -->
+	<select id="getUpdateCoverImgHouseListOld" resultType="com.nuoshi.console.domain.rent.RentInfo">
+		SELECT
+		id,layout_count layoutCount,inner_count innerCount,community_count communityCount,photo_count photoCount
+		FROM rent
+		WHERE id IN
+		<foreach collection="houseIdList" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND photoid != 0
+		AND NOT EXISTS (
+		SELECT
+		rent_photo.id
+		FROM
+		rent_photo
+		WHERE
+		rent.id = rent_photo.houseid
+		AND rent.photoid = rent_photo.photoid
+		)
+	</select>
+	
+	
+	<select id="getUpdateCoverImgHouseList" resultType="com.nuoshi.console.domain.rent.RentInfo">
+		SELECT
+		id,layout_count layoutCount,inner_count innerCount,community_count communityCount,photo_count photoCount
+		FROM rent
+		WHERE id IN
+		<foreach collection="houseIdList" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND photoid != 0
+		AND NOT EXISTS (
+		SELECT
+		photo_rent.id
+		FROM
+		photo_rent
+		WHERE
+		rent.id = photo_rent.rent_id
+		AND rent.photoid = photo_rent.id
+		)
+	</select>
+
+	<select id="getOneCoverImgOld" parameterType="java.lang.Integer" resultType="com.nuoshi.console.domain.rent.RentInfo">
+		SELECT houseid id,photoid,inalbum,category type FROM rent_photo where houseid =#{houseid} and category = #{type} LIMIT 1
+	</select>
+	
+	<select id="getOneCoverImg" parameterType="java.lang.Integer" resultType="com.nuoshi.console.domain.rent.RentInfo">
+		SELECT rent_id id,id photoid,0 inalbum,FLOOR(photo.category/100)+1 type FROM photo_rent where rent_id =#{houseid} 
+		<if test=" type == 1">
+		<![CDATA[ 
+			AND  category >= 1 AND  category <= 99
+		]]> 
+		</if>
+		<if test=" type ==2">
+		<![CDATA[ 
+			AND  category >= 100 AND  category <= 199
+		]]> 
+		</if>
+		<if test=" type == 3">
+		<![CDATA[ 
+			AND  category >= 200 AND  category <= 250
+		]]> 
+		</if>
+		LIMIT 1
+	</select>
+
+	<select id="getHistoryInfo" parameterType="java.lang.Integer" resultType="com.nuoshi.console.domain.auditHistory.AuditHistory">
+		SELECT id as houseId, #{auditType} as houseType, authorid as authorId, author_name as authorName, city_id as cityId
+		FROM rent
+		WHERE id IN
+		<foreach collection="houseIdList" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<!-- 根据houseidList和category查图片信息,复用sURL,mURL等字段储存信息,因为没有对应的实体类 -->
+	<select id="getRentPhotosByHouseListAndType" resultType="com.nuoshi.console.domain.auditHistory.SubAuditHistory">
+		SELECT rent_id auditId,id photoId,0 inalbum,rent_id houseId
+		FROM photo_rent
+		WHERE rent_id IN
+		<foreach collection="houseIdIntList" open="(" separator="," close=")" item="item">
+			#{item}
+		</foreach>
+		<if test=" type == 1">
+		<![CDATA[ 
+			AND  category >= 1 AND  category <= 99
+		]]> 
+		</if>
+		<if test=" type ==2">
+		<![CDATA[ 
+			AND  category >= 100 AND  category <= 199
+		]]> 
+		</if>
+		<if test=" type == 3">
+		<![CDATA[ 
+			AND  category >= 200 AND  category <= 250
+		]]> 
+		</if>
+		AND id IN
+		<foreach collection="photoIdList" open="(" separator="," close=")" item="item1">
+			#{item1}
+		</foreach>
+	</select>
+	
+		<!-- 根据houseidList和category查图片信息,复用sURL,mURL等字段储存信息,因为没有对应的实体类 -->
+	<select id="getRentPhotosByHouseListAndTypeOld" resultType="com.nuoshi.console.domain.auditHistory.SubAuditHistory">
+		SELECT rent_photo.houseid auditId,rent_photo.photoid photoId,rent_photo.inalbum,rent.id houseId
+		FROM rent_photo
+		LEFT JOIN rent ON rent.id=rent_photo.houseid WHERE rent_photo.houseid IN
+		<foreach collection="houseIdIntList" open="(" separator="," close=")" item="item">
+			#{item}
+		</foreach>
+		AND category = #{type}
+		AND rent_photo.photoid IN
+		<foreach collection="photoIdList" open="(" separator="," close=")" item="item1">
+			#{item1}
+		</foreach>
+	</select>
+	
+
+
+	<select id="getPhotoInfoHistory" parameterType="com.nuoshi.console.domain.auditHistory.HistoryInfo" resultType="com.nuoshi.console.domain.auditHistory.HistoryInfo">
+		SELECT
+			<if test="auditStep==1">
+				rent.flattype photoDescribe
+			</if>
+			<if test="auditStep==2">
+				rent.decoration photoDescribe
+			</if>
+			<if test="auditStep==3">
+				" " photoDescribe
+			</if>
+			FROM rent WHERE rent.id = #{houseId}
+
+	</select>
+
+	<!-- 根据HistoryInfo得到reject_photo信息 -->
+	<select id="getRejectPhotoReAudit" resultType="com.nuoshi.console.domain.auditHistory.HistoryInfo">
+		SELECT house_id houseId,photo_type auditStep,photo_id photoId,inalbum,audit_user_id dealerId,note extra,type houseType
+		FROM reject_photo WHERE house_id=#{houseId} AND photo_id=#{photoId} AND inalbum = #{inalbum}
+	</select>
+
+	<select id="getPhotoInfoHistoryForAgent" parameterType="com.nuoshi.console.domain.auditHistory.HistoryInfo" resultType="com.nuoshi.console.domain.auditHistory.HistoryInfo">
+		SELECT
+			house_describe photoDescribe
+		FROM sub_audit_history WHERE id = #{id}
+
+	</select>
+
+	<!-- 根据HistoryInfo得到rent_photo信息 -->
+	<select id="getRentPhotoReAudit" resultType="com.nuoshi.console.domain.auditHistory.HistoryInfo">
+		SELECT rent_id houseId,FLOOR(category/100)+1 auditStep,id photoId,0 inalbum
+		FROM photo_rent WHERE rent_id=#{houseId} AND id=#{photoId} 
+		<if test=" auditStep == 1">
+		<![CDATA[ 
+			AND  category >= 1 AND  category <= 99
+		]]> 
+		</if>
+		<if test=" auditStep ==2">
+		<![CDATA[ 
+			AND  category >= 100 AND  category <= 199
+		]]> 
+		</if>
+		<if test=" auditStep == 3">
+		<![CDATA[ 
+			AND  category >= 200 AND  category <= 250
+		]]> 
+		</if>
+	</select>
+	
+	<select id="getRentPhotoReAuditOld" resultType="com.nuoshi.console.domain.auditHistory.HistoryInfo">
+		SELECT houseid houseId,category auditStep,photoid photoId,inalbum,note extra
+		FROM rent_photo WHERE house_id=#{houseId} AND photo_id=#{photoId} AND type=#{auditStep} AND inalbum = #{inalbum}
+	</select>
+	
+	<select id="getUnclaimedAwaitHouseAuditCount" resultType="java.lang.Integer">
+		select count(0) from rent r 
+		WHERE (r.house_status = #{houseStatus} or r.house_status=6)
+		AND r.audit_status = #{auditStatus}
+		and r.audit_sign is null
+		and r.pic_mode =1
+	</select>
+	<select id="getPhotoCountByHouseIdList" resultType="java.lang.Integer">
+		<if test="auditStep==102">
+		select sum(r.layout_count)
+		</if>
+		<if test="auditStep==103">
+		select sum(r.community_count)
+		</if>
+		<if test="auditStep==104">
+		select sum(r.inner_count)
+		</if>
+		from rent r 
+		WHERE (r.house_status = 1 or r.house_status=6)
+		AND r.audit_status = 0
+		and r.audit_sign <![CDATA[>=]]> 0 
+		<if test="auditStep==102">
+		and r.layout_count <![CDATA[>]]> 0
+		</if>
+		<if test="auditStep==103">
+		and r.community_count <![CDATA[>]]> 0
+		</if>
+		<if test="auditStep==104">
+		and r.inner_count <![CDATA[>]]> 0
+		</if>
+		and r.id in 
+		<foreach collection="list" open="(" separator="," close=")" item="item">
+			#{item}
+		</foreach>
+	</select>
+	
+	<select id="getPhotoAuditUnclaimedAwaitCount" resultType="java.lang.Integer">
+		<if test="auditStep==102">
+		select sum(r.layout_count)
+		</if>
+		<if test="auditStep==103">
+		select sum(r.community_count)
+		</if>
+		<if test="auditStep==104">
+		select sum(r.inner_count)
+		</if>
+		from rent r 
+		WHERE (r.house_status = #{houseStatus} or r.house_status=6)
+		AND r.audit_status = #{auditStatus}
+		and r.audit_sign is null
+		<if test="auditStep==102">
+		and r.layout_count <![CDATA[>]]> 0
+		</if>
+		<if test="auditStep==103">
+		and r.community_count <![CDATA[>]]> 0
+		</if>
+		<if test="auditStep==104">
+		and r.inner_count <![CDATA[>]]> 0
+		</if>
+		
+	</select>
+	
+	<select id="getRentByEstateId" resultMap="unionLog" resultType="map">
+		select id,estateid,estate_name ,#{t_estate_id} as targetId,#{estateName} as targetName ,#{cityCode} as t_citycode,#{s_authStatus} as s_authStatus,#{fromTable} as from_table,#{operator} as operator,city_id ,dist_id ,block_id  from rent where estateid = #{s_estate_id}
+	</select>
+	<select id="getRentForScore" resultType="com.nuoshi.console.domain.rent.Rent">
+		SELECT
+			t.id,t.base_score baseScore,t.authorid
+		FROM
+			rent t
+		WHERE
+			t.authorid in 
+			<foreach collection="idList" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+		AND t.house_status in
+			<foreach collection="typeList" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+	</select>
+	
+	<select id="getAuditVcrTask" resultType="com.nuoshi.console.domain.base.House">
+		SELECT id id, city_id cityid, authorid authorid, vcr_submit_time vcrSubmitTime, complain_num complainNum FROM rent WHERE (house_status = 1 or house_status = 6) 
+		<if test="cityId > 0">
+			AND city_id = #{cityId} 
+		</if>
+		AND vcr_check_status = 1 AND (vcr_audit_sign IS NULL OR vcr_audit_sign = 0) LIMIT #{num}
+	</select>
+	
+	<select id="getAuditVcrTaskByHouseId" resultType="com.nuoshi.console.domain.base.House">
+		SELECT id id, city_id cityid, authorid authorid, vcr_submit_time vcrSubmitTime, complain_num complainNum,vcr_check_status vcrCheckStatus FROM rent WHERE (house_status = 1 OR house_status = 6) AND id =#{houseId} 
+	</select>
+	
+	<select id="getNewPhotos" resultType="com.nuoshi.console.domain.auditHistory.HistoryInfo">
+		SELECT
+		<if test="result == -1"><!-- 通过的从photo取 -->
+			m photoUrl,#{result} auditResult,photo.id photoId
+			FROM photo
+			WHERE photo.id IN 
+			<foreach collection="photoIdList" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="result == -2"><!-- 违规的从reject_photo取 -->
+			photobrowse photoUrl,#{result} auditResult,reason rejectReason,reject_photo.photo_id photoId
+			FROM reject_photo
+			WHERE reject_photo.photo_id IN
+			<foreach collection="photoIdList" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+	
+	<select id="getPhotoExtraInfo" resultType="com.nuoshi.console.domain.rent.RentInfo">
+		SELECT rent.id ,
+		<if test="auditStep==1">
+			rent.flattype extinfo
+		</if>
+		<if test="auditStep==2">
+			rent.decoration extinfo
+		</if>
+		<if test="auditStep==3">
+			" " extinfo
+		</if>
+		FROM rent WHERE rent.id IN
+		<foreach collection="houseIdList" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+</select>
+
+
+
+	<select id="getRentForEvaluationByPage" resultType="com.nuoshi.console.domain.rent.Rent">
+		SELECT 
+			r.id id,
+			r.authorid authorid,
+			r.author_name author,
+			r.author_phone authorPhone,
+			r.city_id cityid,
+			r.false_house_report falseHouseReport,
+			r.appeal_expired_time appealExpiredTime,
+			r.evaluation_visible evaluationVisible, 
+			rrs.avg_score evaluationPoint,
+			rrs.total_count evaluationCount,
+			0 sourceId 
+		FROM rent r LEFT join rent_real_score rrs ON (r.id = rrs.house_id AND rrs.source_id = 0) WHERE 
+		<foreach item="item" collection="conditions" separator="and">
+            ${item}
+        </foreach> 
+			
+	</select>
+	
+	<select id="getRentForEvaluationCount" resultType="int">
+		SELECT 
+			COUNT(1) 
+		FROM rent r LEFT join rent_real_score rrs ON (r.id = rrs.house_id AND rrs.source_id = 0) WHERE 
+		<foreach item="item" collection="conditions" separator="and">
+            ${item}
+        </foreach> 
+			
+	</select>
+	<select id="getDecorationByPhotoId" resultType="com.nuoshi.console.domain.rent.Rent" useCache="true">
+		SELECT rent.decoration FROM rent rent, photo_rent photo WHERE rent.id = photo.rent_id AND photo.id =#{photoId}
+	</select>
+	
+	
+</mapper>

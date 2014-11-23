@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.write.taofang.photo.RejectPhotoWriteMapper" >
+  <resultMap id="RejectPhotoResultMap" type="com.nuoshi.console.domain.photo.RejectPhoto" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="house_id" property="houseId" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="photo_id" property="photoId" jdbcType="INTEGER" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="photobrowse" property="photobrowse" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  
+ 
+  <sql id="RejectPhoto_Column_List" >
+    id, house_id, type, photo_id, reason, photobrowse,status
+  </sql>
+  
+   <insert id="save" parameterType="com.nuoshi.console.domain.photo.RejectPhoto" >
+    insert into reject_photo (id, house_id, type, 
+      photo_id, reason, photobrowse
+      )
+    values (#{id,jdbcType=INTEGER}, #{houseId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
+      #{photoId,jdbcType=INTEGER}, #{reason,jdbcType=VARCHAR}, #{photobrowse,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <update id="updateDirection" parameterType="java.util.List">
+  	update photo set direction=#{status} where id in 
+  	<foreach item="item" collection="photoIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+  </update>
+  
+  
+</mapper>

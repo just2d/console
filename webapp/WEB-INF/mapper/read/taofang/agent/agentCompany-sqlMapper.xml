@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.read.taofang.agent.AgentCompanyReadMapper">
+	
+	<cache eviction="LRU" flushInterval="86400000" readOnly="true"/>
+
+	<select id="searchAgentCompanyBySql" parameterType="java.lang.String" resultType="com.nuoshi.console.domain.agent.AgentCompany" useCache="false">
+		<![CDATA[
+		SELECT id,name,name_pinyin as namePinyin,company_type as companyType,city_id as cityId,store_cnt as storeCnt,source_id as sourceId FROM `agent_company` t where 1=1 
+		]]>
+		
+	</select>
+	<select id="getAgentCompanyById" parameterType="java.lang.Integer" resultType="com.nuoshi.console.domain.agent.AgentCompany" useCache="false">
+		<![CDATA[
+		SELECT id,name,name_pinyin as namePinyin,company_type as companyType,city_id as cityId,store_cnt as storeCnt,source_id as sourceId FROM `agent_company` where id=#{companyId} 
+		
+		]]>
+		
+	</select>
+
+	<select id="getCompanyAccountNum"  resultType="int" useCache="false" parameterType="com.nuoshi.console.domain.agent.AgentCompany">
+		<![CDATA[
+		SELECT count(0) FROM tf_as_account WHERE company_id = #{id} and role=2;
+		]]>
+		
+	</select>
+	
+	<select id="getCompanyAccountNameNum"  resultType="int" useCache="false" parameterType="com.nuoshi.console.domain.agent.AgentCompany">
+		<![CDATA[
+		SELECT count(0) FROM tf_as_account WHERE user_name = #{name};
+		]]>
+		
+	</select>
+	
+</mapper>

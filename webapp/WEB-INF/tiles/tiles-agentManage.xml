@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+	<definition name="agentManage.list" extends="base.definition">
+		<put-attribute name="title" value="经纪人管理列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/manage/list.jsp" />
+	</definition>
+
+	<definition name="agentManage.house" extends="base.definition">
+		<put-attribute name="title" value="经纪人房源列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/manage/house.jsp" />
+	</definition>
+
+	<definition name="agentManage.rate" extends="base.definition">
+		<put-attribute name="title" value="经纪人信用明细" />
+		<put-attribute name="body" value="/WEB-INF/jsp/manage/rate.jsp" />
+	</definition>
+	
+	
+	<definition name="tfuser.list" extends="base.definition">
+		<put-attribute name="title" value="经纪人信用明细" />
+		<put-attribute name="body" value="/WEB-INF/jsp/tfuser/list.jsp" />
+	</definition>
+	
+
+</tiles-definitions> 

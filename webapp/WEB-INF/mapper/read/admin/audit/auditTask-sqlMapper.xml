@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.admin.audit.AuditTaskReadMapper">
+	<resultMap id="AuditTaskMap"
+		type="com.nuoshi.console.domain.audit.AuditTask">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="house_id" property="houseId" jdbcType="INTEGER" />
+		<result column="house_type" property="houseType" jdbcType="INTEGER" />
+		<result column="city_id" property="cityId" jdbcType="INTEGER" />
+		<result column="base_info" property="baseInfo" jdbcType="INTEGER" />
+		<result column="estate_photo" property="estatePhoto" jdbcType="INTEGER" />
+		<result column="household_photo" property="householdPhoto" jdbcType="INTEGER" />
+		<result column="indoor_photo" property="indoorPhoto" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="AgentAuditTaskMap"
+		type="com.nuoshi.console.domain.audit.AgentAuditTask">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="agent_id" property="agentId" jdbcType="INTEGER" />
+		<result column="city_id" property="cityId" jdbcType="INTEGER" />
+		<result column="identity_card" property="identityCard" jdbcType="INTEGER" />
+		<result column="head_photo" property="headPhoto" jdbcType="INTEGER" />
+		<result column="name_card" property="nameCard" jdbcType="INTEGER" />
+		<result column="auditor_id" property="auditorId" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="AuditSearchMap" type="com.nuoshi.console.domain.stat.AuditSearch">
+		<result column="house_type" property="houseType" javaType="String" />
+		<result column="audit_count" property="auditTaskCount" javaType="INTEGER" />
+	</resultMap>
+	
+	
+	<select id="getHouseIdListFromTask"  resultType="java.lang.Integer">
+		select t.house_id from audit_task t where t.house_type= #{type}
+		<if test="cityId!=-1">
+		AND t.city_id=#{cityId}
+		</if>
+		<if test="auditStep==101">
+		and (t.base_info = #{auditUserId} or t.base_info = #{noOne})
+		</if>
+		<if test="auditStep==102">
+		and (t.household_photo = #{auditUserId} or t.household_photo = #{noOne})
+		</if>
+		<if test="auditStep==103">
+		and (t.estate_photo = #{auditUserId} or t.estate_photo = #{noOne})
+		</if>
+		<if test="auditStep==104">
+		and (t.indoor_photo = #{auditUserId} or t.indoor_photo = #{noOne})
+		</if>
+		ORDER BY t.house_id 
+		limit #{num}
+	</select>
+	<select id="getHouseIdList"  resultType="java.lang.Integer">
+		select t.house_id from audit_task t where t.house_type= #{type}
+		<if test="cityId!=-1">
+		AND t.city_id=#{cityId}
+		</if>
+		<if test="auditStep==101">
+		and t.base_info = #{auditUserId}
+		</if>
+		<if test="auditStep==102">
+		and t.household_photo = #{auditUserId}
+		</if>
+		<if test="auditStep==103">
+		and t.estate_photo = #{auditUserId}
+		</if>
+		<if test="auditStep==104">
+		and t.indoor_photo = #{auditUserId}
+		</if>
+		ORDER BY t.house_id 
+		limit #{num}
+	</select>
+
+	<select id="getPassHouseIdList"  resultType="java.lang.Integer">
+		select t.house_id 
+		from audit_task t 
+		where t.house_type= #{auditType}
+		and t.house_id in 
+		<foreach item="item" collection="houseIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+        <if test="auditStep!=101">
+		and t.base_info = #{passSign}
+		</if>
+		<if test="auditStep!=102">
+		and t.household_photo = #{passSign}
+		</if>
+		<if test="auditStep!=103">
+		and t.estate_photo = #{passSign}
+		</if>
+		<if test="auditStep!=104">
+		and t.indoor_photo = #{passSign}
+		</if>
+	</select>
+	<select id="hasNotHandleCount"  resultType="java.lang.Integer">
+		select distinct(t.house_id)
+		from audit_task t 
+		where t.house_type= #{houseType}
+		<if test="auditStep==101">
+		and t.base_info <![CDATA[>=]]> #{untreated}
+		</if>
+		<if test="auditStep==102">
+		and t.household_photo <![CDATA[>=]]> #{untreated}
+		</if>
+		<if test="auditStep==103">
+		and t.estate_photo <![CDATA[>=]]> #{untreated}
+		</if>
+		<if test="auditStep==104">
+		and t.indoor_photo <![CDATA[>=]]> #{untreated}
+		</if>
+	</select>
+	<select id="hasNotHandleAgentCount"  resultType="java.lang.Integer">
+		select distinct(t.id)
+		from agent_audit_task t 
+		where t.auditor_id <![CDATA[>=]]> #{untreated}
+	</select>
+	<select id="getAuditTaskByUserIdList"  resultMap="AuditTaskMap">
+		select *
+		from audit_task t 
+		where (t.base_info in 
+		<foreach item="item" collection="userIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+		or t.household_photo in
+		<foreach item="item" collection="userIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+		or t.estate_photo in
+		<foreach item="item" collection="userIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+		or t.indoor_photo in 
+		<foreach item="item" collection="userIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+        )
+        LIMIT #{num}
+	</select>
+	<select id="getAuditTaskByUserId"  resultMap="AuditTaskMap">
+		select id,house_id,house_type,city_id,base_info,estate_photo,household_photo,indoor_photo
+		from audit_task t 
+		where (t.base_info = #{userId}
+		or t.household_photo = #{userId}
+		or t.estate_photo = #{userId}
+		or t.indoor_photo = #{userId}
+        )
+        LIMIT #{num}
+	</select>
+	
+	<select id="getAgentAuditTaskByUserIdList"  resultMap="AgentAuditTaskMap">
+		select *
+		from agent_audit_task t 
+		where t.auditor_id in 
+		<foreach item="item" collection="userIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+        LIMIT #{num}
+	</select>
+	<select id="getAgentAuditTaskByUserId"  resultMap="AgentAuditTaskMap">
+		select *
+		from agent_audit_task t 
+		where t.auditor_id = #{userId}
+        LIMIT #{num}
+	</select>
+	
+	<select id="getAgentIdList"  resultType="java.lang.Integer">
+		select t.agent_id from agent_audit_task t where 
+		(t.auditor_id = #{auditUserId} or auditor_id = 0)
+		<if test="cityId!=null">
+			<if test="cityId!=-1">
+			AND t.city_id=#{cityId}
+			</if>
+		</if>
+		limit #{num}
+	</select>
+	
+	<select id="getSubType" resultType="com.nuoshi.console.domain.auditHistory.HistoryInfo">
+		SELECT agent_id agentId,audit_step auditStep 
+		FROM sub_audit_history WHERE id = #{parseInt}
+	</select>
+	<select id="getWenDaIdList"  resultType="java.lang.Integer">
+		select t.wen_da_id from qa_audit_task t where 
+		(t.auditor_id = #{auditorId} or t.auditor_id = 0)
+		<if test="cityId!=null">
+			<if test="cityId!=-1">
+			AND t.city_id=#{cityId}
+			</if>
+		</if>
+		and type=#{type}
+		limit #{num}
+	</select>
+
+	<select id="getAuditHouseType" resultType="java.lang.Integer">
+		SELECT house_type FROM audit_history WHERE id = #{auditid}
+	</select>
+	
+	<select id="getAuditTaskAuditCount" resultType="java.lang.Integer">
+		SELECT house_id from audit_task where house_type = #{houseType} AND (base_info>=0 
+		OR estate_photo>=0 OR household_photo>=0 OR indoor_photo>=0)
+	</select>
+	
+		
+	<select id="getReauditHstryByNewSubId" resultType="com.nuoshi.console.domain.auditHistory.ReauditHistory">
+		SELECT * FROM reaudit_history WHERE sub_history_id = #{thisHistoryId}
+	</select>
+	<select id="getAnomalyTaskCountByType"  resultType="java.lang.Integer">
+		SELECT count(0) FROM audit_task t WHERE t.house_type = #{type} and t.base_info=-1 AND t.estate_photo=-1 and t.household_photo=-1 and t.indoor_photo=-1
+	</select>
+	<select id="getAnomalyHouseIdByType"  resultType="java.lang.Integer">
+		SELECT house_id FROM audit_task t 
+		 WHERE t.house_type = #{type} and t.base_info=-1 AND t.estate_photo=-1 and t.household_photo=-1 and t.indoor_photo=-1 
+		  limit #{num}
+	</select>
+
+</mapper>

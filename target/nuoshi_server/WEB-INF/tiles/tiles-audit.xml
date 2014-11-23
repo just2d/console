@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+	<!-- 图片名单设置-->
+	<definition name="house.audit.photo.agentlist" extends="base.definition">
+		<put-attribute name="title" value="图片名单设置" />
+		<put-attribute name="body" value="/WEB-INF/jsp/audit/audit_agent_list.jsp" />
+	</definition>
+	<definition name="house.audit.photo.setting" extends="base.definition">
+		<put-attribute name="title" value="图片名单设置" />
+		<put-attribute name="body" value="/WEB-INF/jsp/audit/audit_photo_setting.jsp" />
+	</definition>
+	
+</tiles-definitions> 

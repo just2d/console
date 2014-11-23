@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.write.admin.agent.history.OperatHistoryWriteMapper">
+
+
+	<insert id="save" parameterType="com.nuoshi.console.domain.agent.history.OperatHistory">
+		insert into operat_history (operands_id,operator_id,operator_name,operational_context,dates,operator_type)
+		values (#{operandsId},#{operatorId},#{operatorName},#{operationalContext},#{dates},#{operatorType})
+	</insert>
+	
+</mapper>

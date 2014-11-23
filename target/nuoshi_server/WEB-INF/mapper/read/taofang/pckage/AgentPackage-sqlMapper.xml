@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.pckage.AgentPackageReadMapper" >
+
+  	<select id="getPackageByCityId" resultType="com.nuoshi.console.domain.pckage.AgentPackage">
+    	SELECT 
+    	id id,
+    	package_name packageName,
+    	description description,
+    	effective_days effectiveDays,
+    	house_amount houseAmount,
+    	refresh_house_times refreshHouseTimes,
+    	label_amount labelAmount,
+    	entry_id entryId,
+    	entry_datetime entryDateTime,
+    	price price,
+    	effective_month effectiveMonth,
+    	city_id cityId,
+    	default_value defaultValue,
+    	default_free defaultFree,
+    	order_index orderIndex ,
+    	vip_pic_num vipPicNum 
+    	FROM agent_package WHERE city_id = #{cityId} AND status = 0 ORDER BY order_index 
+  	</select>
+
+  	<select id="getDefaultPackageByCityId" resultType="com.nuoshi.console.domain.pckage.AgentPackage">
+    	SELECT 
+    	id id,
+    	package_name packageName,
+    	description description,
+    	effective_days effectiveDays,
+    	house_amount houseAmount,
+    	refresh_house_times refreshHouseTimes,
+    	label_amount labelAmount,
+    	entry_id entryId,
+    	entry_datetime entryDateTime,
+    	price price,
+    	effective_month effectiveMonth,
+    	city_id cityId,
+    	default_value defaultValue,
+    	default_free defaultFree,
+    	order_index orderIndex ,
+    	vip_pic_num vipPicNum
+    	FROM agent_package WHERE city_id = #{cityId} AND status = 0 AND default_free = 1 LIMIT 1
+  	</select>
+  	
+  	<select id="getPackageByCityIdAndDisplayStatus" resultType="com.nuoshi.console.domain.pckage.AgentPackage">
+  		SELECT 
+    	id id,
+    	package_name packageName,
+    	description description,
+    	effective_days effectiveDays,
+    	house_amount houseAmount,
+    	label_amount labelAmount,
+    	refresh_house_times refreshHouseTimes,
+    	entry_id entryId,
+    	entry_datetime entryDateTime,
+    	price price,
+    	effective_month effectiveMonth,
+    	city_id cityId,
+    	default_value defaultValue,
+    	default_free defaultFree,
+    	order_index orderIndex ,
+    	vip_pic_num vipPicNum
+    	FROM agent_package WHERE city_id = #{cityId} AND status = 0 AND default_value = 2
+  	</select>
+  	
+  	 <select id="getFullFreePackage" resultType="com.nuoshi.console.domain.pckage.AgentPackage">
+    	<![CDATA[
+        SELECT 
+        id id,
+        package_name packageName,
+        description description,
+        effective_days effectiveDays,
+        house_amount houseAmount,
+        label_amount labelAmount,
+        refresh_house_times refreshHouseTimes,
+        entry_id entryId,
+        entry_datetime entryDateTime,
+        price price,
+        effective_month effectiveMonth,
+        default_value defaultValue,
+        city_id cityId,
+        status status,
+        default_free defaultFree,
+        order_index orderIndex ,
+        vip_pic_num vipPicNum   
+        FROM agent_package WHERE id= 7
+        ]]>
+    </select>
+  	
+  	<select id="getPackageById" resultType="com.nuoshi.console.domain.pckage.AgentPackage">
+    	SELECT 
+    	id id,
+    	package_name packageName,
+    	description description,
+    	effective_days effectiveDays,
+    	house_amount houseAmount,
+    	label_amount labelAmount,
+    	refresh_house_times refreshHouseTimes,
+    	entry_id entryId,
+    	entry_datetime entryDateTime,
+    	price price,
+    	effective_month effectiveMonth,
+    	city_id cityId,
+    	default_value defaultValue,
+    	default_free defaultFree,
+    	order_index orderIndex  ,
+    	vip_pic_num vipPicNum
+    	FROM agent_package WHERE id = #{id} 
+  	</select>
+  
+  <select id="getPackageCache" resultType="com.nuoshi.console.domain.pckage.AgentPackage">
+	  SELECT 
+	    	id id,
+	    	package_name packageName
+	  FROM agent_package  	
+  </select>
+</mapper>

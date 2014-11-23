@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.wenda.AnswerReadMapper">
+		<resultMap id="BaseResultMap" type="com.nuoshi.console.domain.wenda.Answer" >
+			    <id column="id" property="id" jdbcType="INTEGER" />
+			    <result column="question_id" property="questionId" jdbcType="INTEGER" />
+			    <result column="title" property="title" jdbcType="VARCHAR" />
+			    <result column="author" property="author" jdbcType="VARCHAR" />
+			    <result column="author_id" property="authorId" jdbcType="INTEGER" />
+			    <result column="pub_time" property="pubTime" jdbcType="TIMESTAMP" />
+			    <result column="adopt_time" property="adoptTime" jdbcType="TIMESTAMP" />
+			    <result column="content" property="content" jdbcType="VARCHAR" />
+			    <result column="comments" property="comments" jdbcType="VARCHAR" />
+			    <result column="status" property="status" jdbcType="INTEGER" />
+			    <result column="poll" property="poll" jdbcType="INTEGER" />
+			    <result column="black_sign" property="blackSign" jdbcType="INTEGER" />
+	  	</resultMap>
+
+
+	<select id="getIdForAudit" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT id
+		FROM tf_qa_answer
+		WHERE audit_sign is null
+		<if test="cityId > 0">
+			and city_id = #{cityId}
+		</if>
+		<if test="status != null">
+			and status = #{status}
+		</if>
+		and black_sign = 0
+		limit #{num}
+	</select>
+	<select id="getAnswerInfo" parameterType="java.util.List" resultType="com.nuoshi.console.domain.audit.WenDaAuditTask">
+		SELECT
+		r.id ,
+		r.author,
+		r.author_id AS authorId,
+		r.content AS description,
+		r.pub_time AS pubTime,
+		r.status,
+		t.city_id AS cityId,
+		t.title, 
+		#{type} AS type
+		FROM tf_qa_answer r
+		left join tf_qa_question t on r.question_id=t.id
+		WHERE r.id in
+		<foreach collection="idList" item="item" open="(" separator="," close=")">
+    		#{item}
+    	</foreach>
+	</select>
+	<select id="getAnswerCountByStatus" parameterType="java.util.List" resultType="java.lang.Integer">
+		SELECT
+		count(0)
+		FROM tf_qa_answer r
+		WHERE  black_sign = 0
+		<if test="statusList != null"> 
+		and r.status in
+			<foreach collection="statusList" item="item" open="(" separator="," close=")">
+    			#{item}
+    		</foreach>
+    	</if>
+	</select>
+	<select id="getAnswerListByPage" parameterType="com.nuoshi.console.domain.wenda.AnswerCondition" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM
+			tf_qa_answer t
+		<where>
+		<if test="condition.answerId != null">
+				AND t.id = #{condition.answerId}
+		</if>
+		<if test="condition.blackSign != null and condition.blackSign>=0">
+				AND t.black_sign = #{condition.blackSign}
+		</if>
+		<if test="condition.authorId != null">
+				AND t.author_id = #{condition.authorId}
+		</if>
+		<if test="condition.status != null  &amp;&amp; condition.status>=0">
+				AND t.`status` = #{condition.status}
+		</if>
+		<if test="condition.questionId != null">
+				AND t.question_id = #{condition.questionId}
+		</if>
+		<if test="condition.authorName != null">
+				AND t.author = #{condition.authorName}
+		</if>
+		<if test="condition.queryBest">
+				AND t.adopt_time IS NOT NULL
+		</if>
+		<if test="condition.beginPubTime != null">
+			<![CDATA[
+				AND  t.pub_time >=  #{condition.beginPubTime}
+			]]>
+		</if>
+		<if test="condition.endPubTime != null">
+			<![CDATA[
+				AND  t.pub_time  <= #{condition.endPubTime}
+			]]>
+		</if>
+			<if test="condition.questionTitle != null">
+				AND t.title LIKE "%"#{condition.questionTitle}"%"
+			</if>
+			<if test="condition.content != null">
+				AND t.content LIKE "%"#{condition.content}"%"
+			</if>
+		</where>
+		<if test="condition.orderByDESC">
+		ORDER BY t.id DESC
+		</if>
+	</select>
+
+</mapper>

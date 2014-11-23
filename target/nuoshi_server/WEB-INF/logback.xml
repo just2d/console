@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%logger{80} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <logger name="com.google.code.yanf4j.core.impl.AbstractSession" level="INFO"/>
+    <logger name="net.rubyeye.xmemcached.impl.MemcachedHandler" level="INFO"/>
+    <logger name="net.rubyeye.xmemcached.impl.Optimizer" level="INFO"/>
+    <logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" level="INFO"/>
+    <logger name="org.springframework.jdbc.datasource.DataSourceUtils" level="INFO"/>
+    <logger name="org.mybatis.spring.SqlSessionUtils" level="INFO"/>
+    <logger name="org.mybatis.spring.transaction.SpringManagedTransaction" level="INFO"/>
+    <logger name="org.apache.tiles.definition.dao.ResolvingLocaleUrlDefinitionDAO" level="INFO"/>
+    <logger name="org.apache.tiles.definition.dao.BaseLocaleUrlDefinitionDAO" level="INFO"/>
+    <logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="INFO"/>
+    <logger name="org.springframework.core.io.support.PathMatchingResourcePatternResolver" level="INFO"/>
+    <logger name="org.mybatis.spring.SqlSessionFactoryBean" level="INFO"/>
+    <logger name="org.springframework.beans.factory.annotation.InjectionMetadata" level="INFO"/>
+    <logger name="o.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" level="INFO"/>
+    <logger name="com.google.code.yanf4j.core.impl.AbstractController" level="ERROR"/>
+    <logger name="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" level="ERROR"/>
+
+    <root>
+        <level value="DEBUG"/>
+        <appender-ref ref="stdout"/>
+    </root>
+</configuration>
+

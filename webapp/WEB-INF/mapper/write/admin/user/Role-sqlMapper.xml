@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.admin.user.RoleWriteMapper">
+
+	<delete id="delRole" parameterType="int" >
+		delete from role WHERE id = #{id}
+	</delete>
+	<update id="updateStatus">
+		update role r set r.status = #{status} where id = #{id}
+	</update>
+	<insert id="addRole" parameterType="com.nuoshi.console.domain.user.Role" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO role (name, code, status) VALUES (#{name}, #{code}, #{status});
+	</insert>
+	<insert id="saveFunctions"   useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO role_function (roleId, functionId) VALUES (#{roleId}, #{functionId});
+	</insert>
+	<update id="updateRoleInfo" parameterType="com.nuoshi.console.domain.user.Role">
+		UPDATE role SET name = #{name},code = #{code},status = #{status}
+		WHERE id = #{id}
+	</update>
+	<delete id="deleteFunctions"  parameterType="string">
+		delete from role_function WHERE roleId = #{roleId}
+	</delete>
+	<delete id="delUserRole"  parameterType="string">
+		delete from user_role WHERE roleId = #{roleId}
+	</delete>
+</mapper>

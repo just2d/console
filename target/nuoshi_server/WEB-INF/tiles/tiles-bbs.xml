@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	<definition name="bbs.theme" extends="base.definition">
+		<put-attribute name="title" value="未审核主题" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forum/themelist.jsp" />
+	</definition>
+	<definition name="bbs.verifytheme" extends="base.definition">
+		<put-attribute name="title" value="通过审核的主题" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forum/list_pasttheme.jsp" />
+	</definition>
+	<definition name="bbs.unverifytheme" extends="base.definition">
+		<put-attribute name="title" value="未通过审核的主题" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forum/list_unpasttheme.jsp" />
+	</definition>
+	<definition name="bbs.none" extends="base.definition">
+		<put-attribute name="title" value="未审核帖子" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forum/list.jsp" />
+	</definition>
+	<definition name="bbs.verify" extends="base.definition">
+		<put-attribute name="title" value="通过审核的帖子" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forum/list_past.jsp" />
+	</definition>
+	<definition name="bbs.unverify" extends="base.definition">
+		<put-attribute name="title" value="未通过审核的帖子" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forum/list_unpast.jsp" />
+	</definition>
+	<definition name="bbs.addforum" extends="base.definition">
+		<put-attribute name="title" value="增加论坛" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forum/forum.jsp" />
+	</definition>
+	<definition name="bbs.editforum" extends="base.definition">
+		<put-attribute name="title" value="编辑论坛" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forum/editforum.jsp" />
+	</definition>
+	
+	<definition name="bbs.addforum" extends="base.definition">
+		<put-attribute name="title" value="论坛添加" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forum/addforum.jsp" />
+	</definition>
+	
+	
+	<definition name="bbs.manageforum" extends="base.definition">
+		<put-attribute name="title" value="论坛管理--板块管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forum/manageforum.jsp" />
+	</definition>
+	<definition name="bbs.simple" extends="base.definition">
+		<put-attribute name="title" value="帖子简单审核" />
+		<put-attribute name="body" value="/WEB-INF/jsp/forum/simplelist.jsp" />
+	</definition>
+	<definition name="bbs.blackuserList" extends="base.definition">
+        <put-attribute name="title" value="论坛管理--黑名单列表" />
+        <put-attribute name="body" value="/WEB-INF/jsp/forum/blacklist.jsp" />
+    </definition>
+	
+</tiles-definitions> 

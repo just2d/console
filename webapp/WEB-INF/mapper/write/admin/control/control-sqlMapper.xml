@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.write.admin.control.ControlWriteMapper">
+	<insert id="addBlack">
+		<![CDATA[
+		INSERT INTO black_list(login_name,user_type,reason,comments,list_type,last_entry_id,last_entry_name,entry_date,status,black_user_id,black_user_name,update_date)
+		VALUES(#{loginName},#{userType},#{reason},#{comments},#{listType},#{lastEntryId},#{lastEntryName},#{entryDate},#{status},#{blackUserId},#{blackUserName},#{updateDate})
+		]]>
+	</insert>
+	
+	<update id="updateBlack">
+		UPDATE black_list SET status=#{status},last_entry_id = #{lastEntryId} ,last_entry_name=#{lastEntryName},update_date=#{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="deleteBlack">
+		DELETE FROM black_list WHERE id = #{id}
+	</delete>
+	
+	<insert id="addSensitiveWord">
+		<![CDATA[
+		INSERT INTO sensitive_word(word_type,sensitive_word_type,illegal_type,content,entry_id,entry_date, user_type)
+		VALUES(#{type},#{sensitiveWordType},#{illegalType},#{content},#{entryId},now(), #{userType})
+		]]>
+	</insert>
+	
+	<update id="updateSensitiveWord">
+		UPDATE sensitive_word SET word_type = #{type},sensitive_word_type = #{sensitiveWordType},
+		illegal_type = #{illegalType}, content = #{content} ,entry_id = #{entryId}, user_type = #{userType} 
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="deleteSensitiveWord">
+		DELETE FROM sensitive_word WHERE id = #{id}
+	</delete>
+</mapper>

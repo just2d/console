@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.stat.ConvertRateReadMapper">
+
+	<resultMap type="com.nuoshi.console.domain.stat.ConvertRate" id="converRates">
+	    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+	    <result column="rent_vp_pv" jdbcType="INTEGER" property="rentVpPv" />
+	    <result column="resale_vp_pv" jdbcType="INTEGER" property="resaleVpPv" />
+	    <result column="rent_list_pv" jdbcType="INTEGER" property="rentListPv" />
+	    <result column="resale_list_pv" jdbcType="INTEGER" property="resaleListPv" />
+	    <result column="rent_list_uv" jdbcType="INTEGER" property="rentListUv" />
+	    <result column="rent_uv_conv_rate" jdbcType="DOUBLE" property="rentUvConvRate" />
+	    <result column="resale_list_uv" jdbcType="INTEGER" property="resaleListUv" />
+	    <result column="resale_uv_conv_rate" jdbcType="DOUBLE" property="resaleUvConvRate" />
+	    <result column="rent_conv_rate" jdbcType="DOUBLE" property="rentConvRate" />
+	    <result column="resale_conv_rate" jdbcType="DOUBLE" property="resaleConvRate" />
+	    <result column="entry_date"  jdbcType="VARCHAR" property="entryDate"/>
+  	</resultMap>
+  	<sql id="queryRateFields">
+  			t.city_id,
+			t.rent_vp_pv,
+			t.resale_vp_pv,
+			t.rent_list_pv,
+			t.resale_list_pv,
+			t.rent_list_uv,
+			t.rent_uv_conv_rate,
+			t.resale_list_uv,
+			t.resale_uv_conv_rate,
+			t.rent_conv_rate,
+			t.resale_conv_rate,
+			t.entry_date
+  	</sql>
+	
+	<select id="queryRateByPage" parameterType="com.nuoshi.console.domain.stat.RateSearch" resultMap="converRates">
+		SELECT 
+			<include refid="queryRateFields"/>
+		from ${tableName}		
+		t where 1=1
+		<if test="cityId != null and cityId >= 0">
+			and t.city_id = #{cityId}
+		</if>
+		<if test="beginTime != null">
+			and t.entry_date <![CDATA[ >= ]]> #{beginTime}
+		</if>
+		<if test="endTime != null">
+			and t.entry_date <![CDATA[ <= ]]> #{endTime}
+		</if>		
+	</select>
+	<select id="queryRateCount" parameterType="com.nuoshi.console.domain.stat.RateSearch" resultMap="converRates">
+		SELECT 
+			count(0) 
+		from ${tableName}		
+		t where 1=1
+		<if test="cityId != null and cityId >= 0">
+			and t.city_id = #{cityId}
+		</if>
+		<if test="beginTime != null">
+			and t.entry_date <![CDATA[ >= ]]> #{beginTime}
+		</if>
+		<if test="endTime != null">
+			and t.entry_date <![CDATA[ <= ]]> #{endTime}
+		</if>		
+	</select>
+	<select id="listAuditRate" resultType="com.nuoshi.console.domain.stat.AuditSearch">
+		select 
+		  	pubdate pubDate,basecount baseCount,layout_count layoutCount,
+		  	inner_count innerCount,estate_count estateCount
+		from day_house_stat
+		where 1=1
+		<if test="cityId != null and cityId >= 0">
+			and city_id = #{cityId}
+		</if>
+		<if test="rateType != null">
+			and house_type = #{rateType}
+		</if>
+		<if test="rateStatus != -1">
+			and status = #{rateStatus} 
+		</if>
+		<if test="startDate != null and startDate!=''">
+			and pubdate <![CDATA[ >= ]]> #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and pubdate <![CDATA[ <= ]]> #{endDate}
+		</if>
+	</select>
+	
+	<select id="getPhotoAuditStatisListByPage" resultType="com.nuoshi.console.domain.stat.PhotoAuditStatis">
+		select 
+		<choose>
+			<when test="as.everyMonth == 'everyMonth'">
+			  substring(upload_date,1,6) uploadDate,
+			</when>
+			<otherwise>
+				upload_date uploadDate,
+			</otherwise>
+		</choose>	
+		  	agent_id agentId,
+		  	city_id cityId,
+		  	agent_name agentName,
+		  	agent_phone agentPhone,
+		  	sum(w_layout_count) wLayoutCount,
+		  	sum(w_inner_count) wInnerCount,
+		  	sum(w_estate_count) wEstateCount,
+		  	sum(w_all_count) wAllCount,
+		  	sum(p_layout_count) pLayoutCount,
+		  	sum(p_inner_count) pInnerCount,
+		  	sum(p_estate_count) pEstateCount,
+		  	sum(p_all_count) pAllCount,
+		  	sum(r_layout_count) rLayoutCount,
+		  	sum(r_inner_count) rInnerCount,
+		  	sum(r_estate_count) rEstateCount,
+		  	sum(r_all_count) rAllCount,
+		  	sum(all_count) allCount
+		from day_photo_audit_statis
+		where ${cons} 
+ 		<if test="as.cityId != null and as.cityId >= 0">
+			and city_id = #{as.cityId}
+		</if>
+		<if test="as.rateType != null and as.rateType >0">
+			and house_type = #{as.rateType}
+		</if>
+		<if test="as.everyMonth == null or as.everyMonth == ''">
+			<if test="as.startDate != null and as.startDate!=''">
+				and upload_date <![CDATA[ >= ]]> #{as.startDate}
+			</if>
+			<if test="as.endDate != null and as.endDate != ''">
+				and upload_date <![CDATA[ <= ]]> #{as.endDate}
+			</if>
+		</if>
+		group by 
+		<choose>
+		<when test="as.everyMonth == 'everyMonth'">
+		  	substring(upload_date,1,6)
+		</when>
+		<otherwise> 
+			upload_date
+			</otherwise>
+		</choose>
+		  ,agent_id
+	</select>
+	<select id="getPhotoAuditStatisListCount" resultType="com.nuoshi.console.domain.stat.PhotoAuditStatis">
+		select count(t.num) from (
+		select 
+		  	count(0) num 
+		from day_photo_audit_statis
+		where ${cons} 
+ 		<if test="as.cityId != null and as.cityId >= 0">
+			and city_id = #{as.cityId}
+		</if>
+		<if test="as.rateType != null and as.rateType >0">
+			and house_type = #{as.rateType}
+		</if>
+		<if test="as.everyMonth == null or as.everyMonth == ''">
+			<if test="as.startDate != null and as.startDate!=''">
+				and upload_date <![CDATA[ >= ]]> #{as.startDate}
+			</if>
+			<if test="as.endDate != null and as.endDate != ''">
+				and upload_date <![CDATA[ <= ]]> #{as.endDate}
+			</if>
+		</if>
+		group by 
+		
+		<choose>
+			<when test="as.everyMonth == 'everyMonth'">
+			  	substring(upload_date,1,6)
+			</when>
+			<otherwise> 
+				upload_date
+			</otherwise>
+		</choose>
+		
+		,agent_id ) t
+	</select>
+	
+	<select id="getPhotoAuditStatisListToExcel" resultType="com.nuoshi.console.domain.stat.PhotoAuditStatis">
+		select 
+		  	upload_date uploadDate,
+		  	agent_id agentId,
+		  	city_id cityId,
+		  	agent_name agentName,
+		  	agent_phone agentPhone,
+		  	sum(w_layout_count) wLayoutCount,
+		  	sum(w_inner_count) wInnerCount,
+		  	sum(w_estate_count) wEstateCount,
+		  	sum(w_all_count) wAllCount,
+		  	sum(p_layout_count) pLayoutCount,
+		  	sum(p_inner_count) pInnerCount,
+		  	sum(p_estate_count) pEstateCount,
+		  	sum(p_all_count) pAllCount,
+		  	sum(r_layout_count) rLayoutCount,
+		  	sum(r_inner_count) rInnerCount,
+		  	sum(r_estate_count) rEstateCount,
+		  	sum(r_all_count) rAllCount,
+		  	sum(all_count) allCount
+		from day_photo_audit_statis
+		where ${cons} 
+ 		<if test="as.cityId != null and as.cityId >= 0">
+			and city_id = #{as.cityId}
+		</if>
+		<if test="as.rateType != null and as.rateType >0">
+			and house_type = #{as.rateType}
+		</if>
+		<if test="as.startDate != null and as.startDate!=''">
+			and upload_date <![CDATA[ >= ]]> #{as.startDate}
+		</if>
+		<if test="as.endDate != null and as.endDate != ''">
+			and upload_date <![CDATA[ <= ]]> #{as.endDate}
+		</if>
+		group by upload_date,agent_id
+	</select>
+	
+</mapper>

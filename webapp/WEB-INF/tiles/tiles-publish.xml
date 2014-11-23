@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	
+	<definition name="publish.search" extends="base.definition">
+		<put-attribute name="title" value="分类管理列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/publish/user_list.jsp" />
+	</definition>
+	<definition name="publish.bbs" extends="base.definition">
+		<put-attribute name="title" value="论坛发布" />
+		<put-attribute name="body" value="/WEB-INF/jsp/publish/bbs_publish.jsp" />
+	</definition>
+	<definition name="publish.wen" extends="base.definition">
+		<put-attribute name="title" value="问答发布" />
+		<put-attribute name="body" value="/WEB-INF/jsp/publish/wenda_publish.jsp" />
+	</definition>
+
+</tiles-definitions> 

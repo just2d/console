@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.stat.HouseLabelReadMapper">
+
+<sql id="countCountry">
+	SELECT 	SUM(resale_label_total) resaleLabeTotal, 
+			SUM(resale_new_label_total) resaleNewLabelTotal, 
+			SUM(resale_xt_label_num) resaleXtLabelNum, 
+			SUM(resale_new_xt_label_num) resaleNewXtLabelNum, 
+			SUM(resale_sskf_label_num) resaleSskfLabelNum, 
+			SUM(resale_new_sskf_label_num) resaleNewSskfLabelNum, 
+			SUM(resale_vcr_label_num) resaleVcrLabelNum, 
+			SUM(resale_new_vcr_label_num) resaleNewVcrLableNum, 
+			SUM(rent_label_total) rentLabeTotal, 
+			SUM(rent_new_label_total) rentNewLabelTotal, 
+			SUM(rent_xt_label_num) rentXtLabelNum, 
+			SUM(rent_new_xt_label_num) rentNewXtLabelNum, 
+			SUM(rent_sskf_label_num) rentSskfLabelNum, 
+			SUM(rent_new_sskf_label_num) rentNewSskfLabelNum, 
+			SUM(rent_vcr_label_num) rentVcrLabelNum, 
+			SUM(rent_new_vcr_label_num) rentNewVcrLableNum, 
+			entry_datetime entryDateTime
+		FROM 
+		day_house_label_total 
+		where 1=1 
+</sql>
+
+<sql id="countCity">
+	SELECT city_name cityName,
+			SUM(resale_label_total) resaleLabeTotal, 
+			SUM(resale_new_label_total) resaleNewLabelTotal, 
+			SUM(resale_xt_label_num) resaleXtLabelNum, 
+			SUM(resale_new_xt_label_num) resaleNewXtLabelNum, 
+			SUM(resale_sskf_label_num) resaleSskfLabelNum, 
+			SUM(resale_new_sskf_label_num) resaleNewSskfLabelNum, 
+			SUM(resale_vcr_label_num) resaleVcrLabelNum, 
+			SUM(resale_new_vcr_label_num) resaleNewVcrLableNum, 
+			SUM(rent_label_total) rentLabeTotal, 
+			SUM(rent_new_label_total) rentNewLabelTotal, 
+			SUM(rent_xt_label_num) rentXtLabelNum, 
+			SUM(rent_new_xt_label_num) rentNewXtLabelNum, 
+			SUM(rent_sskf_label_num) rentSskfLabelNum, 
+			SUM(rent_new_sskf_label_num) rentNewSskfLabelNum, 
+			SUM(rent_vcr_label_num) rentVcrLabelNum, 
+			SUM(rent_new_vcr_label_num) rentNewVcrLableNum, 
+			entry_datetime entryDateTime
+		FROM 
+		day_house_label_total 
+		where 1=1 
+</sql>
+
+	<select id="getHouseLabelCount" resultType="com.nuoshi.console.domain.stat.HouseLabelInfo">
+		<include refid="countCity"/>
+		<if test="condition != null">
+			${condition}	
+		</if>
+	</select>
+	
+	<select id="getHouseLabelCountCountry" resultType="com.nuoshi.console.domain.stat.HouseLabelInfo">
+		<include refid="countCountry"/>
+		<if test="condition != null">
+			${condition}	
+		</if>
+	</select>
+</mapper>

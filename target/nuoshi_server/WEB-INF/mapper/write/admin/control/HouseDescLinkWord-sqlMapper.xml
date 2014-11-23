@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.write.admin.control.HouseDescLinkWordWriteMapper">
+	<resultMap id="HouseDescLinkWordResultMap" type="com.nuoshi.console.domain.control.HouseDescLinkWord">
+		<id column="id" property="id" />
+		<result column="city_id" property="cityId" />
+		<result column="channel" property="channel" />
+		<result column="keyword" property="keyword" />
+		<result column="url" property="url" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
+
+	<sql id="HouseDescLinkWord_Column_List">
+		id,
+		city_id,
+		channel,
+		keyword,
+		url,
+		create_time
+	</sql>
+	<insert id="add" parameterType="com.nuoshi.console.domain.control.HouseDescLinkWord" useGeneratedKeys="true" keyProperty="id">
+		insert into house_desc_link_word (
+			city_id,
+			channel,
+			keyword,
+			url,
+			create_time
+		)
+		values (
+			#{cityId},
+			#{channel},
+			#{keyword},
+			#{url},
+			NOW()
+		)
+	</insert>
+
+	<delete id="deleteById" parameterType="int">
+		delete from house_desc_link_word where id = #{id}
+	</delete>
+
+	<update id="updateHouseDescLinkWord" parameterType="com.nuoshi.console.domain.control.HouseDescLinkWord">
+		update house_desc_link_word
+			<set>
+					city_id = #{cityId},
+				<if test="channel != null">
+					channel = #{channel},
+				</if>
+				<if test="keyword != null">
+					keyword = #{keyword},
+				</if>
+				<if test="url != null">
+					url = #{url},
+				</if>
+			</set>
+		where id = #{id}
+	</update>
+</mapper>

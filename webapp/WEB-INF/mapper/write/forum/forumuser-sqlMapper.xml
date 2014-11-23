@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuoshi.console.persistence.write.forum.BbsUserWriteMapper">
+
+  <resultMap type="com.nuoshi.console.domain.bbs.Forumuser" id="forumuser">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="roleid" jdbcType="INTEGER" property="roleid" />
+    <result column="cityid" jdbcType="INTEGER" property="cityid" />
+    <result column="forumid" jdbcType="INTEGER" property="forumid" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+ 
+ 
+  <delete id="deleteById" parameterType="int">
+
+    delete from forumuser where id=#{id}
+  </delete>
+  
+  
+  <insert id="addforumuser" parameterType="com.nuoshi.console.domain.bbs.Forumuser" useGeneratedKeys="true" keyProperty="id">
+
+    insert into forumuser ( username, userid,roleid, cityid, forumid, status, addtime,user_role,true_name)
+    values ( #{username},#{userid},#{roleid},  #{cityid}, #{forumid}, #{status}, now(),#{userRole},#{trueName})
+  </insert>
+
+
+  <update id="updateforumuser" parameterType="com.nuoshi.console.domain.bbs.Forumuser">
+    update forumuser
+    set 
+      username = #{username},
+      userid = #{userid},
+      roleid = #{roleid},
+      cityid = #{cityid},
+      forumid = #{forumid},
+      status = #{status},
+      updatetime = now()
+      where id=#{id}
+  </update>
+  
+    <update id="updatefreeze" >
+    update forumuser
+    set 
+      status = #{status} 
+      where id=#{id}
+  </update>
+  
+  	<delete id="deleteRoles" parameterType="string" >
+		delete from user_role WHERE userId = #{userId}
+	</delete>
+	<insert id="saveRoles"   useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO user_role (userid, roleId) VALUES (#{userId},#{roleId});
+	</insert>
+	
+	<update id="updateByRole">
+	 update forumuser 
+	 set roleid=0 
+	 where roleid=#{id}
+	
+	</update>
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.adv.AdvHouseReadMapper">
+      
+    <sql id="sql_where"> 
+         FROM advertise_house
+         WHERE  1=1
+         
+            <if  test="isChecked == 0">   
+	            <if test=" searchCity >0">
+	                 and    cityid = #{searchCity}  
+	             </if>
+	             <if test="searchDist >0">
+	                 and    distid = #{searchDist}  
+	             </if>
+	             <if test="searchBlock>0">
+	                 and    blockid = #{searchBlock}  
+	             </if>
+             </if>
+           
+              <if  test="isChecked >0 and location >0 ">   
+	                 and    location = #{location}  
+              </if>
+              <if test="searchWebsite  > 0">
+                 and    website = #{searchWebsite}  
+             </if>
+               <if test="searchWebsitePos  > 0">
+                 and    websitepos = #{searchWebsitePos}  
+             </if>
+              <if test="searchHouseType > 0">
+                 and    housetype = #{searchHouseType}  
+             </if>
+               <if test="searchHouseId !=null  and  searchHouseId !='' ">
+                 and   ( f1  like  #{searchHouseId}   or f2  like  #{searchHouseId} or
+                   f3  like  #{searchHouseId} or   f4  like  #{searchHouseId} 
+                   or f5  like  #{searchHouseId}   or f6  like  #{searchHouseId}  )
+             </if>
+             <if  test="isChecked == 0">
+	               <if test=" searchSdate !=null   and  searchEdate !=null  ">
+	                    and  (  #{searchSdate}   between  sdate  and  edate
+	                      or      #{searchEdate}    between  sdate  and  edate )
+	              </if>
+	              <if test=" searchSdate ==null  ||  searchEdate ==null  ">
+	                   <if test=" searchSdate !=null  ">
+			                      and  #{searchSdate}   between  sdate  and  edate
+	                     </if>
+	                     <if test=" searchEdate !=null  ">
+			                      and   #{searchEdate}   between  sdate  and  edate
+	                     </if>
+	              </if>
+         
+            </if>    
+	          <if  test="isChecked == 1">
+	               <![CDATA[
+	                    and ( (  #{searchSdate}   >= sdate  and   #{searchSdate}  < edate  )
+	                      or   (  #{searchEdate}  <  sdate  and    #{searchEdate}  >=  edate ) )
+	                ]]>
+	                 <if test="id >0">
+                         and    id  != #{id}  
+                      </if>  
+	          </if> 
+	       
+             
+             
+    </sql>
+    <sql id="sql_select"> 
+       select  * 
+    </sql>
+     <sql id="sql_count"> 
+       select  count(*) 
+    </sql>
+	<select id="getAdvHouseByPage" parameterType="com.nuoshi.console.domain.adv.AdvHouseSearch"   resultType="com.nuoshi.console.domain.adv.AdvHouse" >
+	        <include refid="sql_select"/> 
+	        <include refid="sql_where"/> 
+            ORDER BY id DESC
+       
+	</select> 
+	<select id="getAllAdvHouse" parameterType="com.nuoshi.console.domain.adv.AdvHouseSearch"   resultType="com.nuoshi.console.domain.adv.AdvHouse" >
+	        <include refid="sql_select"/> 
+	        <include refid="sql_where"/>  
+	</select> 
+	<select id="getAdvHouseByCount" parameterType="com.nuoshi.console.domain.adv.AdvHouseSearch"  resultType="java.lang.Integer">
+		    <include refid="sql_count"/> 
+	        <include refid="sql_where"/> 
+		   
+	</select> 
+</mapper>

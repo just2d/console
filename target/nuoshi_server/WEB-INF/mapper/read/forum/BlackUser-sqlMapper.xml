@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.forum.BlackUserReadMapper">
+	<select id="getUserListByPage" resultType="com.nuoshi.console.domain.bbs.ForumBlackUser"
+		parameterType="map">
+		select id,user_id userId,user_name userName,role,cts,status from
+		tf_bbs_blackuser where 1=1
+		<if test="userName != null and userName != '' ">
+			and user_name like #{userName}
+        </if>
+        ORDER BY cts desc
+	</select>
+</mapper>

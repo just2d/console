@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.wenda.AnswerWriteMapper">
+	<update id="sign" parameterType="java.util.List">
+		update tf_qa_answer set audit_sign=#{sign} 
+		where id in
+		<foreach collection="idList" item="item" open="(" separator="," close=")">
+    		#{item}
+    	</foreach>
+    	and audit_sign is null
+	 </update>  
+	 <update id="updateStatus"  parameterType="java.util.List">
+		update tf_qa_answer set status=#{status} 
+		<if test="isClearAuditSign">
+		, audit_sign = null
+		</if>
+		where id in
+		<foreach collection="idList" item="item" open="(" separator="," close=")">
+    		#{item}
+    	</foreach>
+	</update>
+	 <update id="changeAnswerBlack"  >
+		update tf_qa_answer set black_sign=#{type} 
+		where author_id =#{userId}
+	</update>
+</mapper>

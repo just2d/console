@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.admin.user.FunctionWriteMapper">
+
+	<delete id="delFunction" parameterType="int" >
+		delete from function WHERE id = #{id}
+	</delete>
+	<delete id="delRoleFunction" parameterType="int" >
+		delete from role_function WHERE functionId = #{functionId}
+	</delete>
+	<insert id="addFunction" parameterType="com.nuoshi.console.domain.user.Function" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO function (name, url,parentId,funcs,priority,description, menu) VALUES (#{name}, #{url}, #{parentId}, #{funcs}, #{priority}, #{description}, #{menu});
+	</insert>
+	<update id="updateFunctionInfo" parameterType="com.nuoshi.console.domain.user.Function">
+		update function set name = #{name},url = #{url},funcs = #{funcs},parentId = #{parentId},description = #{description},priority = #{priority}
+		, menu = #{menu} where id = #{id}
+	</update>
+</mapper>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.admin.audit.AuditVcrTaskReadMapper">
+
+	<resultMap id="AuditVcrTaskMap" type="com.nuoshi.console.domain.audit.AuditVcrTask">
+		<id column="id" property="id"/>
+		<result column="house_id" property="houseId"/>
+		<result column="house_type" property="houseType"/>
+		<result column="agent_id" property="agentId"/>
+		<result column="complain_count" property="complainCount"/>
+		<result column="city_id" property="cityId"/>
+		<result column="audit_result" property="auditResult"/>
+		<result column="reason" property="reason"/>
+		<result column="auditor_id" property="auditorId"/>
+		<result column="auditor_name" property="auditorName"/>
+		<result column="audit_time" property="auditTime"/>
+		<result column="vcr_time" property="vcrTime"/>
+	</resultMap>
+	
+	<select id="getAuditVcrTaskByUser" resultMap="AuditVcrTaskMap">
+		SELECT 
+			id, house_id, house_type, city_id, audit_result, reason, auditor_id, auditor_name, audit_time, agent_id, vcr_time, complain_count  
+		FROM 
+			audit_vcr_task 
+		WHERE 
+			auditor_id = #{userId} 
+		AND 
+			house_type = #{houseType} 
+		<if test="cityId > 0">
+		AND 
+			city_id = #{cityId} 
+		</if>
+		AND (audit_result IS NULL OR audit_result = 0) 
+	</select>
+	
+	<select id="getAuditVcrTaskCount" resultType="int">
+		SELECT 
+			COUNT(1) 
+		FROM
+			audit_vcr_task  
+		WHERE 
+			auditor_id = #{userId} 
+		AND 
+			house_type = #{houseType} 
+		<if test="cityId > 0">
+		AND 
+			city_id = #{cityId}
+		</if>
+		AND (audit_result IS NULL OR audit_result = 0) 
+	</select>
+	
+	<select id="getAuditVcrTaskByHouseId" resultMap="AuditVcrTaskMap">
+		SELECT 
+			id, house_id, house_type, city_id, audit_result, reason, auditor_id, auditor_name, audit_time, agent_id, vcr_time, complain_count  
+		FROM
+			audit_vcr_task  
+		WHERE 
+			house_id = #{houseId} 
+		AND 
+			house_type = #{houseType} 
+	</select>
+	
+	<select id="getAuditVcrHistoryByPage" resultMap="AuditVcrTaskMap">
+		SELECT 
+			id, house_id, house_type, city_id, audit_result, reason, auditor_id, auditor_name, audit_time, agent_id, vcr_time, complain_count  
+		FROM 
+			audit_vcr_task 
+		WHERE 
+			1 = 1
+		<if test="userId > 0">
+			AND auditor_id = #{userId}
+		</if>
+		<if test="houseType > 0">
+			AND house_type = #{houseType}
+		</if>
+		<if test="cityId > 0">
+			AND city_id = #{cityId}
+		</if>
+		<choose>
+			<when test="result > 0">
+				AND audit_result = #{result}
+			</when>
+			<otherwise>
+				AND audit_result > 0
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getAuditVcrHistoryCount" resultType="int">
+		SELECT 
+			COUNT(1) 
+		FROM 
+			audit_vcr_task 
+		WHERE 
+			1 = 1
+		<if test="userId > 0">
+			AND auditor_id = #{userId}
+		</if>
+		<if test="houseType > 0">
+			AND house_type = #{houseType}
+		</if>
+		<if test="cityId > 0">
+			AND city_id = #{cityId}
+		</if>
+		<choose>
+			<when test="result > 0">
+				AND audit_result = #{result}
+			</when>
+			<otherwise>
+				AND audit_result > 0
+			</otherwise>
+		</choose>
+	</select>
+	
+</mapper>

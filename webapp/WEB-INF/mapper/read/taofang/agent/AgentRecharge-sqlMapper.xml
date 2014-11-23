@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.agent.AgentRechargeReadMapper">
+
+    <select id="getRechargeByRechargeNo" parameterType="com.nuoshi.console.domain.agent.AgentRecharge" resultType="com.nuoshi.console.domain.agent.AgentRecharge">
+    	SELECT
+		  agent_id agentId,
+		  recharge_order_no rechargeOrderNo,
+		  agent_username agentUserName,
+		  agent_name agnetName, 
+		  agent_mobile agentMobile,
+		  agent_cityid agentCityId,
+		  recharge_type rechargeType,
+		  create_time createTime,
+		  paid_time paidTime,
+		  recharge_amount rechargeAmount,
+		  currency_type currencyType,
+		  recharge_state rechargeState,
+		  acpt_bank_no acptBankNo,
+		  pay_channel payChannel,
+		  bank_order_no bankOrderNo,
+		  bank_feedback_msg bankFeedbackMsg,
+		  bank_serial_no bankSerialNo,
+		  entry_id entryId,
+		  entry_time entryTime,
+		  saler_id salerId 
+		FROM
+			agent_recharge ar
+		WHERE
+			 recharge_order_no = #{rechargeOrderNo}
+			 FOR UPDATE
+    </select>
+</mapper>

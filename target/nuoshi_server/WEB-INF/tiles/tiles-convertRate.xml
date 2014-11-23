@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	
+	<definition name="rate.rateList" extends="base.definition">
+		<put-attribute name="title" value="列表页转化率统计" />
+		<put-attribute name="body" value="/WEB-INF/jsp/rate/list.jsp" />
+	</definition>
+	<definition name="rate.auditList" extends="base.definition">
+		<put-attribute name="title" value="房源图片审核统计" />
+		<put-attribute name="body" value="/WEB-INF/jsp/rate/auditList.jsp" />
+	</definition>
+	<definition name="rate.auditQualityStatis" extends="base.definition">
+		<put-attribute name="title" value="房源质量审核" />
+		<put-attribute name="body" value="/WEB-INF/jsp/rate/auditQualityStatis.jsp" />
+	</definition>
+	
+
+</tiles-definitions> 

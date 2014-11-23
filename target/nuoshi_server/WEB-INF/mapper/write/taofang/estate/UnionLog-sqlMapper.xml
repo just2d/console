@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.nuoshi.console.persistence.write.taofang.estate.UnionLogWriteMapper">
+	<insert id="save" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into estate_union_log (target_id,source_id,target_name,source_name,house_id,t_citycode,s_authstatus,from_table,cts,operator) values
+		<foreach collection="unionLogList" item="unionLog" open="" close="" separator=",">
+			(#{unionLog.targetId},#{unionLog.estateid},#{unionLog.targetName},#{unionLog.estatename},#{unionLog.houseId},#{unionLog.t_CityCode},#{unionLog.s_authStatus}, #{unionLog.fromTable},now(),#{unionLog.operator})
+		</foreach>
+	</insert>
+	<update id="updateEstateId" parameterType="com.nuoshi.console.domain.estate.UnionLog">
+		update ${fromTable} set estateid = #{estateid}, 
+			<choose>
+				<when test="fromTable == 'resale' or fromTable == 'rent'">
+					estate_name = #{estatename}	
+				</when>
+				<otherwise>
+					estatename = #{estatename}
+				</otherwise>
+			</choose>
+		 where estateid = #{targetId}
+	</update>
+	<delete id="delete" parameterType="com.nuoshi.console.domain.estate.LogCondition">
+		delete from estate_union_log 
+		<where>
+			<if test="showHouse == 1">
+				house_id = #{houseId}
+			</if>
+			<if test="estateid != null">
+				and source_id = #{estateid}
+			</if>
+			<if test="targetId != null">
+				and target_id = #{targetId}
+			</if>
+		</where>
+	</delete>
+</mapper>

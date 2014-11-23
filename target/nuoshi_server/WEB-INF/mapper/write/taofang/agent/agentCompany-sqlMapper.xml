@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper
+	namespace="com.nuoshi.console.persistence.write.taofang.agent.AgentCompanyWriteMapper">
+	
+	<cache eviction="LRU" flushInterval="86400000" readOnly="true"/>
+
+	<delete id="deleteAgentCompany" parameterType="java.lang.String">
+		<![CDATA[
+		DELETE FROM agent_company WHERE id = #{id}
+		]]>
+	</delete>
+	<update id="refreshStoreCount" parameterType="java.lang.Integer">
+	UPDATE agent_company a,
+		(
+			SELECT
+				count(t.id) AS num,
+				max(t.company_id) AS companyid
+			FROM
+				`agent_store` t
+			WHERE
+				t.company_id IN 
+				<foreach item="item" collection="companyIdList" open="(" separator="," close=")" >
+			            #{item}
+			     </foreach>
+			GROUP BY
+				t.company_id
+		) AS b
+	SET a.store_cnt = b.num
+	WHERE
+		a.id IN 
+		<foreach item="item" collection="companyIdList" open="(" separator="," close=")" >
+	            #{item}
+	     </foreach>
+	AND a.id = b.companyid
+  	 
+	</update>
+	
+	<update id="updateAgentCompany" parameterType="com.nuoshi.console.domain.agent.AgentCompany">
+		UPDATE agent_company t 
+		<set>
+			<if test="name !=null">
+			t.name=#{name} ,
+			</if>
+			<if test="namepy !=null">
+			t.namepy=#{namepy} ,
+			</if>
+			<if test="namePinyin !=null">
+			t.name_pinyin=#{namePinyin},
+			</if>
+			<if test="companyType !=null">
+			t.company_type=#{companyType},
+			</if>
+			<if test="cityId !=null">
+			t.city_id=#{cityId} ,
+			</if>
+			<if test="storeCnt !=null">
+			t.store_cnt=#{storeCnt}, 
+			</if>
+			<if test="sourceId !=null">
+			t.source_id=#{sourceId}, 
+			</if>
+			<if test="auditId !=null">
+			t.audit_id=#{auditId},
+			</if>
+			<if test="auditTime !=null">
+			t.audit_time=#{auditTime}
+			</if>
+		</set>
+		
+		WHERE t.id = #{id}
+	</update>
+	
+	<insert id="addAgentCompany" parameterType="com.nuoshi.console.domain.agent.AgentCompany" keyProperty="id" useGeneratedKeys="true" >
+		<![CDATA[
+		INSERT INTO agent_company(name,namepy,name_pinyin,company_type,city_id,store_cnt,source_id,audit_id,
+		audit_time) 
+		VALUES(#{name} ,#{namepy} ,#{namePinyin},#{companyType},#{cityId},#{storeCnt},#{sourceId},#{auditId},#{auditTime})
+		]]>
+		<selectKey resultType="int" keyProperty="id">
+			select last_insert_id() as id from agent_company limit 1
+		</selectKey>
+	
+	</insert>
+	
+	<insert id="addCompanyAccount" parameterType="com.nuoshi.console.domain.agent.AgentCompany" >
+	INSERT INTO tf_as_account ( user_name, PASSWORD, company_id, company_name,store_id, create_time, role ) VALUES ( #{userName},'96e79218965eb72c92a549dd5a330112',#{id},#{name},0,now(),2);
+	</insert>
+	
+	<update id="updateTfAsAccountName" >
+	 update   tf_as_account set user_name= #{userName} where company_id =#{companyId} and role = 2 ;
+	</update>
+	
+	<update id="updateTfComAccount">
+		UPDATE tf_as_account SET company_id = #{newCompanyId}, company_name = #{companyName} WHERE company_id = #{oldCompanyId} AND role = 1
+	</update>
+	
+	<delete id="deleteTfComAccount">
+		DELETE FROM tf_as_account WHERE company_id = #{oldCompanyId} AND role =2
+	</delete>
+	
+</mapper>

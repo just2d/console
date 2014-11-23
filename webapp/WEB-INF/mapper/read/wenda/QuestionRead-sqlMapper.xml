@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.wenda.QuestionReadMapper">
+		<resultMap id="BaseResultMap" type="com.nuoshi.console.domain.wenda.Question" >
+			    <id column="id" property="id" jdbcType="INTEGER" />
+			    <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+			    <result column="category_id1" property="categoryId1" jdbcType="INTEGER" />
+			    <result column="price" property="price" jdbcType="INTEGER" />
+			    <result column="author" property="author" jdbcType="VARCHAR" />
+			    <result column="author_id" property="authorId" jdbcType="INTEGER" />
+			    <result column="title" property="title" jdbcType="VARCHAR" />
+			    <result column="url" property="url" jdbcType="VARCHAR" />
+			    <result column="city_id" property="cityId" jdbcType="INTEGER" />
+			    <result column="pub_time" property="pubTime" jdbcType="TIMESTAMP" />
+			    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+			    <result column="answers" property="answers" jdbcType="INTEGER" />
+			    <result column="status" property="status" jdbcType="INTEGER" />
+			    <result column="solving_status" property="solvingStatus" jdbcType="INTEGER" />
+			    <result column="click_count" property="clickCount" jdbcType="INTEGER" />
+			    <result column="keywords" property="keywords" jdbcType="VARCHAR" />
+			    <result column="category_name" property="categoryName" jdbcType="VARCHAR" />
+			    <result column="category_name1" property="categoryName1" jdbcType="VARCHAR" />
+			    <result column="description" property="description" jdbcType="LONGVARCHAR" />
+			    <result column="cate_url" property="cateUrl" jdbcType="VARCHAR" />
+			     <result column="black_sign" property="blackSign" jdbcType="INTEGER" />
+	  	</resultMap>
+		<select id="getIdForAudit" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT id
+		FROM tf_qa_question
+		WHERE audit_sign is null
+		<if test="cityId > 0">
+			and city_id = #{cityId}
+		</if>
+		<if test="status != null">
+			and status = #{status}
+		</if>
+		and black_sign = 0
+		limit #{num}
+	</select>
+	
+	<select id="getQuestionInfo" parameterType="java.util.List" resultType="com.nuoshi.console.domain.audit.WenDaAuditTask">
+		SELECT
+		id ,
+		category_id AS categoryId,
+		category_id1 AS categoryId1,
+		category_name AS categoryName,
+		category_name1 AS categoryName1,
+		author,
+		author_id AS authorId,
+		title,
+		description,
+		pub_time AS pubTime,
+		status,
+		city_id AS cityId,
+		#{type} AS type
+		FROM tf_qa_question
+		WHERE id in
+		<foreach collection="idList" item="item" open="(" separator="," close=")">
+    		#{item}
+    	</foreach>
+	</select>
+	<select id="getQuestionCountByStatus"  resultType="java.lang.Integer">
+		SELECT
+		count(0)
+		FROM tf_qa_question t
+		WHERE black_sign = 0
+		<if test="statusList != null">
+			and t.status in
+			<foreach collection="statusList" item="item" open="(" separator="," close=")">
+    			#{item}
+    		</foreach>
+		</if>
+		<if test="solvingStatusList != null">
+    		and t.solvingStatus in
+			<foreach collection="solvingStatusList" item="item" open="(" separator="," close=")">
+    			#{item}
+    		</foreach>
+    	</if>
+	</select>
+	
+	<select id="getQuestionListByPage" parameterType="com.nuoshi.console.domain.wenda.QuestionCondition" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM
+			tf_qa_question t
+		<where>
+			<if test="condition.id != null ">
+				AND t.id = #{condition.id}
+			</if>
+			<if test="condition.authorName != null">
+				AND t.author = #{condition.authorName}
+			</if>
+			<if test="condition.blackSign != null  and condition.blackSign>=0">
+				AND t.black_sign = #{condition.blackSign}
+			</if>
+			<if test="condition.authorId != null" >
+				AND t.author_id = #{condition.authorId}
+			</if>
+			<if test="condition.answerCount != null">
+				AND t.answers = #{condition.answerCount}
+			</if>
+			<if test="condition.status != null &amp;&amp; condition.status>=0">
+				AND t.`status` = #{condition.status}
+			</if>
+			<if test="condition.solvingStatus != null &amp;&amp; condition.solvingStatus>=0">
+				AND t.solving_status = #{condition.solvingStatus}
+			</if>
+			<if test="condition.categoryId != null">
+				AND (
+					t.category_id = #{condition.categoryId}
+					OR t.category_id1 = #{condition.categoryId}
+				)
+			</if>
+			<if test="condition.beginPubTime != null">
+				<![CDATA[
+					AND t.pub_time >=  #{condition.beginPubTime}
+				]]>
+			</if>
+			<if test="condition.endPubTime != null">
+				<![CDATA[
+					AND t.pub_time  <= #{condition.endPubTime}
+				]]>
+			</if>
+			<if test="condition.beginMatureTime != null">
+				<![CDATA[
+					AND  t.end_time >=  #{condition.beginMatureTime}
+				]]>
+			</if>
+			<if test="condition.endMatureTime != null">
+				<![CDATA[
+					AND  t.end_time  <= #{condition.endMatureTime}
+				]]>
+			</if>
+			<if test="condition.categoryName != null">
+				AND (
+					t.category_name LIKE "%"#{condition.categoryName}"%"
+					OR t.category_name1 LIKE  "%"#{condition.categoryName}"%"
+				)
+			</if>
+			<if test="condition.title != null">
+				AND t.title LIKE  "%"#{condition.title}"%"
+			</if>
+			<if test="condition.details != null">
+				AND t.description LIKE "%"#{condition.details}"%"
+			</if>
+		</where>
+		<if test="condition.orderByDESC">
+		ORDER BY t.id  DESC
+		</if>
+	</select>
+</mapper>

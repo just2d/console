@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.taofang.agent.TransferPhoneWriteMapper">
+
+	<update id="updatePhoneStatus">
+		UPDATE transfer_phone SET verify_date=#{currentTime},agent_id=#{agentId},user_400_id=#{user400Id},status = 1 WHERE PHONE = #{phone}
+	</update>
+	
+	<update id="resetPhoneStatus">
+		UPDATE transfer_phone SET status = 0,agent_id = 0, user_400_id = 0,verify_date = 0 WHERE PHONE = #{phone}
+	</update>
+	
+</mapper>

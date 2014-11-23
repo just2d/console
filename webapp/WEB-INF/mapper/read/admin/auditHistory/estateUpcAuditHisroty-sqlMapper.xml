@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.admin.auditHistory.EstateUpcAuditHistoryReadMapper">
+	<resultMap type="com.nuoshi.console.domain.audit.AuditEstateLog" id="auditEstateLogResultMap">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="city_id" property="cityId" jdbcType="INTEGER" />
+		<result column="city_name" property="cityName" jdbcType="VARCHAR" />
+		<result column="dist_id" property="distId" jdbcType="INTEGER" />
+		<result column="dist_name" property="distName" jdbcType="VARCHAR" />
+		<result column="block_id" property="blockId" jdbcType="INTEGER" />
+		<result column="block_name" property="blockName" jdbcType="VARCHAR" />
+		<result column="estate_name" property="estateName" jdbcType="VARCHAR" />
+		<result column="estate_id" property="estateId" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="action_type" property="actionType" jdbcType="INTEGER" />
+		<result column="auditor_id" property="auditorId" jdbcType="INTEGER" />
+		<result column="auditor_name" property="auditorName" jdbcType="VARCHAR" />
+		<result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+		<result column="check_count" property="checkCount" jdbcType="INTEGER" />
+		<result column="accept_count" property="acceptCount" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="getEstateUpcAuditHistoryByEstateIdByPage" resultMap="auditEstateLogResultMap">
+	
+	SELECT 	id, 
+	city_id, 
+	city_name, 
+	dist_id, 
+	dist_name, 
+	block_id, 
+	block_name, 
+	estate_name, 
+	estate_id, 
+	user_id, 
+	user_name, 
+	action_type, 
+	auditor_id, 
+	auditor_name, 
+	audit_time, 
+	check_count, 
+	accept_count
+	 
+	FROM 
+	audit_estate_log 
+	where action_type=#{actionType}
+	AND estate_id=#{estateId}
+	ORDER BY audit_time DESC
+	</select>
+	
+	
+	<select id="getEstateUpcAuditHistoryByConditionByPage" resultMap="auditEstateLogResultMap">
+	
+	SELECT 	id, 
+	city_id, 
+	city_name, 
+	dist_id, 
+	dist_name, 
+	block_id, 
+	block_name, 
+	estate_name, 
+	estate_id, 
+	user_id, 
+	user_name, 
+	action_type, 
+	auditor_id, 
+	auditor_name, 
+	audit_time, 
+	check_count, 
+	accept_count
+	 
+	FROM 
+	audit_estate_log 
+	where action_type=#{actionType}
+	<if test="condition.cityId > 0">
+		AND city_id =#{condition.cityId}
+	</if>
+	<if test="condition.distId > 0">
+		AND dist_id =#{condition.distId}
+	</if>
+	<if test="condition.blockId > 0">
+		AND block_id =#{condition.blockId}
+	</if>
+	<if test="condition.estateName !=null and  condition.estateName != '' ">
+		AND estate_name =#{condition.estateName}
+	</if>
+	ORDER BY audit_time DESC
+	</select>
+	
+</mapper>

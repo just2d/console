@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.nuoshi.console.persistence.read.taofang.estate.UnionLogReadMapper">
+	<resultMap type="com.nuoshi.console.domain.estate.UnionLog" id="logMap">
+		<result column="id" property="id" javaType="int" />
+		<result column="source_id" property="estateid" javaType="int" />
+		<result column="source_name" property="estatename" javaType="String" />
+		<result column="target_id" property="targetId" javaType="int" />
+		<result column="target_name" property="targetName" javaType="String" />
+		<result column="cts" property="cts" javaType="java.util.Date" />
+		<result column="house_id" property="houseId" javaType="int" />
+		<result column="from_table" property="fromTable" javaType="String" />
+		<result column="operator" property="operator" javaType="String" />
+		<result column="t_citycode" property="t_CityCode" javaType="String" />
+		<result column="s_authstatus" property="s_authStatus" javaType="String" />
+		<result  column="num" property="num" javaType="int" />
+	</resultMap>
+	
+	<select id="getByPage" resultMap="logMap" useCache="false">
+		select id,source_id,source_name,target_id,t_citycode,target_name,cts,s_authstatus,house_id,from_table,operator from estate_union_log
+		<where>
+			<if test="t_estateid != null and t_estateid !=''">
+				target_id = #{t_estateid}
+			</if>
+			<if test="s_estateid != null and s_estateid !=''">
+				and source_id = #{s_estateid}
+			</if>
+		</where>
+		<if test="showHouse == 0">
+			group by source_id
+		</if>
+	</select>
+	
+	<select id="getUnionLogByCondition" useCache="false" parameterType="com.nuoshi.console.domain.estate.LogCondition" resultMap="logMap">
+		select count(*) as num ,source_id,source_name,target_id,target_name,s_authstatus,house_id,from_table from estate_union_log
+		<where>
+			<choose>
+				<when test="showHouse == 1">
+					house_id = #{houseId}
+				</when>
+				<otherwise>
+					source_id = #{estateid} and target_id = #{targetId}
+				</otherwise>
+			</choose>
+		</where>
+		group by from_table
+	</select>
+</mapper>

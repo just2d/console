@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.agent.TransferPhoneReadMapper">
+
+	<resultMap id="transferPhoneMap" type="com.nuoshi.console.domain.agent.TransferPhone">
+		<id property="id" column="id"/>
+		<result property="agentId" column="agent_id"/>
+		<result property="user400Id" column="user_400_id"/>
+		<result property="phone" column="phone"/>
+		<result property="status" column="status"/>
+		<result property="verifyDate" column="verify_date"/>
+		<result property="recommendTime" column="recommend_time"/>
+	</resultMap>
+
+	<select id="selectCount" resultType="int">
+		SELECT COUNT(1) FROM transfer_phone WHERE status = 0 AND recommend_time &lt; #{date}
+	</select>
+	
+    <select id="getBoundDate" resultType="int">
+    	SELECT verify_date FROM transfer_phone WHERE phone = #{phone}
+    </select>
+    
+    <select id="selectPhoneByPhone" parameterType="String" resultMap="transferPhoneMap">
+        SELECT id,agent_id,user_400_id,phone,status,verify_date,recommend_time FROM transfer_phone
+        WHERE phone = #{phone} AND status = 0
+    </select>
+    
+    <select id="selPhoneByAgentId" resultMap="transferPhoneMap">
+    	SELECT id,agent_id,user_400_id,phone,status,verify_date,recommend_time FROM transfer_phone
+        WHERE agent_id = #{agentId} AND status = 1
+    </select>
+</mapper>

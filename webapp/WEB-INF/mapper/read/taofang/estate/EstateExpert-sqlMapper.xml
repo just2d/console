@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.read.taofang.estate.EstateExpertReadMapper">
+	<resultMap id="EstateExpertResultMap" type="com.nuoshi.console.domain.estate.EstateExpert">
+		<id column="id" property="id" />
+		<result column="estate_id" property="estateId" />
+		<result column="estate_name" property="estateName" />
+		<result column="expert_type" property="expertType" />
+		<result column="start_time" property="startTime" />
+		<result column="end_time" property="endTime" />
+		<result column="agent_id" property="agentId" />
+		<result column="agent_name" property="agentName" />
+		<result column="agent_phone" property="agentPhone" />
+		<result column="assigned_by" property="assignedBy" />
+	</resultMap>
+
+	<sql id="EstateExpert_Column_List">
+		id,
+		estate_id,
+		estate_name,
+		expert_type,
+		start_time,
+		end_time,
+		agent_id,
+		agent_name,
+		agent_phone,
+		assigned_by
+	</sql>
+	<select id="getById" resultMap="EstateExpertResultMap" parameterType="int">
+		select
+			<include refid="EstateExpert_Column_List" />
+			from estate_expert
+		where id = #{id}
+	</select>
+	
+	<select id="getEstateExpertByPage" resultMap="EstateExpertResultMap">
+		select
+			ee.id,
+			ee.estate_id,
+			ee.agent_id,
+			ee.agent_name,
+			ee.agent_phone,
+			e.cityid cityId,
+			e.distid distId,
+			e.pinyin pinyin,
+			ee.estate_name,
+			ee.expert_type,
+			ee.start_time,
+			ee.end_time
+			from estate_expert ee ,estate e
+		where ee.estate_id = e.id
+		<if test="cityId > 0">
+			AND e.cityid=#{cityId}
+		</if>
+		<if test="agentId > 0">
+			AND ee.agent_id=#{agentId}
+		</if>
+		<if test="agentName !=null and agentName !=''">
+			AND ee.agent_name=#{agentName}
+		</if>
+		<if test="estateName !=null and estateName !=''">
+			AND ee.estate_name like #{estateName}
+		</if>
+		<if test="agentPhone !=null and agentPhone !=''">
+			AND ee.agent_phone=#{agentPhone}
+		</if>
+	</select>
+	
+	<select id="getEstateExpertCount" resultType="int">
+		select
+			count(0)
+			from estate_expert ee ,estate e
+		where ee.estate_id = e.id
+		<if test="cityId > 0">
+			AND e.cityid=#{cityId}
+		</if>
+		<if test="agentId > 0">
+			AND ee.agent_id=#{agentId}
+		</if>
+		<if test="agentName !=null and agentName !=''">
+			AND ee.agent_name=#{agentName}
+		</if>
+		<if test="estateName !=null and estateName !=''">
+			AND ee.estate_name like #{estateName}
+		</if>
+		<if test="agentPhone !=null and agentPhone !=''">
+			AND ee.agent_phone=#{agentPhone}
+		</if>
+	</select>
+	
+	
+	<select id="getEstateExpertDownload" resultMap="EstateExpertResultMap">
+		select
+			ee.id,
+			ee.estate_id,
+			ee.agent_id,
+			ee.agent_name,
+			ee.agent_phone,
+			e.cityid cityId,
+			e.distid distId,
+			e.pinyin pinyin,
+			ee.estate_name,
+			ee.expert_type,
+			ee.start_time,
+			ee.end_time
+			from estate_expert ee ,estate e
+		where ee.estate_id = e.id
+		<if test="cityId > 0">
+			AND e.cityid=#{cityId}
+		</if>
+		<if test="agentId > 0">
+			AND ee.agent_id=#{agentId}
+		</if>
+		<if test="agentName !=null and agentName !=''">
+			AND ee.agent_name=#{agentName}
+		</if>
+		<if test="estateName !=null and estateName !=''">
+			AND ee.estate_name like #{estateName}
+		</if>
+		<if test="agentPhone !=null and agentPhone !=''">
+			AND ee.agent_phone=#{agentPhone}
+		</if>
+	</select>
+	
+	<select id="getExpertCountByEstateId"  resultType="int">
+		select
+			count(0)
+			from estate_expert 
+		where estate_id = #{estateId}
+	</select>
+	<select id="getExpertByEstateId"  resultMap="EstateExpertResultMap">
+		select
+			<include refid="EstateExpert_Column_List"/>
+			from estate_expert 
+		where estate_id = #{estateId}
+		and expert_type =#{expertType}
+	</select>
+</mapper>

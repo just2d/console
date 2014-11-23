@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.write.taofang.agent.AgentMasterWriteMapper">
+    <update id="updateAgentMasterVerify" parameterType="com.nuoshi.console.domain.agent.AgentMaster">
+        UPDATE agent_master 
+       <set>
+	  		msg_idcard = #{msgIdcard},
+            msg_head = #{msgHead},
+            msg_namecard = #{msgNamecard},
+            status = #{status},
+            admin_id = #{adminId},
+            last_update_date = #{lastUpdateDate},
+            store_id = #{storeId},
+            400_number = #{v400Number},
+            package_id = #{packageId},
+            house_num = #{houseNum},
+            label_num = #{labelNum},
+            available_house_num = #{availableHouseNum},
+            available_label_num = #{availableLabelNum},
+            <if test="verifyPassDate != null">
+            	verify_pass_date = #{verifyPassDate},
+            </if>
+            <if test="banFlag!=null">
+            	ban_flag = #{banFlag},
+            </if>
+             <if test="verifyStatus>0">
+            	verify_status = #{verifyStatus},
+            </if>
+             <if test="packageActiveDate!=null">
+            	package_active_date = #{packageActiveDate},
+            </if>
+             <if test="packageExpiredDate!=null">
+            	package_expired_date = #{packageExpiredDate},
+            </if>
+	    </set>
+        WHERE
+            agent_id = #{agentId}
+    </update>
+    
+    <update id="add400UserId">
+    	UPDATE agent_master SET 400_userid = #{user400Id}, 400_number = #{number} WHERE agent_id = #{agentId}
+    </update>
+    
+    <update id="incrementHouseNum">
+    	<![CDATA[
+    	UPDATE agent_master SET available_house_num = available_house_num + 1 WHERE agent_id = #{agentId} AND available_house_num < house_num
+    	]]>
+    </update>
+    
+    <update id="incrementLabelNum">
+    	<![CDATA[
+    	UPDATE agent_master SET available_label_num = available_label_num + #{labelNum}, available_vcr_num = available_vcr_num + #{vcrNum} WHERE agent_id = #{agentId} AND available_label_num < label_num
+    	]]>
+    </update>
+    
+    <insert id="insertSmslog" parameterType="com.nuoshi.console.domain.agent.Smslog">
+    	INSERT INTO sms_log (userid, mobiles, content,smscnt, cts) VALUES (#{userid}, #{mobiles}, #{content}, #{smscnt}, #{cts})
+    </insert>
+    
+    <update id="updateForMobilePass">
+    	UPDATE agent_master SET mobile_check_status = 2 
+    	WHERE agent_id IN
+    	<foreach collection="integers" item="item" open="(" close=")" separator=",">
+    		#{item}
+    	</foreach>
+    </update>
+    <update id="signAgent">
+    	update agent_master t set t.audit_sign=#{auditSign}
+		where t.agent_id in 
+        <foreach item="item" collection="idList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </update>
+    
+    <update id="updateAuditStatusByIdList">
+    	UPDATE agent_master set 
+    	<if test="status!=null">
+    	status = #{status},
+    	</if>
+    	audit_sign = #{sign}
+    	WHERE agent_id in 
+    	<foreach item="item" collection="agentIdList" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </update>
+    
+    <update id="updateAgentForStartStop">
+		UPDATE agent_master SET ban_flag = #{type},tip_type = #{tipType}
+		WHERE agent_id = #{agentId}
+	</update>
+	
+	<update id="updateAgentBalance" parameterType="com.nuoshi.console.domain.agent.AgentRecharge">
+    	UPDATE agent_master am SET am.balance=am.balance+#{balance } where am.agent_id =#{agentId}
+    </update>
+    
+    
+    
+    
+     <select id="getAgentBalance" parameterType="com.nuoshi.console.domain.agent.AgentMaster" resultType="com.nuoshi.console.domain.agent.AgentMaster">
+    	SELECT am.balance balance FROM agent_master am WHERE am.agent_id = #{agentId}
+    </select>
+    <update id="updateAgentStoreByStoreId">
+		UPDATE agent_master
+			<set>
+				<if test="newStoreId !=null">
+					store_id=#{newStoreId}, 
+		    	</if>
+					store=#{storeName}
+		    </set>
+		where store_id=#{oldStoreId}
+		</update>
+	<update id="updateAgentCompanyByCompanyId">
+		UPDATE agent_master
+			<set>
+		    	<if test="newCompanyid != null">
+					company_id=#{newCompanyid},
+		    	</if>
+					company=#{newCompanyName}
+		    </set>
+		where company_id=#{oldCompanyid}
+		</update>
+</mapper>

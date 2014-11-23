@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nuoshi.console.persistence.read.admin.control.HouseDescLinkWordReadMapper">
+	<resultMap id="HouseDescLinkWordResultMap" type="com.nuoshi.console.domain.control.HouseDescLinkWord">
+		<id column="id" property="id" />
+		<result column="city_id" property="cityId" />
+		<result column="channel" property="channel" />
+		<result column="keyword" property="keyword" />
+		<result column="url" property="url" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
+
+	<sql id="HouseDescLinkWord_Column_List">
+		id,
+		city_id,
+		channel,
+		keyword,
+		url,
+		create_time
+	</sql>
+	<select id="getById" resultMap="HouseDescLinkWordResultMap" parameterType="int">
+		SELECT
+			<include refid="HouseDescLinkWord_Column_List" />
+			FROM house_desc_link_word
+		WHERE id = #{id}
+	</select>
+	
+	<select id="getHouseDescLinkWordListByPage" resultMap="HouseDescLinkWordResultMap" parameterType="com.nuoshi.console.domain.control.HouseDescLinkWord">
+		SELECT
+			<include refid="HouseDescLinkWord_Column_List" />
+			FROM house_desc_link_word
+		WHERE 1=1
+		<if test="channel > 0">
+			AND channel = #{channel}
+		</if>
+		<if test="cityId > 0">
+			AND city_id =#{cityId}
+		</if>
+		<if test="keyword != null and keyword != '' ">
+			AND keyword LIKE #{keyword}
+		</if>
+		<if test="startDate != null and startDate != '' ">
+			AND create_time >=#{startDate}
+		</if>
+		<if test="endDate != null and endDate != '' ">
+			<![CDATA[
+			AND create_time <= DATE_ADD(#{endDate},INTERVAL 1 DAY)
+			]]>  
+		</if>
+		ORDER BY create_time DESC
+	</select>
+	
+	<select id="getHouseDescLinkWordNum" resultType="int" parameterType="com.nuoshi.console.domain.control.HouseDescLinkWord">
+		SELECT
+			count(0)
+			FROM house_desc_link_word
+		WHERE 
+			channel= #{channel}
+		AND keyword= #{keyword}	
+		<if test="cityId != 0 and cityId > 0 ">
+			AND (city_id= #{cityId} OR city_id =0)
+		</if>
+		<if test="id != null and id > 0 ">
+			AND id != #{id}
+		</if>
+		
+	</select>
+</mapper>

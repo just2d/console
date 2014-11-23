@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	
+	<definition name="category.list" extends="base.definition">
+		<put-attribute name="title" value="分类管理列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/wenda/category/categorylist.jsp" />
+	</definition>
+	<definition name="wenda.verify" extends="base.definition">
+		<put-attribute name="title" value="问答审核" />
+		<put-attribute name="body" value="/WEB-INF/jsp/wenda/audit/auditList.jsp" />
+	</definition>
+	<definition name="wenda.question.list" extends="base.definition">
+		<put-attribute name="title" value="问题列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/wenda/list/questionList.jsp" />
+	</definition>
+	<definition name="wenda.answer.list" extends="base.definition">
+		<put-attribute name="title" value="回答列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/wenda/list/answerList.jsp" />
+	</definition>
+
+</tiles-definitions> 

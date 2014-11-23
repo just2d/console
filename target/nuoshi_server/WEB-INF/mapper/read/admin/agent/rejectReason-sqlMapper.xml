@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace和定义的Mapper接口对应，并实现其中的方法 -->
+<mapper namespace="com.nuoshi.console.persistence.read.admin.agent.RejectReasonReadMapper">
+
+    <select id="getAllRejectReasonByPage" resultType="com.nuoshi.console.domain.agent.RejectReason" parameterType="int">
+    	SELECT id,type,reason,title FROM reject_reason WHERE type = #{type} ORDER BY type ,show_order ASC
+    </select>
+    <select id="getAllRejectReasonByType" resultType="com.nuoshi.console.domain.agent.RejectReason" parameterType="int">
+    	SELECT * FROM reject_reason WHERE type = #{type} ORDER BY show_order ASC
+    </select>
+
+    <select id="getAllMsg" resultType="com.nuoshi.console.domain.agent.RejectReason" parameterType="int">
+    	SELECT id,type,reason,title FROM reject_reason WHERE type = #{type} ORDER BY show_order ASC
+    </select>
+
+    <select id="getAllRejectReason" resultType="com.nuoshi.console.domain.agent.RejectReason">
+    	SELECT id,type,reason,title FROM reject_reason ORDER BY show_order ASC
+    </select>
+
+    <select id="getAllRejectReason2ByPage" resultType="com.nuoshi.console.domain.agent.RejectReason">
+    	SELECT id,type,reason,title FROM reject_reason WHERE type != 10 ORDER BY type,show_order ASC
+    </select>
+
+</mapper>

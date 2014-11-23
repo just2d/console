@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE tiles-definitions PUBLIC        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	<!-- 小区定义 -->
+	<definition name="estate.list" extends="base.definition">
+		<put-attribute name="title" value="待审核小区列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/list.jsp" />
+	</definition>
+	<definition name="estate.list_del" extends="base.definition">
+		<put-attribute name="title" value="已删除小区列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/list_del.jsp" />
+	</definition>
+	<definition name="estate.list_unpast" extends="base.definition">
+		<put-attribute name="title" value="未通过小区列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/list_unpast.jsp" />
+	</definition>
+	<definition name="estate.list_past" extends="base.definition">
+		<put-attribute name="title" value="已通过审核小区列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/list_past.jsp" />
+	</definition>
+	<definition name="estate.form" extends="base.definition">
+		<put-attribute name="title" value="添加或编辑小区" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/form.jsp" />
+	</definition>
+	<definition name="estate.detail" extends="base.definition">
+		<put-attribute name="title" value="浏览小区信息" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/detail.jsp" />
+	</definition>
+	<definition name="estate.add" extends="base.definition">
+		<put-attribute name="title" value="添加小区" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/add.jsp" />
+	</definition>
+	<definition name="estate.logList" extends="base.definition">
+		<put-attribute name="title" value="小区日志列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/logList.jsp" />
+	</definition>
+	
+	<!-- 户型图定义 -->
+	<definition name="layout.list" extends="base.definition">
+		<put-attribute name="title" value="小区照片列表" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/layout/list.jsp" />
+	</definition>
+	<definition name="layout.compare" extends="base.definition">
+		<put-attribute name="title" value="小区精选图比较" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/layout/comp_sel.jsp" />
+	</definition>
+	<definition name="commPhoto.compare" extends="base.definition">
+		<put-attribute name="title" value="小区图比较" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/commPhoto/comp_sel.jsp" />
+	</definition>
+	
+	<!-- 小区专家 -->
+	<definition name="estateexpert.list" extends="base.definition">
+		<put-attribute name="title" value="小区专家管理" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/expert/list.jsp" />
+	</definition>
+	<definition name="estateexpert.add" extends="base.definition">
+		<put-attribute name="title" value="添加小区专家" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/expert/add.jsp" />
+	</definition>
+	<!-- 小区上传审核 -->
+	<definition name="estateupc.getupctext" extends="base.definition">
+		<put-attribute name="title" value="小区文字上传" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/upc/getupctext.jsp" />
+	</definition>
+	<definition name="estateupc.getupcphoto" extends="base.definition">
+		<put-attribute name="title" value="小区图片上传" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/upc/getupcphoto.jsp" />
+	</definition>
+	<definition name="estateupc.audithistory.list" extends="base.definition">
+		<put-attribute name="title" value="小区数据审核纪录" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/upc/auditHistory.jsp" />
+	</definition>
+	
+	<!-- 小区映射管理-->
+	<definition name="estate.mapping.list" extends="base.definition">
+		<put-attribute name="title" value="小区映射" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/mapping/list.jsp" />
+	</definition>
+	<definition name="estate.mapping.add" extends="base.definition">
+		<put-attribute name="title" value="小区映射" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/mapping/add.jsp" />
+	</definition>
+	<definition name="estate.mapping.edit" extends="base.definition">
+		<put-attribute name="title" value="小区映射" />
+		<put-attribute name="body" value="/WEB-INF/jsp/xiaoqu/mapping/edit.jsp" />
+	</definition>
+</tiles-definitions> 
